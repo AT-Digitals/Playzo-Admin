@@ -3,6 +3,9 @@ import { lazy } from 'react';
 // project import
 import Loadable from 'components/Loadable';
 import MainLayout from 'layout/MainLayout';
+import BookingPage from 'pages/extra-pages/BookingPage';
+import ExpenseManagementPage from 'pages/extra-pages/ExpenseManagementPage';
+import BadmintonPage from 'pages/extra-pages/BadmintonPage';
 
 // render - dashboard
 const DashboardDefault = Loadable(lazy(() => import('pages/dashboard')));
@@ -54,6 +57,18 @@ const MainRoutes = {
     {
       path: 'icons/ant',
       element: <AntIcons />
+    },
+    {
+      path: 'bookings',
+      element: <BookingPage />
+    },
+    {
+      path: 'badminton',
+      element: <BadmintonPage />
+    },
+    {
+      path: 'expense-management',
+      element: <ExpenseManagementPage />
     }
   ]
 };
