@@ -1,29 +1,13 @@
 import { useEffect, useState } from 'react';
-import { Link as RouterLink } from 'react-router-dom';
 
 // material-ui
-import {
-  Box,
-  Button,
-  Divider,
-  FormControl,
-  FormHelperText,
-  Grid,
-  Link,
-  IconButton,
-  InputAdornment,
-  InputLabel,
-  OutlinedInput,
-  Stack,
-  Typography
-} from '@mui/material';
+import { Button, FormHelperText, Grid, IconButton, InputAdornment, InputLabel, OutlinedInput, Stack } from '@mui/material';
 
 // third party
 import * as Yup from 'yup';
 import { Formik } from 'formik';
 
 // project import
-import FirebaseSocial from './FirebaseSocial';
 import AnimateButton from 'components/@extended/AnimateButton';
 import { strengthColor, strengthIndicator } from 'utils/password-strength';
 
@@ -33,7 +17,6 @@ import { EyeOutlined, EyeInvisibleOutlined } from '@ant-design/icons';
 // ============================|| FIREBASE - REGISTER ||============================ //
 
 const AuthRegister = () => {
-  const [level, setLevel] = useState();
   const [showPassword, setShowPassword] = useState(false);
   const handleClickShowPassword = () => {
     setShowPassword(!showPassword);
@@ -84,7 +67,7 @@ const AuthRegister = () => {
         {({ errors, handleBlur, handleChange, handleSubmit, isSubmitting, touched, values }) => (
           <form noValidate onSubmit={handleSubmit}>
             <Grid container spacing={3}>
-              <Grid item xs={12} md={6}>
+              <Grid item xs={12}>
                 <Stack spacing={1}>
                   <InputLabel htmlFor="firstname-signup">First Name*</InputLabel>
                   <OutlinedInput
@@ -105,7 +88,7 @@ const AuthRegister = () => {
                   )}
                 </Stack>
               </Grid>
-              <Grid item xs={12} md={6}>
+              <Grid item xs={12}>
                 <Stack spacing={1}>
                   <InputLabel htmlFor="lastname-signup">Last Name*</InputLabel>
                   <OutlinedInput
@@ -201,36 +184,7 @@ const AuthRegister = () => {
                     placeholder="******"
                     inputProps={{}}
                   />
-                  {touched.password && errors.password && (
-                    <FormHelperText error id="helper-text-password-signup">
-                      {errors.password}
-                    </FormHelperText>
-                  )}
                 </Stack>
-                <FormControl fullWidth sx={{ mt: 2 }}>
-                  <Grid container spacing={2} alignItems="center">
-                    <Grid item>
-                      <Box sx={{ bgcolor: level?.color, width: 85, height: 8, borderRadius: '7px' }} />
-                    </Grid>
-                    <Grid item>
-                      <Typography variant="subtitle1" fontSize="0.75rem">
-                        {level?.label}
-                      </Typography>
-                    </Grid>
-                  </Grid>
-                </FormControl>
-              </Grid>
-              <Grid item xs={12}>
-                <Typography variant="body2">
-                  By Signing up, you agree to our &nbsp;
-                  <Link variant="subtitle2" component={RouterLink} to="#">
-                    Terms of Service
-                  </Link>
-                  &nbsp; and &nbsp;
-                  <Link variant="subtitle2" component={RouterLink} to="#">
-                    Privacy Policy
-                  </Link>
-                </Typography>
               </Grid>
               {errors.submit && (
                 <Grid item xs={12}>
@@ -243,14 +197,6 @@ const AuthRegister = () => {
                     Create Account
                   </Button>
                 </AnimateButton>
-              </Grid>
-              <Grid item xs={12}>
-                <Divider>
-                  <Typography variant="caption">Sign up with</Typography>
-                </Divider>
-              </Grid>
-              <Grid item xs={12}>
-                <FirebaseSocial />
               </Grid>
             </Grid>
           </form>

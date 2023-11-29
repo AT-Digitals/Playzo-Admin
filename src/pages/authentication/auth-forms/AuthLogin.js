@@ -1,11 +1,9 @@
 import React from 'react';
-// import { Link as RouterLink } from 'react-router-dom';
 
 // material-ui
 import {
   Button,
   Checkbox,
-  // Divider,
   FormControlLabel,
   FormHelperText,
   Grid,
@@ -23,7 +21,6 @@ import * as Yup from 'yup';
 import { Formik } from 'formik';
 
 // project import
-// import FirebaseSocial from './FirebaseSocial';
 import AnimateButton from 'components/@extended/AnimateButton';
 
 // assets
@@ -139,9 +136,6 @@ const AuthLogin = () => {
                     }
                     label={<Typography variant="h6">Remember Me</Typography>}
                   />
-                  {/* <Link variant="h6" component={RouterLink} to="" color="text.primary">
-                    Forgot Password?
-                  </Link> */}
                 </Stack>
               </Grid>
               {errors.submit && (
@@ -156,14 +150,6 @@ const AuthLogin = () => {
                   </Button>
                 </AnimateButton>
               </Grid>
-              {/* <Grid item xs={12}>
-                <Divider>
-                  <Typography variant="caption"> Login with</Typography>
-                </Divider>
-              </Grid>
-              <Grid item xs={12}>
-                <FirebaseSocial />
-              </Grid> */}
             </Grid>
           </form>
         )}

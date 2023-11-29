@@ -1,5 +1,5 @@
 // material-ui
-import { Typography } from '@mui/material';
+import { Grid, Button, Stack } from '@mui/material';
 
 // project import
 import MainCard from 'components/MainCard';
@@ -8,12 +8,19 @@ import MainCard from 'components/MainCard';
 
 const BookingPage = () => (
   <MainCard title="">
-    <Typography variant="body2">
-      Lorem ipsum dolor sit amen, consenter nipissing eli, sed do elusion tempos incident ut laborers et doolie magna alissa. Ut enif ad
-      minim venice, quin nostrum exercitation illampu laborings nisi ut liquid ex ea commons construal. Duos aube grue dolor in reprehended
-      in voltage veil esse colum doolie eu fujian bulla parian. Exceptive sin ocean cuspidate non president, sunk in culpa qui officiate
-      descent molls anim id est labours.
-    </Typography>
+    <Stack direction="row" spacing={4}>
+      <Button variant="contained" sx={{ backgroundColor: '' }}>
+        Overall Bookings
+      </Button>
+      <Button variant="contained">Turf Bookings</Button>
+      <Button variant="contained">Playstation Bookings</Button>
+      <Button variant="contained">Board Games Bookings</Button>
+      <Button variant="contained">Edit Bookings</Button>
+      <Button variant="contained">New Bookings</Button>
+    </Stack>
+    <Grid container>
+      <Grid></Grid>
+    </Grid>
   </MainCard>
 );
 
