@@ -1,15 +1,15 @@
 import React from 'react';
-import { Link as RouterLink } from 'react-router-dom';
+// import { Link as RouterLink } from 'react-router-dom';
 
 // material-ui
 import {
   Button,
   Checkbox,
-  Divider,
+  // Divider,
   FormControlLabel,
   FormHelperText,
   Grid,
-  Link,
+  // Link,
   IconButton,
   InputAdornment,
   InputLabel,
@@ -23,7 +23,7 @@ import * as Yup from 'yup';
 import { Formik } from 'formik';
 
 // project import
-import FirebaseSocial from './FirebaseSocial';
+// import FirebaseSocial from './FirebaseSocial';
 import AnimateButton from 'components/@extended/AnimateButton';
 
 // assets
@@ -71,7 +71,7 @@ const AuthLogin = () => {
             <Grid container spacing={3}>
               <Grid item xs={12}>
                 <Stack spacing={1}>
-                  <InputLabel htmlFor="email-login">Email Address</InputLabel>
+                  <InputLabel htmlFor="email-login">Email</InputLabel>
                   <OutlinedInput
                     id="email-login"
                     type="email"
@@ -79,7 +79,7 @@ const AuthLogin = () => {
                     name="email"
                     onBlur={handleBlur}
                     onChange={handleChange}
-                    placeholder="Enter email address"
+                    placeholder="Your mail Id"
                     fullWidth
                     error={Boolean(touched.email && errors.email)}
                   />
@@ -115,7 +115,7 @@ const AuthLogin = () => {
                         </IconButton>
                       </InputAdornment>
                     }
-                    placeholder="Enter password"
+                    placeholder="Your Password"
                   />
                   {touched.password && errors.password && (
                     <FormHelperText error id="standard-weight-helper-text-password-login">
@@ -137,11 +137,11 @@ const AuthLogin = () => {
                         size="small"
                       />
                     }
-                    label={<Typography variant="h6">Keep me sign in</Typography>}
+                    label={<Typography variant="h6">Remember Me</Typography>}
                   />
-                  <Link variant="h6" component={RouterLink} to="" color="text.primary">
+                  {/* <Link variant="h6" component={RouterLink} to="" color="text.primary">
                     Forgot Password?
-                  </Link>
+                  </Link> */}
                 </Stack>
               </Grid>
               {errors.submit && (
@@ -152,18 +152,18 @@ const AuthLogin = () => {
               <Grid item xs={12}>
                 <AnimateButton>
                   <Button disableElevation disabled={isSubmitting} fullWidth size="large" type="submit" variant="contained" color="primary">
-                    Login
+                    LOG IN
                   </Button>
                 </AnimateButton>
               </Grid>
-              <Grid item xs={12}>
+              {/* <Grid item xs={12}>
                 <Divider>
                   <Typography variant="caption"> Login with</Typography>
                 </Divider>
               </Grid>
               <Grid item xs={12}>
                 <FirebaseSocial />
-              </Grid>
+              </Grid> */}
             </Grid>
           </form>
         )}
