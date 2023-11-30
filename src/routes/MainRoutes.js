@@ -6,6 +6,7 @@ import MainLayout from 'layout/MainLayout';
 import BookingPage from 'pages/extra-pages/BookingPage';
 import ExpenseManagementPage from 'pages/extra-pages/ExpenseManagementPage';
 import BadmintonPage from 'pages/extra-pages/BadmintonPage';
+import PaymentPage from 'pages/extra-pages/PaymentPage';
 
 // render - dashboard
 const DashboardDefault = Loadable(lazy(() => import('pages/dashboard')));
@@ -69,6 +70,10 @@ const MainRoutes = {
     {
       path: 'expense-management',
       element: <ExpenseManagementPage />
+    },
+    {
+      path: 'payments',
+      element: <PaymentPage />
     }
   ]
 };

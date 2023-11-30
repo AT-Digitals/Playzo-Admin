@@ -36,6 +36,13 @@ const mainpages = {
       type: 'item',
       url: '/expense-management',
       icon: icons.AssignmentTurnedInIcon
+    },
+    {
+      id: 'payments',
+      title: 'Payments',
+      type: 'item',
+      url: '/payments',
+      icon: icons.ProfileOutlined
     }
   ]
 };

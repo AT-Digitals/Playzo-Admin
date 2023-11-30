@@ -1,43 +1,41 @@
 // material-ui
+import { Grid, Stack, MenuItem, Box, TextField } from '@mui/material';
+import { useState } from 'react';
 
-// project import
-import MainCard from 'components/MainCard';
-
-import { Box, FormControl, InputAdornment, OutlinedInput, Stack, TextField, MenuItem, Button, Grid } from '@mui/material';
+import { FormControl, InputAdornment, OutlinedInput } from '@mui/material';
 
 // assets
 import { SearchOutlined } from '@ant-design/icons';
-import AddIcon from '@mui/icons-material/Add';
-import EditIcon from '@mui/icons-material/Edit';
-import { useState } from 'react';
-import ExpenseTable from './ExpenseTable';
-// ==============================|| SAMPLE PAGE ||============================== //
+
+// project import
+import MainCard from 'components/MainCard';
+import PaymentTable from './PaymentTable';
 
 const status = [
   {
-    value: 'Today',
-    label: 'Today'
+    value: 'All Payments',
+    label: 'All Payments'
   },
   {
-    value: 'Weekly',
-    label: 'Weekly'
+    value: 'Pending Payments',
+    label: 'Pending Payments'
   },
   {
-    value: 'Monthly',
-    label: 'Monthly'
+    value: 'Paid Payments',
+    label: 'Paid Payments'
   },
   {
-    value: 'Yearly',
-    label: 'Yearly'
+    value: 'Partialy Paid Payments',
+    label: 'Partialy Paid Payments'
   }
 ];
 
 // ==============================|| SAMPLE PAGE ||============================== //
 
-const ExpenseManagementPage = () => {
-  const [value, setValue] = useState('Today');
+const PaymentPage = () => {
+  const [value, setValue] = useState('All Payments');
   return (
-    <MainCard title="Expense Management">
+    <MainCard title="Payments">
       <Stack direction="column" spacing={3}>
         <Stack direction="row" spacing={4}>
           <Box sx={{ width: '250px', ml: { xs: 0, md: 1 } }}>
@@ -55,7 +53,7 @@ const ExpenseManagementPage = () => {
                   'aria-label': 'weight'
                 }}
                 sx={{ '.MuiInputBase-input.MuiOutlinedInput-input': { padding: '15px 20px' } }}
-                placeholder="All Purchase"
+                placeholder="All Payments"
               />
             </FormControl>
           </Box>
@@ -64,6 +62,7 @@ const ExpenseManagementPage = () => {
             size="medium"
             select
             value={value}
+            maxWidth="200px"
             onChange={(e) => setValue(e.target.value)}
             sx={{ '& .MuiInputBase-input': { padding: '15px 20px', fontSize: '0.875rem', width: '250px' } }}
           >
@@ -73,16 +72,10 @@ const ExpenseManagementPage = () => {
               </MenuItem>
             ))}
           </TextField>
-          <Button variant="outlined" sx={{ width: '200px' }}>
-            <AddIcon sx={{ paddingRight: '8px' }} /> Add Purchase
-          </Button>
-          <Button variant="outlined" sx={{ width: '200px' }}>
-            <EditIcon sx={{ paddingRight: '8px' }} /> Edit Purchase
-          </Button>
         </Stack>
         <Grid container>
           <Grid>
-            <ExpenseTable />
+            <PaymentTable />
           </Grid>
         </Grid>
       </Stack>
@@ -90,4 +83,4 @@ const ExpenseManagementPage = () => {
   );
 };
 
-export default ExpenseManagementPage;
+export default PaymentPage;
