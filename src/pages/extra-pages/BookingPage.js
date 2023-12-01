@@ -1,19 +1,17 @@
 // material-ui
-import { Grid, Button, Stack, MenuItem, Box, TextField } from '@mui/material';
+import { Grid, Button, Stack, MenuItem, TextField } from '@mui/material';
 import Card from '@mui/material/Card';
 import CardContent from '@mui/material/CardContent';
 import Typography from '@mui/material/Typography';
 import { useState } from 'react';
 import AddIcon from '@mui/icons-material/Add';
 import EditIcon from '@mui/icons-material/Edit';
-import { FormControl, InputAdornment, OutlinedInput } from '@mui/material';
-
-// assets
-import { SearchOutlined } from '@ant-design/icons';
 
 // project import
 import MainCard from 'components/MainCard';
 import BookingTable from './BookingTable';
+import SearchComponent from './SearchComponent';
+import TimeSlotComponet from './TimeSlotComponent';
 
 const status = [
   {
@@ -84,25 +82,7 @@ const BookingPage = () => {
           </Grid>
         </Grid>
         <Stack direction="row" spacing={4}>
-          <Box sx={{ width: '250px', ml: { xs: 0, md: 1 } }}>
-            <FormControl>
-              <OutlinedInput
-                size="small"
-                id="header-search"
-                startAdornment={
-                  <InputAdornment position="start" sx={{ mr: -0.5 }}>
-                    <SearchOutlined />
-                  </InputAdornment>
-                }
-                aria-describedby="header-search-text"
-                inputProps={{
-                  'aria-label': 'weight'
-                }}
-                sx={{ '.MuiInputBase-input.MuiOutlinedInput-input': { padding: '15px 20px' } }}
-                placeholder="All Bookings"
-              />
-            </FormControl>
-          </Box>
+          <SearchComponent placeholder="All Bookings" />
           <TextField
             id="standard-select-currency"
             size="medium"
@@ -130,6 +110,7 @@ const BookingPage = () => {
             <BookingTable />
           </Grid>
         </Grid>
+        <TimeSlotComponet />
       </Stack>
     </MainCard>
   );

@@ -3,14 +3,13 @@
 // project import
 import MainCard from 'components/MainCard';
 
-import { Box, FormControl, InputAdornment, OutlinedInput, Stack, TextField, MenuItem, Button, Grid } from '@mui/material';
+import { Stack, TextField, MenuItem, Button, Grid } from '@mui/material';
 
-// assets
-import { SearchOutlined } from '@ant-design/icons';
 import AddIcon from '@mui/icons-material/Add';
 import EditIcon from '@mui/icons-material/Edit';
 import { useState } from 'react';
 import ExpenseTable from './ExpenseTable';
+import SearchComponent from './SearchComponent';
 // ==============================|| SAMPLE PAGE ||============================== //
 
 const status = [
@@ -40,25 +39,7 @@ const ExpenseManagementPage = () => {
     <MainCard title="Expense Management">
       <Stack direction="column" spacing={3}>
         <Stack direction="row" spacing={4}>
-          <Box sx={{ width: '250px', ml: { xs: 0, md: 1 } }}>
-            <FormControl>
-              <OutlinedInput
-                size="small"
-                id="header-search"
-                startAdornment={
-                  <InputAdornment position="start" sx={{ mr: -0.5 }}>
-                    <SearchOutlined />
-                  </InputAdornment>
-                }
-                aria-describedby="header-search-text"
-                inputProps={{
-                  'aria-label': 'weight'
-                }}
-                sx={{ '.MuiInputBase-input.MuiOutlinedInput-input': { padding: '15px 20px' } }}
-                placeholder="All Purchase"
-              />
-            </FormControl>
-          </Box>
+          <SearchComponent placeholder="All Purchase" />
           <TextField
             id="standard-select-currency"
             size="medium"

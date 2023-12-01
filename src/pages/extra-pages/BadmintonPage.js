@@ -4,13 +4,11 @@
 import MainCard from 'components/MainCard';
 import MembershipTable from './MembershipTable';
 
-import { Box, FormControl, InputAdornment, OutlinedInput, Stack, TextField, MenuItem, Button, Grid } from '@mui/material';
-
-// assets
-import { SearchOutlined } from '@ant-design/icons';
+import { Stack, TextField, MenuItem, Button, Grid } from '@mui/material';
 import AddIcon from '@mui/icons-material/Add';
 import EditIcon from '@mui/icons-material/Edit';
 import { useState } from 'react';
+import SearchComponent from './SearchComponent';
 // ==============================|| SAMPLE PAGE ||============================== //
 
 const status = [
@@ -34,25 +32,7 @@ const BadmintonPage = () => {
     <MainCard title="Badminton Membership">
       <Stack direction="column" spacing={3}>
         <Stack direction="row" spacing={4}>
-          <Box sx={{ width: '250px', ml: { xs: 0, md: 1 } }}>
-            <FormControl>
-              <OutlinedInput
-                size="small"
-                id="header-search"
-                startAdornment={
-                  <InputAdornment position="start" sx={{ mr: -0.5 }}>
-                    <SearchOutlined />
-                  </InputAdornment>
-                }
-                aria-describedby="header-search-text"
-                inputProps={{
-                  'aria-label': 'weight'
-                }}
-                sx={{ '.MuiInputBase-input.MuiOutlinedInput-input': { padding: '15px 20px' } }}
-                placeholder="All Members"
-              />
-            </FormControl>
-          </Box>
+          <SearchComponent placeholder="All Members" />
           <TextField
             id="standard-select-currency"
             size="medium"
