@@ -62,7 +62,7 @@ const PaymentPage = () => {
             size="medium"
             select
             value={value}
-            maxWidth="200px"
+            width="200px"
             onChange={(e) => setValue(e.target.value)}
             sx={{ '& .MuiInputBase-input': { padding: '15px 20px', fontSize: '0.875rem', width: '250px' } }}
           >
