@@ -6,7 +6,7 @@ import { DatePicker } from '@mui/x-date-pickers/DatePicker';
 import { Typography, Stack } from '@mui/material';
 import { AdapterDayjs } from '@mui/x-date-pickers/AdapterDayjs';
 
-export default function BasicDatePicker({ date, setDate, error, duplicateError, isSubmitted }) {
+export default function BasicDatePicker({ date, setDate, error }) {
   return (
     <LocalizationProvider dateAdapter={AdapterDayjs}>
       {/* <DemoContainer components={['DatePicker']}> */}
@@ -21,8 +21,7 @@ export default function BasicDatePicker({ date, setDate, error, duplicateError, 
           required
           slotProps={{
             textField: {
-              helperText:
-                isSubmitted && error ? 'Please select a date' : duplicateError ? 'Duplicate date. Please choose a different date.' : ''
+              helperText: error ? 'Please select a date' : ''
             }
           }}
         />

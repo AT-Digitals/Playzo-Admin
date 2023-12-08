@@ -4,14 +4,21 @@ import { AdapterDayjs } from '@mui/x-date-pickers/AdapterDayjs';
 import { DigitalClock } from '@mui/x-date-pickers/DigitalClock';
 import { Typography, Stack } from '@mui/material';
 
-export default function EndTimeComponent({ end, setEnd }) {
+export default function EndTimeComponent({ onChange, error }) {
   return (
     <LocalizationProvider dateAdapter={AdapterDayjs}>
       <Stack direction="column" spacing={2} sx={{ width: '120px' }}>
         <Typography variant="h6" fontSize="20px">
           End Time
         </Typography>
-        <DigitalClock value={end} onChange={(newValue) => setEnd(newValue)} />
+        <DigitalClock
+          onChange={onChange}
+          slotProps={{
+            textField: {
+              helperText: error ? 'Please select a start time' : ''
+            }
+          }}
+        />
       </Stack>
     </LocalizationProvider>
   );

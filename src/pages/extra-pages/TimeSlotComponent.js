@@ -1,123 +1,129 @@
-import dayjs from 'dayjs';
+//import dayjs from 'dayjs';
 import moment from 'moment';
 import MainCard from 'components/MainCard';
 import CustomDatePicker from './CustomDatePicker';
 import { Stack, Button, Typography } from '@mui/material';
 import { useState } from 'react';
 
-import StartTimeComponent from './StartTimeComponent';
-import EndTimeComponent from './EndTimeComponent';
+// import StartTimeComponent from './StartTimeComponent';
+// import EndTimeComponent from './EndTimeComponent';
+// import BookingApi from '../../api/BookingApi.ts';
+// import { BookingType } from '../../dto/Booking/BookingType.ts';
+// import { PaymentType } from '../../dto/Booking/PaymentType.ts';
+import TimeSlotModal from './TimeSlotModal';
+import CustomTextField from './CustomTextField';
 
 //import Typography from 'themes/overrides/Typography';
 
 export default function TimeSlotComponet() {
   const [date, setDate] = useState('');
-  const [startTime, setStartTime] = useState(dayjs(new Date()));
-  console.log(startTime);
-  const [endTime, setEndTime] = useState(dayjs(new Date()));
+  const [startTime, setStartTime] = useState('');
+  const [endTime, setEndTime] = useState('');
   const [submit, setSubmit] = useState([]);
-
+  // const [isSubmitted, setIsSubmitted] = useState(false);
   const [dateError, setDateError] = useState(false);
-  // const [timeError, setTimeError] = useState(false);
-  // const [endError, setEndError] = useState(false);
-  const [duplicateError, setDuplicateError] = useState(false);
-  const [isSubmitted, setIsSubmitted] = useState(false);
+  const [startError, setStartError] = useState(false);
+  const [endError, setEndError] = useState(false);
+  const [isModalOpen, setIsModalOpen] = useState(false);
 
   const dateHandler = (newValue) => {
     let datedata = newValue.$d;
     const parsedDate = moment(datedata);
-    const formattedDate = parsedDate.format('MMM DD YYYY');
+    const formattedDate = parsedDate.format('YYYY-MM-DD');
+    console.log(formattedDate);
     setDate(formattedDate);
     setDateError(false);
-    setDuplicateError(false);
+    setIsModalOpen(true);
   };
 
-  const startTimeHandler = (newValue) => {
+  const handleDialogTimeChange = (newValue) => {
     const start = newValue.$d;
-    const startwithTime = moment(start);
+    const startwithTime = moment(start, ' hh:mm:ss a');
     const formattedSTime = startwithTime.format(' hh:mm:ss a');
-    console.log(formattedSTime);
-
     setStartTime(formattedSTime);
-    // setTimeError(false);  start={startTime} setStart={startTimeHandler}
-    setDuplicateError(false);
+    const milliseconds = startwithTime.valueOf();
+    console.log(milliseconds);
+    //setStartTime(milliseconds);
   };
+  console.log(startTime, endTime);
 
-  const endTimeHandler = (newValue) => {
+  const handleDialogEndTimeChange = (newValue) => {
     const end = newValue.$d;
-    const endwithTime = moment(end);
-    const formattedETime = endwithTime.format(' hh:mm:ss a');
-    console.log(formattedETime);
-    // if (endTime >= formattedETime) {
+    const EndwithTime = moment(end);
+    const formattedETime = EndwithTime.format(' hh:mm:ss a');
     setEndTime(formattedETime);
-    //setEndError(false);
-    setDuplicateError(false);
-  };
-
-  const checkForOverlap = (newStart, newEnd) => {
-    // Check for overlaps with existing ranges
-    const overlap = submit.some(
-      (value) =>
-        (newStart >= value.start && newStart <= value.end) ||
-        (newEnd >= value.start && newEnd <= value.end) ||
-        (newStart <= value.start && newEnd >= value.end)
-    );
-
-    return overlap;
+    const milliseconds = EndwithTime.valueOf();
+    console.log(milliseconds);
   };
 
   const onSubmit = (event) => {
     event.preventDefault();
-    setIsSubmitted(true);
+    // setIsSubmitted(true);
 
     if (!date) {
       setDateError(true);
     }
 
     if (!startTime) {
-      //setTimeError(true);
+      setStartError(true);
     }
     if (!endTime) {
       setEndError(true);
     }
 
     if (date && startTime && endTime) {
-      const newStart = startTime;
-      const newEnd = endTime;
-      const overlap = checkForOverlap(newStart, newEnd);
+      const data = {
+        date: date,
+        startTime: startTime,
+        endTime: endTime
+      };
+      console.log(data);
+      // BookingApi.createBooking({
+      //   type: BookingType.Turf,
+      //   bookingAmount: 2000,
+      //   bookingType: PaymentType.Cash,
+      //   startTime: startTime,
+      //   endTime: endTime
+      // });
+      setSubmit([...submit, data]);
 
-      if (overlap) {
-        setDuplicateError(true);
-      } else {
-        const data = {
-          date: date,
-          start: startTime,
-          end: endTime
-        };
-        console.log(data);
-        setSubmit([...submit, data]);
-
-        // const isDuplicate = submit.some((value) => value.date === data.date && value.start === data.start && value.end === data.end);
-
-        // if (isDuplicate) {
-        //   setDuplicateError(true);
-        // } else {
-        //   setSubmit([...submit, data]);
-        // }
-        setDate('');
-        setStartTime('');
-        setEndTime('');
-      }
+      setDate('');
+      setStartTime('');
+      setEndTime('');
     }
+  };
+
+  const handleCloseModal = () => {
+    setIsModalOpen(false);
+  };
+  const [initalTime, setInitalTime] = useState('00:00');
+  const [initalEnd, setInitalEnd] = useState('00:00');
+
+  const TextFieldChange = (newValue) => {
+    setInitalTime(newValue);
+    setStartTime(newValue);
+  };
+  const TextFieldEndChange = (newValue) => {
+    setInitalEnd(newValue);
   };
 
   return (
     <MainCard title="Date Validation">
       <form onSubmit={onSubmit}>
-        <Stack direction="row" spacing={2}>
-          <CustomDatePicker date={date} setDate={dateHandler} error={dateError} duplicateError={duplicateError} isSubmitted={isSubmitted} />
-          <StartTimeComponent start={startTime} setStart={startTimeHandler} />
-          <EndTimeComponent end={endTime} setEnd={endTimeHandler} />
+        <Stack direction="row" spacing={2} alignItems="center">
+          <CustomDatePicker date={date} setDate={dateHandler} error={dateError} />
+          <CustomTextField label="Start Time" value={!startTime ? initalTime : startTime} setValue={TextFieldChange} />
+          <CustomTextField label="End Time" value={!endTime ? initalEnd : endTime} setValue={TextFieldEndChange} />
+          <TimeSlotModal
+            isOpen={isModalOpen}
+            onClose={handleCloseModal}
+            onChange={handleDialogTimeChange}
+            onSelect={handleDialogEndTimeChange}
+            error={startError}
+            error1={endError}
+          />
+          {/* <StartTimeComponent onChange={handleDialogTimeChange} error={startError} />
+          <EndTimeComponent onChange={handleDialogEndTimeChange} error={endError} /> */}
           <Button variant="outlined" type="submit" sx={{ height: '50px', marginTop: '35px !important' }}>
             Confirm
           </Button>
@@ -129,8 +135,8 @@ export default function TimeSlotComponet() {
       {submit.map((value, index) => (
         <Stack direction="row" spacing={2} key={index} marginY={3}>
           <Typography>{value.date}</Typography>
-          <Typography>{value.start}</Typography>
-          <Typography>{value.end}</Typography>
+          <Typography>{value.startTime}</Typography>
+          <Typography>{value.endTime}</Typography>
         </Stack>
       ))}
     </MainCard>
