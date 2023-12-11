@@ -1,11 +1,11 @@
-import * as React from 'react';
-import Table from '@mui/material/Table';
-import TableBody from '@mui/material/TableBody';
-import TableCell from '@mui/material/TableCell';
-import TableContainer from '@mui/material/TableContainer';
-import TableHead from '@mui/material/TableHead';
-import TableRow from '@mui/material/TableRow';
-import Paper from '@mui/material/Paper';
+import * as React from 'react'
+import Table from '@mui/material/Table'
+import TableBody from '@mui/material/TableBody'
+import TableCell from '@mui/material/TableCell'
+import TableContainer from '@mui/material/TableContainer'
+import TableHead from '@mui/material/TableHead'
+import TableRow from '@mui/material/TableRow'
+import Paper from '@mui/material/Paper'
 
 const rows = [
   {
@@ -16,7 +16,7 @@ const rows = [
     Date: 23 / 5 / 2023,
     slots: 4.0 - 4.3,
     Bookingfees: 300,
-    Totalfess: 450
+    Totalfess: 450,
   },
   {
     BookingList: 2,
@@ -26,7 +26,7 @@ const rows = [
     Date: 23 / 5 / 2023,
     slots: 4.0 - 4.3,
     Bookingfees: 300,
-    Totalfess: 450
+    Totalfess: 450,
   },
   {
     BookingList: 3,
@@ -36,7 +36,7 @@ const rows = [
     Date: 23 / 5 / 2023,
     slots: 4.0 - 4.3,
     Bookingfees: 300,
-    Totalfess: 450
+    Totalfess: 450,
   },
   {
     BookingList: 4,
@@ -46,7 +46,7 @@ const rows = [
     Date: 23 / 5 / 2023,
     slots: 4.0 - 4.3,
     Bookingfees: 300,
-    Totalfess: 450
+    Totalfess: 450,
   },
   {
     BookingList: 5,
@@ -56,9 +56,9 @@ const rows = [
     Date: 23 / 5 / 2023,
     slots: 4.0 - 4.3,
     Bookingfees: 300,
-    Totalfess: 450
-  }
-];
+    Totalfess: 450,
+  },
+]
 
 export default function BookingTable() {
   return (
@@ -94,5 +94,5 @@ export default function BookingTable() {
         </TableBody>
       </Table>
     </TableContainer>
-  );
+  )
 }

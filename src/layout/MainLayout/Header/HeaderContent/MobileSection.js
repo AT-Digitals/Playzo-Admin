@@ -1,45 +1,45 @@
-import { useEffect, useRef, useState } from 'react';
+import { useEffect, useRef, useState } from 'react'
 
 // material-ui
-import { useTheme } from '@mui/material/styles';
-import { AppBar, Box, ClickAwayListener, IconButton, Paper, Popper, Toolbar } from '@mui/material';
+import { useTheme } from '@mui/material/styles'
+import { AppBar, Box, ClickAwayListener, IconButton, Paper, Popper, Toolbar } from '@mui/material'
 
 // project import
-import Search from './Search';
-import Profile from './Profile';
-import Transitions from 'components/@extended/Transitions';
+import Search from './Search'
+import Profile from './Profile'
+import Transitions from 'components/@extended/Transitions'
 
 // assets
-import { MoreOutlined } from '@ant-design/icons';
+import { MoreOutlined } from '@ant-design/icons'
 
 // ==============================|| HEADER CONTENT - MOBILE ||============================== //
 
 const MobileSection = () => {
-  const theme = useTheme();
+  const theme = useTheme()
 
-  const [open, setOpen] = useState(false);
-  const anchorRef = useRef(null);
+  const [open, setOpen] = useState(false)
+  const anchorRef = useRef(null)
 
   const handleToggle = () => {
-    setOpen((prevOpen) => !prevOpen);
-  };
+    setOpen((prevOpen) => !prevOpen)
+  }
 
   const handleClose = (event) => {
     if (anchorRef.current && anchorRef.current.contains(event.target)) {
-      return;
+      return
     }
 
-    setOpen(false);
-  };
+    setOpen(false)
+  }
 
-  const prevOpen = useRef(open);
+  const prevOpen = useRef(open)
   useEffect(() => {
     if (prevOpen.current === true && open === false) {
-      anchorRef.current.focus();
+      anchorRef.current.focus()
     }
 
-    prevOpen.current = open;
-  }, [open]);
+    prevOpen.current = open
+  }, [open])
 
   return (
     <>
@@ -48,7 +48,7 @@ const MobileSection = () => {
           component="span"
           disableRipple
           sx={{
-            bgcolor: open ? 'grey.300' : 'grey.100'
+            bgcolor: open ? 'grey.300' : 'grey.100',
           }}
           ref={anchorRef}
           aria-controls={open ? 'menu-list-grow' : undefined}
@@ -67,17 +67,17 @@ const MobileSection = () => {
         transition
         disablePortal
         style={{
-          width: '100%'
+          width: '100%',
         }}
         popperOptions={{
           modifiers: [
             {
               name: 'offset',
               options: {
-                offset: [0, 9]
-              }
-            }
-          ]
+                offset: [0, 9],
+              },
+            },
+          ],
         }}
       >
         {({ TransitionProps }) => (
@@ -96,7 +96,7 @@ const MobileSection = () => {
         )}
       </Popper>
     </>
-  );
-};
+  )
+}
 
-export default MobileSection;
+export default MobileSection

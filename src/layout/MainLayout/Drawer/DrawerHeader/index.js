@@ -1,17 +1,17 @@
-import PropTypes from 'prop-types';
+import PropTypes from 'prop-types'
 
 // material-ui
-import { useTheme } from '@mui/material/styles';
-import { Stack, Chip } from '@mui/material';
+import { useTheme } from '@mui/material/styles'
+import { Stack, Chip } from '@mui/material'
 
 // project import
-import DrawerHeaderStyled from './DrawerHeaderStyled';
-import Logo from 'components/Logo';
+import DrawerHeaderStyled from './DrawerHeaderStyled'
+import Logo from 'components/Logo'
 
 // ==============================|| DRAWER HEADER ||============================== //
 
 const DrawerHeader = ({ open }) => {
-  const theme = useTheme();
+  const theme = useTheme()
 
   return (
     // only available in paid version
@@ -29,11 +29,11 @@ const DrawerHeader = ({ open }) => {
         />
       </Stack>
     </DrawerHeaderStyled>
-  );
-};
+  )
+}
 
 DrawerHeader.propTypes = {
-  open: PropTypes.bool
-};
+  open: PropTypes.bool,
+}
 
-export default DrawerHeader;
+export default DrawerHeader

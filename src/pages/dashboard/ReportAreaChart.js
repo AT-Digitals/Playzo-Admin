@@ -1,10 +1,10 @@
-import { useEffect, useState } from 'react';
+import { useEffect, useState } from 'react'
 
 // material-ui
-import { useTheme } from '@mui/material/styles';
+import { useTheme } from '@mui/material/styles'
 
 // third-party
-import ReactApexChart from 'react-apexcharts';
+import ReactApexChart from 'react-apexcharts'
 
 // chart options
 const areaChartOptions = {
@@ -12,18 +12,18 @@ const areaChartOptions = {
     height: 340,
     type: 'line',
     toolbar: {
-      show: false
-    }
+      show: false,
+    },
   },
   dataLabels: {
-    enabled: false
+    enabled: false,
   },
   stroke: {
     curve: 'smooth',
-    width: 1.5
+    width: 1.5,
   },
   grid: {
-    strokeDashArray: 4
+    strokeDashArray: 4,
   },
   xaxis: {
     type: 'datetime',
@@ -35,37 +35,37 @@ const areaChartOptions = {
       '2018-09-19T03:30:00.000Z',
       '2018-10-19T04:30:00.000Z',
       '2018-11-19T05:30:00.000Z',
-      '2018-12-19T06:30:00.000Z'
+      '2018-12-19T06:30:00.000Z',
     ],
     labels: {
-      format: 'MMM'
+      format: 'MMM',
     },
     axisBorder: {
-      show: false
+      show: false,
     },
     axisTicks: {
-      show: false
-    }
+      show: false,
+    },
   },
   yaxis: {
-    show: false
+    show: false,
   },
   tooltip: {
     x: {
-      format: 'MM'
-    }
-  }
-};
+      format: 'MM',
+    },
+  },
+}
 
 // ==============================|| REPORT AREA CHART ||============================== //
 
 const ReportAreaChart = () => {
-  const theme = useTheme();
+  const theme = useTheme()
 
-  const { primary, secondary } = theme.palette.text;
-  const line = theme.palette.divider;
+  const { primary, secondary } = theme.palette.text
+  const line = theme.palette.divider
 
-  const [options, setOptions] = useState(areaChartOptions);
+  const [options, setOptions] = useState(areaChartOptions)
 
   useEffect(() => {
     setOptions((prevState) => ({
@@ -74,32 +74,32 @@ const ReportAreaChart = () => {
       xaxis: {
         labels: {
           style: {
-            colors: [secondary, secondary, secondary, secondary, secondary, secondary, secondary, secondary]
-          }
-        }
+            colors: [secondary, secondary, secondary, secondary, secondary, secondary, secondary, secondary],
+          },
+        },
       },
       grid: {
-        borderColor: line
+        borderColor: line,
       },
       tooltip: {
-        theme: 'light'
+        theme: 'light',
       },
       legend: {
         labels: {
-          colors: 'grey.500'
-        }
-      }
-    }));
-  }, [primary, secondary, line, theme]);
+          colors: 'grey.500',
+        },
+      },
+    }))
+  }, [primary, secondary, line, theme])
 
   const [series] = useState([
     {
       name: 'Series 1',
-      data: [58, 115, 28, 83, 63, 75, 35, 55]
-    }
-  ]);
+      data: [58, 115, 28, 83, 63, 75, 35, 55],
+    },
+  ])
 
-  return <ReactApexChart options={options} series={series} type="line" height={345} />;
-};
+  return <ReactApexChart options={options} series={series} type="line" height={345} />
+}
 
-export default ReportAreaChart;
+export default ReportAreaChart

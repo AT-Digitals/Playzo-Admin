@@ -2,7 +2,8 @@
   "root": true,
   "env": {
     "browser": true,
-    "es2021": true
+    "es2021": true,
+    "jest": true
   },
   "extends": [
     "prettier",
@@ -10,7 +11,8 @@
     "plugin:jsx-a11y/recommended",
     "plugin:react-hooks/recommended",
     "eslint:recommended",
-    "plugin:react/recommended"
+    "plugin:react/recommended",
+    "plugin:prettier/recommended"
   ],
   "settings": {
     "react": {
@@ -76,13 +78,15 @@
     "prettier/prettier": [
       "warn",
       {
-        "bracketSpacing": true,
-        "printWidth": 140,
-        "singleQuote": true,
-        "trailingComma": "none",
-        "tabWidth": 2,
         "useTabs": false,
-        "endOfLine": "auto"
+        "endOfLine": "auto",
+        "trailingComma": "all",
+        "tabWidth": 2,
+        "semi": false,
+        "singleQuote": true,
+        "bracketSpacing": true,
+        "eslintIntegration": true,
+        "printWidth": 120
       }
     ]
   }

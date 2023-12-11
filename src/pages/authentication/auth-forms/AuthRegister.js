@@ -1,40 +1,49 @@
-import { useEffect, useState } from 'react';
+import { useEffect, useState } from 'react'
 
 // material-ui
-import { Button, FormHelperText, Grid, IconButton, InputAdornment, InputLabel, OutlinedInput, Stack } from '@mui/material';
+import {
+  Button,
+  FormHelperText,
+  Grid,
+  IconButton,
+  InputAdornment,
+  InputLabel,
+  OutlinedInput,
+  Stack,
+} from '@mui/material'
 
 // third party
-import * as Yup from 'yup';
-import { Formik } from 'formik';
+import * as Yup from 'yup'
+import { Formik } from 'formik'
 
 // project import
-import AnimateButton from 'components/@extended/AnimateButton';
-import { strengthIndicator } from 'utils/password-strength';
+import AnimateButton from 'components/@extended/AnimateButton'
+import { strengthIndicator } from 'utils/password-strength'
 
 // assets
-import { EyeOutlined, EyeInvisibleOutlined } from '@ant-design/icons';
+import { EyeOutlined, EyeInvisibleOutlined } from '@ant-design/icons'
 
 // ============================|| FIREBASE - REGISTER ||============================ //
 
 const AuthRegister = () => {
-  const [showPassword, setShowPassword] = useState(false);
+  const [showPassword, setShowPassword] = useState(false)
   const handleClickShowPassword = () => {
-    setShowPassword(!showPassword);
-  };
+    setShowPassword(!showPassword)
+  }
 
   const handleMouseDownPassword = (event) => {
-    event.preventDefault();
-  };
+    event.preventDefault()
+  }
 
   const changePassword = (value) => {
-    const temp = strengthIndicator(value);
+    const temp = strengthIndicator(value)
     // setLevel(strengthColor(temp));
-    console.log(temp);
-  };
+    console.log(temp)
+  }
 
   useEffect(() => {
-    changePassword('');
-  }, []);
+    changePassword('')
+  }, [])
 
   return (
     <>
@@ -45,23 +54,23 @@ const AuthRegister = () => {
           email: '',
           company: '',
           password: '',
-          submit: null
+          submit: null,
         }}
         validationSchema={Yup.object().shape({
           firstname: Yup.string().max(255).required('First Name is required'),
           lastname: Yup.string().max(255).required('Last Name is required'),
           email: Yup.string().email('Must be a valid email').max(255).required('Email is required'),
-          password: Yup.string().max(255).required('Password is required')
+          password: Yup.string().max(255).required('Password is required'),
         })}
         onSubmit={async (values, { setErrors, setStatus, setSubmitting }) => {
           try {
-            setStatus({ success: false });
-            setSubmitting(false);
+            setStatus({ success: false })
+            setSubmitting(false)
           } catch (err) {
-            console.error(err);
-            setStatus({ success: false });
-            setErrors({ submit: err.message });
-            setSubmitting(false);
+            console.error(err)
+            setStatus({ success: false })
+            setErrors({ submit: err.message })
+            setSubmitting(false)
           }
         }}
       >
@@ -144,8 +153,8 @@ const AuthRegister = () => {
                     name="password"
                     onBlur={handleBlur}
                     onChange={(e) => {
-                      handleChange(e);
-                      changePassword(e.target.value);
+                      handleChange(e)
+                      changePassword(e.target.value)
                     }}
                     endAdornment={
                       <InputAdornment position="end">
@@ -172,7 +181,15 @@ const AuthRegister = () => {
               )}
               <Grid item xs={12}>
                 <AnimateButton>
-                  <Button disableElevation disabled={isSubmitting} fullWidth size="large" type="submit" variant="contained" color="primary">
+                  <Button
+                    disableElevation
+                    disabled={isSubmitting}
+                    fullWidth
+                    size="large"
+                    type="submit"
+                    variant="contained"
+                    color="primary"
+                  >
                     Create Account
                   </Button>
                 </AnimateButton>
@@ -182,7 +199,7 @@ const AuthRegister = () => {
         )}
       </Formik>
     </>
-  );
-};
+  )
+}
 
-export default AuthRegister;
+export default AuthRegister

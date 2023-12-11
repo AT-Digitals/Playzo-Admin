@@ -7,9 +7,9 @@ export default function Badge(theme) {
         standard: {
           minWidth: theme.spacing(2),
           height: theme.spacing(2),
-          padding: theme.spacing(0.5)
-        }
-      }
-    }
-  };
+          padding: theme.spacing(0.5),
+        },
+      },
+    },
+  }
 }

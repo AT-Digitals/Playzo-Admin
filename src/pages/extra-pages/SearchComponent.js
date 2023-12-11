@@ -1,5 +1,5 @@
-import { FormControl, InputAdornment, OutlinedInput, Box } from '@mui/material';
-import { SearchOutlined } from '@ant-design/icons';
+import { FormControl, InputAdornment, OutlinedInput, Box } from '@mui/material'
+import { SearchOutlined } from '@ant-design/icons'
 
 const SearchComponent = ({ placeholder }) => {
   return (
@@ -15,13 +15,13 @@ const SearchComponent = ({ placeholder }) => {
           }
           aria-describedby="header-search-text"
           inputProps={{
-            'aria-label': 'weight'
+            'aria-label': 'weight',
           }}
           sx={{ '.MuiInputBase-input.MuiOutlinedInput-input': { padding: '15px 20px' } }}
           placeholder={placeholder}
         />
       </FormControl>
     </Box>
-  );
-};
-export default SearchComponent;
+  )
+}
+export default SearchComponent

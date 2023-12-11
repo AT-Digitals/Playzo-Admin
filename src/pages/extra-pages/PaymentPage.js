@@ -1,39 +1,39 @@
 // material-ui
-import { Grid, Stack, MenuItem, Box, TextField } from '@mui/material';
-import { useState } from 'react';
+import { Grid, Stack, MenuItem, Box, TextField } from '@mui/material'
+import { useState } from 'react'
 
-import { FormControl, InputAdornment, OutlinedInput } from '@mui/material';
+import { FormControl, InputAdornment, OutlinedInput } from '@mui/material'
 
 // assets
-import { SearchOutlined } from '@ant-design/icons';
+import { SearchOutlined } from '@ant-design/icons'
 
 // project import
-import MainCard from 'components/MainCard';
-import PaymentTable from './PaymentTable';
+import MainCard from 'components/MainCard'
+import PaymentTable from './PaymentTable'
 
 const status = [
   {
     value: 'All Payments',
-    label: 'All Payments'
+    label: 'All Payments',
   },
   {
     value: 'Pending Payments',
-    label: 'Pending Payments'
+    label: 'Pending Payments',
   },
   {
     value: 'Paid Payments',
-    label: 'Paid Payments'
+    label: 'Paid Payments',
   },
   {
     value: 'Partialy Paid Payments',
-    label: 'Partialy Paid Payments'
-  }
-];
+    label: 'Partialy Paid Payments',
+  },
+]
 
 // ==============================|| SAMPLE PAGE ||============================== //
 
 const PaymentPage = () => {
-  const [value, setValue] = useState('All Payments');
+  const [value, setValue] = useState('All Payments')
   return (
     <MainCard title="Payments">
       <Stack direction="column" spacing={3}>
@@ -50,7 +50,7 @@ const PaymentPage = () => {
                 }
                 aria-describedby="header-search-text"
                 inputProps={{
-                  'aria-label': 'weight'
+                  'aria-label': 'weight',
                 }}
                 sx={{ '.MuiInputBase-input.MuiOutlinedInput-input': { padding: '15px 20px' } }}
                 placeholder="All Payments"
@@ -80,7 +80,7 @@ const PaymentPage = () => {
         </Grid>
       </Stack>
     </MainCard>
-  );
-};
+  )
+}
 
-export default PaymentPage;
+export default PaymentPage

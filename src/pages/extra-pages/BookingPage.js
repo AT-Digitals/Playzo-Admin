@@ -1,41 +1,41 @@
 // material-ui
-import { Grid, Button, Stack, MenuItem, TextField } from '@mui/material';
-import Card from '@mui/material/Card';
-import CardContent from '@mui/material/CardContent';
-import Typography from '@mui/material/Typography';
-import { useState } from 'react';
-import AddIcon from '@mui/icons-material/Add';
-import EditIcon from '@mui/icons-material/Edit';
+import { Grid, Button, Stack, MenuItem, TextField } from '@mui/material'
+import Card from '@mui/material/Card'
+import CardContent from '@mui/material/CardContent'
+import Typography from '@mui/material/Typography'
+import { useState } from 'react'
+import AddIcon from '@mui/icons-material/Add'
+import EditIcon from '@mui/icons-material/Edit'
 
 // project import
-import MainCard from 'components/MainCard';
-import BookingTable from './BookingTable';
-import SearchComponent from './SearchComponent';
-import TimeSlotComponet from './TimeSlotComponent';
+import MainCard from 'components/MainCard'
+import BookingTable from './BookingTable'
+import SearchComponent from './SearchComponent'
+import TimeSlotComponet from './TimeSlotComponent'
 
 const status = [
   {
     value: 'All Bookings',
-    label: 'All Bookings'
+    label: 'All Bookings',
   },
   {
     value: 'Turf Booking',
-    label: 'Turf Booking'
+    label: 'Turf Booking',
   },
   {
     value: 'play Station Booking',
-    label: 'play Station Booking'
+    label: 'play Station Booking',
   },
   {
     value: 'Board Games Booking',
-    label: 'Board Games Booking'
-  }
-];
+    label: 'Board Games Booking',
+  },
+]
 
 // ==============================|| SAMPLE PAGE ||============================== //
 
 const BookingPage = () => {
-  const [value, setValue] = useState('All Bookings');
+  const [value, setValue] = useState('All Bookings')
   return (
     <MainCard title="Bookings">
       <Stack direction="column" spacing={3}>
@@ -113,7 +113,7 @@ const BookingPage = () => {
         <TimeSlotComponet />
       </Stack>
     </MainCard>
-  );
-};
+  )
+}
 
-export default BookingPage;
+export default BookingPage

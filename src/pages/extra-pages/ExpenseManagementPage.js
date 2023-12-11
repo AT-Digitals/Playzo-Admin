@@ -1,40 +1,40 @@
 // material-ui
 
 // project import
-import MainCard from 'components/MainCard';
+import MainCard from 'components/MainCard'
 
-import { Stack, TextField, MenuItem, Button, Grid } from '@mui/material';
+import { Stack, TextField, MenuItem, Button, Grid } from '@mui/material'
 
-import AddIcon from '@mui/icons-material/Add';
-import EditIcon from '@mui/icons-material/Edit';
-import { useState } from 'react';
-import ExpenseTable from './ExpenseTable';
-import SearchComponent from './SearchComponent';
+import AddIcon from '@mui/icons-material/Add'
+import EditIcon from '@mui/icons-material/Edit'
+import { useState } from 'react'
+import ExpenseTable from './ExpenseTable'
+import SearchComponent from './SearchComponent'
 // ==============================|| SAMPLE PAGE ||============================== //
 
 const status = [
   {
     value: 'Today',
-    label: 'Today'
+    label: 'Today',
   },
   {
     value: 'Weekly',
-    label: 'Weekly'
+    label: 'Weekly',
   },
   {
     value: 'Monthly',
-    label: 'Monthly'
+    label: 'Monthly',
   },
   {
     value: 'Yearly',
-    label: 'Yearly'
-  }
-];
+    label: 'Yearly',
+  },
+]
 
 // ==============================|| SAMPLE PAGE ||============================== //
 
 const ExpenseManagementPage = () => {
-  const [value, setValue] = useState('Today');
+  const [value, setValue] = useState('Today')
   return (
     <MainCard title="Expense Management">
       <Stack direction="column" spacing={3}>
@@ -68,7 +68,7 @@ const ExpenseManagementPage = () => {
         </Grid>
       </Stack>
     </MainCard>
-  );
-};
+  )
+}
 
-export default ExpenseManagementPage;
+export default ExpenseManagementPage

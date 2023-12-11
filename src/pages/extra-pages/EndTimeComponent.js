@@ -1,8 +1,8 @@
-import * as React from 'react';
-import { LocalizationProvider } from '@mui/x-date-pickers/LocalizationProvider';
-import { AdapterDayjs } from '@mui/x-date-pickers/AdapterDayjs';
-import { DigitalClock } from '@mui/x-date-pickers/DigitalClock';
-import { Typography, Stack } from '@mui/material';
+import * as React from 'react'
+import { LocalizationProvider } from '@mui/x-date-pickers/LocalizationProvider'
+import { AdapterDayjs } from '@mui/x-date-pickers/AdapterDayjs'
+import { DigitalClock } from '@mui/x-date-pickers/DigitalClock'
+import { Typography, Stack } from '@mui/material'
 
 export default function EndTimeComponent({ onChange, error }) {
   return (
@@ -15,11 +15,11 @@ export default function EndTimeComponent({ onChange, error }) {
           onChange={onChange}
           slotProps={{
             textField: {
-              helperText: error ? 'Please select a start time' : ''
-            }
+              helperText: error ? 'Please select a start time' : '',
+            },
           }}
         />
       </Stack>
     </LocalizationProvider>
-  );
+  )
 }

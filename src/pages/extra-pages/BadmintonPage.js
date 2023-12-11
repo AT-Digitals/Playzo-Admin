@@ -1,33 +1,33 @@
 // material-ui
 
 // project import
-import MainCard from 'components/MainCard';
-import MembershipTable from './MembershipTable';
+import MainCard from 'components/MainCard'
+import MembershipTable from './MembershipTable'
 
-import { Stack, TextField, MenuItem, Button, Grid } from '@mui/material';
-import AddIcon from '@mui/icons-material/Add';
-import EditIcon from '@mui/icons-material/Edit';
-import { useState } from 'react';
-import SearchComponent from './SearchComponent';
+import { Stack, TextField, MenuItem, Button, Grid } from '@mui/material'
+import AddIcon from '@mui/icons-material/Add'
+import EditIcon from '@mui/icons-material/Edit'
+import { useState } from 'react'
+import SearchComponent from './SearchComponent'
 // ==============================|| SAMPLE PAGE ||============================== //
 
 const status = [
   {
     value: 'Monthly Members',
-    label: 'Monthly Members'
+    label: 'Monthly Members',
   },
   {
     value: 'Yearly Members',
-    label: 'Yearly Members'
+    label: 'Yearly Members',
   },
   {
     value: 'All Members',
-    label: 'All Members'
-  }
-];
+    label: 'All Members',
+  },
+]
 
 const BadmintonPage = () => {
-  const [value, setValue] = useState('All Members');
+  const [value, setValue] = useState('All Members')
   return (
     <MainCard title="Badminton Membership">
       <Stack direction="column" spacing={3}>
@@ -61,7 +61,7 @@ const BadmintonPage = () => {
         </Grid>
       </Stack>
     </MainCard>
-  );
-};
+  )
+}
 
-export default BadmintonPage;
+export default BadmintonPage

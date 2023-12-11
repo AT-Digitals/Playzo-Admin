@@ -1,5 +1,5 @@
-import { TextField } from '../../../node_modules/@mui/material/index';
-import { Stack, Typography } from '@mui/material';
+import { TextField } from '../../../node_modules/@mui/material/index'
+import { Stack, Typography } from '@mui/material'
 
 export default function CustomTextField({ label, value, setValue }) {
   return (
@@ -7,5 +7,5 @@ export default function CustomTextField({ label, value, setValue }) {
       <Typography>{label}</Typography>
       <TextField value={value} onChange={() => setValue()} />
     </Stack>
-  );
+  )
 }

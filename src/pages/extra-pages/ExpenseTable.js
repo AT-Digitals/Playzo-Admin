@@ -1,11 +1,11 @@
-import * as React from 'react';
-import Table from '@mui/material/Table';
-import TableBody from '@mui/material/TableBody';
-import TableCell from '@mui/material/TableCell';
-import TableContainer from '@mui/material/TableContainer';
-import TableHead from '@mui/material/TableHead';
-import TableRow from '@mui/material/TableRow';
-import Paper from '@mui/material/Paper';
+import * as React from 'react'
+import Table from '@mui/material/Table'
+import TableBody from '@mui/material/TableBody'
+import TableCell from '@mui/material/TableCell'
+import TableContainer from '@mui/material/TableContainer'
+import TableHead from '@mui/material/TableHead'
+import TableRow from '@mui/material/TableRow'
+import Paper from '@mui/material/Paper'
 
 const rows = [
   {
@@ -17,7 +17,7 @@ const rows = [
     Amount: 100,
     TotalAmount: 1000,
     PaymentType: 300,
-    Status: 'paid'
+    Status: 'paid',
   },
   {
     ItemList: 2,
@@ -28,7 +28,7 @@ const rows = [
     Amount: 100,
     TotalAmount: 1000,
     PaymentType: 300,
-    Status: 'paid'
+    Status: 'paid',
   },
   {
     ItemList: 3,
@@ -39,7 +39,7 @@ const rows = [
     Amount: 100,
     TotalAmount: 1000,
     PaymentType: 300,
-    Status: 'paid'
+    Status: 'paid',
   },
   {
     ItemList: 4,
@@ -50,7 +50,7 @@ const rows = [
     Amount: 100,
     TotalAmount: 1000,
     PaymentType: 300,
-    Status: 'paid'
+    Status: 'paid',
   },
   {
     ItemList: 5,
@@ -61,9 +61,9 @@ const rows = [
     Amount: 100,
     TotalAmount: 1000,
     PaymentType: 'cash',
-    Status: 'paid'
-  }
-];
+    Status: 'paid',
+  },
+]
 
 export default function ExpenseTable() {
   return (
@@ -101,5 +101,5 @@ export default function ExpenseTable() {
         </TableBody>
       </Table>
     </TableContainer>
-  );
+  )
 }

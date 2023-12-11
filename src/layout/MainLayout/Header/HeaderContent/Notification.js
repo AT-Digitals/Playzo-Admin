@@ -1,7 +1,7 @@
-import { useRef, useState } from 'react';
+import { useRef, useState } from 'react'
 
 // material-ui
-import { useTheme } from '@mui/material/styles';
+import { useTheme } from '@mui/material/styles'
 import {
   Avatar,
   Badge,
@@ -17,22 +17,22 @@ import {
   Paper,
   Popper,
   Typography,
-  useMediaQuery
-} from '@mui/material';
+  useMediaQuery,
+} from '@mui/material'
 
 // project import
-import MainCard from 'components/MainCard';
-import Transitions from 'components/@extended/Transitions';
+import MainCard from 'components/MainCard'
+import Transitions from 'components/@extended/Transitions'
 
 // assets
-import { BellOutlined, CloseOutlined, GiftOutlined, MessageOutlined, SettingOutlined } from '@ant-design/icons';
+import { BellOutlined, CloseOutlined, GiftOutlined, MessageOutlined, SettingOutlined } from '@ant-design/icons'
 
 // sx styles
 const avatarSX = {
   width: 36,
   height: 36,
-  fontSize: '1rem'
-};
+  fontSize: '1rem',
+}
 
 const actionSX = {
   mt: '6px',
@@ -41,30 +41,30 @@ const actionSX = {
   right: 'auto',
   alignSelf: 'flex-start',
 
-  transform: 'none'
-};
+  transform: 'none',
+}
 
 // ==============================|| HEADER CONTENT - NOTIFICATION ||============================== //
 
 const Notification = () => {
-  const theme = useTheme();
-  const matchesXs = useMediaQuery(theme.breakpoints.down('md'));
+  const theme = useTheme()
+  const matchesXs = useMediaQuery(theme.breakpoints.down('md'))
 
-  const anchorRef = useRef(null);
-  const [open, setOpen] = useState(false);
+  const anchorRef = useRef(null)
+  const [open, setOpen] = useState(false)
   const handleToggle = () => {
-    setOpen((prevOpen) => !prevOpen);
-  };
+    setOpen((prevOpen) => !prevOpen)
+  }
 
   const handleClose = (event) => {
     if (anchorRef.current && anchorRef.current.contains(event.target)) {
-      return;
+      return
     }
-    setOpen(false);
-  };
+    setOpen(false)
+  }
 
-  const iconBackColorOpen = 'grey.300';
-  const iconBackColor = 'grey.100';
+  const iconBackColorOpen = 'grey.300'
+  const iconBackColor = 'grey.100'
 
   return (
     <Box sx={{ flexShrink: 0, ml: 0.75 }}>
@@ -94,10 +94,10 @@ const Notification = () => {
             {
               name: 'offset',
               options: {
-                offset: [matchesXs ? -5 : 0, 9]
-              }
-            }
-          ]
+                offset: [matchesXs ? -5 : 0, 9],
+              },
+            },
+          ],
         }}
       >
         {({ TransitionProps }) => (
@@ -109,8 +109,8 @@ const Notification = () => {
                 minWidth: 285,
                 maxWidth: 420,
                 [theme.breakpoints.down('md')]: {
-                  maxWidth: 285
-                }
+                  maxWidth: 285,
+                },
               }}
             >
               <ClickAwayListener onClickAway={handleClose}>
@@ -132,8 +132,8 @@ const Notification = () => {
                       '& .MuiListItemButton-root': {
                         py: 0.5,
                         '& .MuiAvatar-root': avatarSX,
-                        '& .MuiListItemSecondaryAction-root': { ...actionSX, position: 'relative' }
-                      }
+                        '& .MuiListItemSecondaryAction-root': { ...actionSX, position: 'relative' },
+                      },
                     }}
                   >
                     <ListItemButton>
@@ -141,7 +141,7 @@ const Notification = () => {
                         <Avatar
                           sx={{
                             color: 'success.main',
-                            bgcolor: 'success.lighter'
+                            bgcolor: 'success.lighter',
                           }}
                         >
                           <GiftOutlined />
@@ -171,7 +171,7 @@ const Notification = () => {
                         <Avatar
                           sx={{
                             color: 'primary.main',
-                            bgcolor: 'primary.lighter'
+                            bgcolor: 'primary.lighter',
                           }}
                         >
                           <MessageOutlined />
@@ -200,7 +200,7 @@ const Notification = () => {
                         <Avatar
                           sx={{
                             color: 'error.main',
-                            bgcolor: 'error.lighter'
+                            bgcolor: 'error.lighter',
                           }}
                         >
                           <SettingOutlined />
@@ -229,7 +229,7 @@ const Notification = () => {
                         <Avatar
                           sx={{
                             color: 'primary.main',
-                            bgcolor: 'primary.lighter'
+                            bgcolor: 'primary.lighter',
                           }}
                         >
                           C
@@ -273,7 +273,7 @@ const Notification = () => {
         )}
       </Popper>
     </Box>
-  );
-};
+  )
+}
 
-export default Notification;
+export default Notification

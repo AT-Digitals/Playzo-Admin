@@ -1,11 +1,11 @@
-import * as React from 'react';
-import Table from '@mui/material/Table';
-import TableBody from '@mui/material/TableBody';
-import TableCell from '@mui/material/TableCell';
-import TableContainer from '@mui/material/TableContainer';
-import TableHead from '@mui/material/TableHead';
-import TableRow from '@mui/material/TableRow';
-import Paper from '@mui/material/Paper';
+import * as React from 'react'
+import Table from '@mui/material/Table'
+import TableBody from '@mui/material/TableBody'
+import TableCell from '@mui/material/TableCell'
+import TableContainer from '@mui/material/TableContainer'
+import TableHead from '@mui/material/TableHead'
+import TableRow from '@mui/material/TableRow'
+import Paper from '@mui/material/Paper'
 
 const rows = [
   {
@@ -16,7 +16,7 @@ const rows = [
     startDate: 23 / 5 / 2023,
     EndDate: 4.0 - 4.3,
     PaymentType: 300,
-    Status: 450
+    Status: 450,
   },
   {
     MembershipList: 2,
@@ -26,7 +26,7 @@ const rows = [
     startDate: 23 / 5 / 2023,
     EndDate: 4.0 - 4.3,
     PaymentType: 300,
-    Status: 450
+    Status: 450,
   },
   {
     MembershipList: 3,
@@ -36,7 +36,7 @@ const rows = [
     startDate: 23 / 5 / 2023,
     EndDate: 4.0 - 4.3,
     PaymentType: 300,
-    Status: 450
+    Status: 450,
   },
   {
     MembershipList: 4,
@@ -46,7 +46,7 @@ const rows = [
     startDate: 23 / 5 / 2023,
     EndDate: 4.0 - 4.3,
     PaymentType: 300,
-    Status: 450
+    Status: 450,
   },
   {
     MembershipList: 5,
@@ -56,9 +56,9 @@ const rows = [
     startDate: 23 / 5 / 2023,
     EndDate: 4.0 - 4.3,
     PaymentType: 300,
-    Status: 450
-  }
-];
+    Status: 450,
+  },
+]
 
 export default function MembershipTable() {
   return (
@@ -94,5 +94,5 @@ export default function MembershipTable() {
         </TableBody>
       </Table>
     </TableContainer>
-  );
+  )
 }
