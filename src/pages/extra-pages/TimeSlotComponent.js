@@ -15,8 +15,6 @@ import { useState } from 'react';
 // import BookingApi from '../../api/BookingApi.ts';
 // import { BookingType } from '../../dto/Booking/BookingType.ts';
 // import { PaymentType } from '../../dto/Booking/PaymentType.ts'; 6.30 to 8.30
-import TimeSlotModal from './TimeSlotModal';
-import CustomTextField from './CustomTextField';
 
 //import Typography from 'themes/overrides/Typography';
 

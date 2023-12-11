@@ -1,16 +1,16 @@
-import Cookies from "js-cookie";
-import axios from "axios";
+import Cookies from 'js-cookie';
+import axios from 'axios';
 
 const Api = () => {
-  const cookieName = process.env.REACT_APP_CSRF_COOKIE_NAME || "CSRF-Token";
-  const csrfToken = Cookies.get(cookieName) || "";
+  const cookieName = process.env.REACT_APP_CSRF_COOKIE_NAME || 'CSRF-Token';
+  const csrfToken = Cookies.get(cookieName) || '';
   return axios.create({
     baseURL: process.env.REACT_APP_API_URL,
-    responseType: "json",
+    responseType: 'json',
     headers: {
-      [cookieName]: csrfToken,
+      [cookieName]: csrfToken
     },
-    withCredentials: true,
+    withCredentials: true
   });
 };
 
