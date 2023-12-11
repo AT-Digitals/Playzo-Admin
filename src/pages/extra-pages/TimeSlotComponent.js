@@ -1,83 +1,87 @@
 //import dayjs from 'dayjs';
-import moment from 'moment'
-import MainCard from 'components/MainCard'
-import CustomDatePicker from './CustomDatePicker'
-import { Stack, Button, Typography } from '@mui/material'
-import { useState } from 'react'
+
+import { Button, Stack, Typography } from '@mui/material';
+
+import BookingApi from 'api/BookingApi';
+import CustomDatePicker from './CustomDatePicker';
+import CustomTextField from './CustomTextField';
+import MainCard from 'components/MainCard';
+import TimeSlotModal from './TimeSlotModal';
+import moment from 'moment';
+import { useState } from 'react';
 
 // import StartTimeComponent from './StartTimeComponent';
 // import EndTimeComponent from './EndTimeComponent';
 // import BookingApi from '../../api/BookingApi.ts';
 // import { BookingType } from '../../dto/Booking/BookingType.ts';
 // import { PaymentType } from '../../dto/Booking/PaymentType.ts';
-import TimeSlotModal from './TimeSlotModal'
-import CustomTextField from './CustomTextField'
 
 //import Typography from 'themes/overrides/Typography';
 
 export default function TimeSlotComponet() {
-  const [date, setDate] = useState('')
-  const [startTime, setStartTime] = useState('')
-  const [endTime, setEndTime] = useState('')
-  const [submit, setSubmit] = useState([])
+  const [date, setDate] = useState('');
+  const [startTime, setStartTime] = useState('');
+  const [endTime, setEndTime] = useState('');
+  const [submit, setSubmit] = useState([]);
   // const [isSubmitted, setIsSubmitted] = useState(false);
-  const [dateError, setDateError] = useState(false)
-  const [startError, setStartError] = useState(false)
-  const [endError, setEndError] = useState(false)
-  const [isModalOpen, setIsModalOpen] = useState(false)
+  const [dateError, setDateError] = useState(false);
+  const [startError, setStartError] = useState(false);
+  const [endError, setEndError] = useState(false);
+  const [isModalOpen, setIsModalOpen] = useState(false);
 
   const dateHandler = (newValue) => {
-    let datedata = newValue.$d
-    const parsedDate = moment(datedata)
-    const formattedDate = parsedDate.format('YYYY-MM-DD')
-    console.log(formattedDate)
-    setDate(formattedDate)
-    setDateError(false)
-    setIsModalOpen(true)
-  }
+    let datedata = newValue.$d;
+    const parsedDate = moment(datedata);
+    const formattedDate = parsedDate.format('YYYY-MM-DD');
+    console.log(formattedDate);
+    setDate(formattedDate);
+    setDateError(false);
+    setIsModalOpen(true);
+  };
 
   const handleDialogTimeChange = (newValue) => {
-    const start = newValue.$d
-    const startwithTime = moment(start, ' hh:mm:ss a')
-    const formattedSTime = startwithTime.format(' hh:mm:ss a')
-    setStartTime(formattedSTime)
-    const milliseconds = startwithTime.valueOf()
-    console.log(milliseconds)
+    // console.log('handleDialogTimeChange', handleDialogTimeChange);
+    const start = newValue.$d;
+    const startwithTime = moment(start, ' hh:mm:ss a');
+    const formattedSTime = startwithTime.format(' hh:mm:ss a');
+    setStartTime(formattedSTime);
+    const milliseconds = startwithTime.valueOf();
+    console.log(milliseconds);
     //setStartTime(milliseconds);
-  }
-  console.log(startTime, endTime)
+  };
+  console.log(startTime, endTime);
 
   const handleDialogEndTimeChange = (newValue) => {
-    const end = newValue.$d
-    const EndwithTime = moment(end)
-    const formattedETime = EndwithTime.format(' hh:mm:ss a')
-    setEndTime(formattedETime)
-    const milliseconds = EndwithTime.valueOf()
-    console.log(milliseconds)
-  }
+    const end = newValue.$d;
+    const EndwithTime = moment(end);
+    const formattedETime = EndwithTime.format(' hh:mm:ss a');
+    setEndTime(formattedETime);
+    const milliseconds = EndwithTime.valueOf();
+    console.log(milliseconds);
+  };
 
   const onSubmit = (event) => {
-    event.preventDefault()
+    event.preventDefault();
     // setIsSubmitted(true);
 
     if (!date) {
-      setDateError(true)
+      setDateError(true);
     }
 
     if (!startTime) {
-      setStartError(true)
+      setStartError(true);
     }
     if (!endTime) {
-      setEndError(true)
+      setEndError(true);
     }
 
     if (date && startTime && endTime) {
       const data = {
         date: date,
         startTime: startTime,
-        endTime: endTime,
-      }
-      console.log(data)
+        endTime: endTime
+      };
+      console.log(data);
       // BookingApi.createBooking({
       //   type: BookingType.Turf,
       //   bookingAmount: 2000,
@@ -85,27 +89,36 @@ export default function TimeSlotComponet() {
       //   startTime: startTime,
       //   endTime: endTime
       // });
-      setSubmit([...submit, data])
+      BookingApi.createBooking({
+        type: 'boardGame',
+        dateOfBooking: '2023-12-7',
+        bookingAmount: 20,
+        bookingType: 'cash',
+        startTime: 1701868762530,
+        endTime: 1701868762530
+      });
 
-      setDate('')
-      setStartTime('')
-      setEndTime('')
+      setSubmit([...submit, data]);
+
+      setDate('');
+      setStartTime('');
+      setEndTime('');
     }
-  }
+  };
 
   const handleCloseModal = () => {
-    setIsModalOpen(false)
-  }
-  const [initalTime, setInitalTime] = useState('00:00')
-  const [initalEnd, setInitalEnd] = useState('00:00')
+    setIsModalOpen(false);
+  };
+  const [initalTime, setInitalTime] = useState('00:00');
+  const [initalEnd, setInitalEnd] = useState('00:00');
 
   const TextFieldChange = (newValue) => {
-    setInitalTime(newValue)
-    setStartTime(newValue)
-  }
+    setInitalTime(newValue);
+    setStartTime(newValue);
+  };
   const TextFieldEndChange = (newValue) => {
-    setInitalEnd(newValue)
-  }
+    setInitalEnd(newValue);
+  };
 
   return (
     <MainCard title="Date Validation">
@@ -140,5 +153,5 @@ export default function TimeSlotComponet() {
         </Stack>
       ))}
     </MainCard>
-  )
+  );
 }

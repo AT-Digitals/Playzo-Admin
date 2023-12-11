@@ -42,6 +42,7 @@
   },
   "plugins": ["prettier", "react", "react-hooks"],
   "rules": {
+    "prettier/prettier": 0,
     "react/jsx-uses-react": "error",
     "react/jsx-uses-vars": "error",
     "react/react-in-jsx-scope": "off",
@@ -74,20 +75,20 @@
       {
         "ignoreRestSiblings": false
       }
-    ],
-    "prettier/prettier": [
-      "warn",
-      {
-        "useTabs": false,
-        "endOfLine": "auto",
-        "trailingComma": "all",
-        "tabWidth": 2,
-        "semi": false,
-        "singleQuote": true,
-        "bracketSpacing": true,
-        "eslintIntegration": true,
-        "printWidth": 120
-      }
     ]
+    // "prettier/prettier": [
+    //   "warn",
+    //   {
+    //     "useTabs": false,
+    //     "endOfLine": "auto",
+    //     "trailingComma": "all",
+    //     "tabWidth": 2,
+    //     "semi": false,
+    //     "singleQuote": true,
+    //     "bracketSpacing": true,
+    //     "eslintIntegration": true,
+    //     "printWidth": 120
+    //   }
+    // ]
   }
 }
