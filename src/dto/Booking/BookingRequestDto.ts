@@ -1,27 +1,12 @@
-import { Allow, IsDefined, IsEnum } from 'class-validator';
-
 import { BookingType } from './BookingType';
 import { PaymentType } from './PaymentType';
 
-export class BookingRequestDto {
-  @IsEnum(BookingType, { message: 'Please provide a valid Booking Type' })
+export interface BookingRequestDto {
   type: BookingType;
-
-  // @IsDefined({ message: "Date is required" })
   cancelDate?: Date;
-
-  @Allow()
   bookingAmount: number;
-
-  @IsEnum(PaymentType, { message: 'Please provide a valid Payment Type' })
   bookingType: PaymentType;
-
-  @IsDefined({ message: 'starttime is required' })
   startTime: number;
-
-  @IsDefined({ message: 'endtime is required' })
   endTime: number;
-
-  @IsDefined({ message: 'Booking Date is required' })
   dateOfBooking: Date;
 }
