@@ -1,13 +1,13 @@
-import PropTypes from 'prop-types';
+import PropTypes from 'prop-types'
 
 // material-ui
-import { Box, Chip, Grid, Stack, Typography } from '@mui/material';
+import { Box, Chip, Grid, Stack, Typography } from '@mui/material'
 
 // project import
-import MainCard from 'components/MainCard';
+import MainCard from 'components/MainCard'
 
 // assets
-import { RiseOutlined, FallOutlined } from '@ant-design/icons';
+import { RiseOutlined, FallOutlined } from '@ant-design/icons'
 
 // ==============================|| STATISTICS - ECOMMERCE CARD  ||============================== //
 
@@ -30,8 +30,22 @@ const AnalyticEcommerce = ({ color, title, count, percentage, isLoss, extra }) =
               color={color}
               icon={
                 <>
-                  {!isLoss && <RiseOutlined style={{ fontSize: '0.75rem', color: 'inherit' }} />}
-                  {isLoss && <FallOutlined style={{ fontSize: '0.75rem', color: 'inherit' }} />}
+                  {!isLoss && (
+                    <RiseOutlined
+                      style={{
+                        fontSize: '0.75rem',
+                        color: 'inherit',
+                      }}
+                    />
+                  )}
+                  {isLoss && (
+                    <FallOutlined
+                      style={{
+                        fontSize: '0.75rem',
+                        color: 'inherit',
+                      }}
+                    />
+                  )}
                 </>
               }
               label={`${percentage}%`}
@@ -52,7 +66,7 @@ const AnalyticEcommerce = ({ color, title, count, percentage, isLoss, extra }) =
       </Typography>
     </Box>
   </MainCard>
-);
+)
 
 AnalyticEcommerce.propTypes = {
   color: PropTypes.string,
@@ -60,11 +74,11 @@ AnalyticEcommerce.propTypes = {
   count: PropTypes.string,
   percentage: PropTypes.number,
   isLoss: PropTypes.bool,
-  extra: PropTypes.oneOfType([PropTypes.node, PropTypes.string])
-};
+  extra: PropTypes.oneOfType([PropTypes.node, PropTypes.string]),
+}
 
 AnalyticEcommerce.defaultProps = {
-  color: 'primary'
-};
+  color: 'primary',
+}
 
-export default AnalyticEcommerce;
+export default AnalyticEcommerce

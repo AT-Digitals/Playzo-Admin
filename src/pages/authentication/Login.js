@@ -1,11 +1,11 @@
-import { Link } from 'react-router-dom';
+import { Link } from 'react-router-dom'
 
 // material-ui
-import { Grid, Stack, Typography } from '@mui/material';
+import { Grid, Stack, Typography } from '@mui/material'
 
 // project import
-import AuthLogin from './auth-forms/AuthLogin';
-import AuthWrapper from './AuthWrapper';
+import AuthLogin from './auth-forms/AuthLogin'
+import AuthWrapper from './AuthWrapper'
 
 // ================================|| LOGIN ||================================ //
 
@@ -25,6 +25,6 @@ const Login = () => (
       </Grid>
     </Grid>
   </AuthWrapper>
-);
+)
 
-export default Login;
+export default Login

@@ -1,19 +1,19 @@
-import PropTypes from 'prop-types';
-import { useEffect, useState } from 'react';
+import PropTypes from 'prop-types'
+import { useEffect, useState } from 'react'
 
 // material-ui
-import { Grid, Skeleton, Stack } from '@mui/material';
+import { Grid, Skeleton, Stack } from '@mui/material'
 
 // project import
-import MainCard from 'components/MainCard';
+import MainCard from 'components/MainCard'
 
 // ===============================|| COMPONENT - SKELETON ||=============================== //
 
 const ComponentSkeleton = ({ children }) => {
-  const [isLoading, setLoading] = useState(true);
+  const [isLoading, setLoading] = useState(true)
   useEffect(() => {
-    setLoading(false);
-  }, []);
+    setLoading(false)
+  }, [])
 
   const skeletonCard = (
     <MainCard
@@ -27,7 +27,7 @@ const ComponentSkeleton = ({ children }) => {
         <Skeleton />
       </Stack>
     </MainCard>
-  );
+  )
 
   return (
     <>
@@ -49,11 +49,11 @@ const ComponentSkeleton = ({ children }) => {
       )}
       {!isLoading && children}
     </>
-  );
-};
+  )
+}
 
 ComponentSkeleton.propTypes = {
-  children: PropTypes.node
-};
+  children: PropTypes.node,
+}
 
-export default ComponentSkeleton;
+export default ComponentSkeleton

@@ -1,20 +1,20 @@
-import PropTypes from 'prop-types';
-import { Link } from 'react-router-dom';
+import PropTypes from 'prop-types'
+import { Link } from 'react-router-dom'
 
 // material-ui
-import { ButtonBase } from '@mui/material';
-import { useDispatch, useSelector } from 'react-redux';
+import { ButtonBase } from '@mui/material'
+import { useDispatch, useSelector } from 'react-redux'
 
 // project import
-import Logo from './Logo';
-import config from 'config';
-import { activeItem } from 'store/reducers/menu';
+import Logo from './Logo'
+import config from 'config'
+import { activeItem } from 'store/reducers/menu'
 
 // ==============================|| MAIN LOGO ||============================== //
 
 const LogoSection = ({ sx, to }) => {
-  const { defaultId } = useSelector((state) => state.menu);
-  const dispatch = useDispatch();
+  const { defaultId } = useSelector((state) => state.menu)
+  const dispatch = useDispatch()
   return (
     <ButtonBase
       disableRipple
@@ -25,12 +25,12 @@ const LogoSection = ({ sx, to }) => {
     >
       <Logo />
     </ButtonBase>
-  );
-};
+  )
+}
 
 LogoSection.propTypes = {
   sx: PropTypes.object,
-  to: PropTypes.string
-};
+  to: PropTypes.string,
+}
 
-export default LogoSection;
+export default LogoSection

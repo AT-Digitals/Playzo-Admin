@@ -5,8 +5,8 @@ import {
   BarcodeOutlined,
   BgColorsOutlined,
   FontSizeOutlined,
-  LoadingOutlined
-} from '@ant-design/icons';
+  LoadingOutlined,
+} from '@ant-design/icons'
 
 // icons
 const icons = {
@@ -15,8 +15,8 @@ const icons = {
   BarcodeOutlined,
   AntDesignOutlined,
   LoadingOutlined,
-  AppstoreAddOutlined
-};
+  AppstoreAddOutlined,
+}
 
 // ==============================|| MENU ITEMS - UTILITIES ||============================== //
 
@@ -30,21 +30,21 @@ const utilities = {
       title: 'Typography',
       type: 'item',
       url: '/typography',
-      icon: icons.FontSizeOutlined
+      icon: icons.FontSizeOutlined,
     },
     {
       id: 'util-color',
       title: 'Color',
       type: 'item',
       url: '/color',
-      icon: icons.BgColorsOutlined
+      icon: icons.BgColorsOutlined,
     },
     {
       id: 'util-shadow',
       title: 'Shadow',
       type: 'item',
       url: '/shadow',
-      icon: icons.BarcodeOutlined
+      icon: icons.BarcodeOutlined,
     },
     {
       id: 'ant-icons',
@@ -52,9 +52,9 @@ const utilities = {
       type: 'item',
       url: '/icons/ant',
       icon: icons.AntDesignOutlined,
-      breadcrumbs: false
-    }
-  ]
-};
+      breadcrumbs: false,
+    },
+  ],
+}
 
-export default utilities;
+export default utilities

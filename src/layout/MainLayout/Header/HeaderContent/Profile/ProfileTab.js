@@ -1,25 +1,34 @@
-import PropTypes from 'prop-types';
-import { useState } from 'react';
+import PropTypes from 'prop-types'
+import { useState } from 'react'
 
 // material-ui
-import { useTheme } from '@mui/material/styles';
-import { List, ListItemButton, ListItemIcon, ListItemText } from '@mui/material';
+import { useTheme } from '@mui/material/styles'
+import { List, ListItemButton, ListItemIcon, ListItemText } from '@mui/material'
 
 // assets
-import { EditOutlined, ProfileOutlined, LogoutOutlined, UserOutlined, WalletOutlined } from '@ant-design/icons';
+import { EditOutlined, ProfileOutlined, LogoutOutlined, UserOutlined, WalletOutlined } from '@ant-design/icons'
 
 // ==============================|| HEADER PROFILE - PROFILE TAB ||============================== //
 
 const ProfileTab = ({ handleLogout }) => {
-  const theme = useTheme();
+  const theme = useTheme()
 
-  const [selectedIndex, setSelectedIndex] = useState(0);
+  const [selectedIndex, setSelectedIndex] = useState(0)
   const handleListItemClick = (event, index) => {
-    setSelectedIndex(index);
-  };
+    setSelectedIndex(index)
+  }
 
   return (
-    <List component="nav" sx={{ p: 0, '& .MuiListItemIcon-root': { minWidth: 32, color: theme.palette.grey[500] } }}>
+    <List
+      component="nav"
+      sx={{
+        p: 0,
+        '& .MuiListItemIcon-root': {
+          minWidth: 32,
+          color: theme.palette.grey[500],
+        },
+      }}
+    >
       <ListItemButton selected={selectedIndex === 0} onClick={(event) => handleListItemClick(event, 0)}>
         <ListItemIcon>
           <EditOutlined />
@@ -52,11 +61,11 @@ const ProfileTab = ({ handleLogout }) => {
         <ListItemText primary="Logout" />
       </ListItemButton>
     </List>
-  );
-};
+  )
+}
 
 ProfileTab.propTypes = {
-  handleLogout: PropTypes.func
-};
+  handleLogout: PropTypes.func,
+}
 
-export default ProfileTab;
+export default ProfileTab
