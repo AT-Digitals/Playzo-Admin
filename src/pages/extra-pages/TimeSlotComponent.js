@@ -1,8 +1,13 @@
-//import dayjs from 'dayjs';
 import moment from 'moment';
 import MainCard from 'components/MainCard';
+
+import { Button, Stack, Typography } from '@mui/material';
+
+import BookingApi from 'api/BookingApi';
 import CustomDatePicker from './CustomDatePicker';
-import { Stack, Button, Typography } from '@mui/material';
+import CustomTextField from './CustomTextField';
+import TimeSlotModal from './TimeSlotModal';
+
 import { useState } from 'react';
 
 // import StartTimeComponent from './StartTimeComponent';
@@ -25,8 +30,6 @@ export default function TimeSlotComponet() {
   const [startError, setStartError] = useState(false);
   const [endError, setEndError] = useState(false);
   const [isModalOpen, setIsModalOpen] = useState(false);
-
-  //const [newTime, setNewTime] = useState(startTime);
 
   const dateHandler = (newValue) => {
     let datedata = newValue.$d;
@@ -102,6 +105,16 @@ export default function TimeSlotComponet() {
       //   endTime: parseInt(endTime),
       //   dateOfBooking: date
       // });
+
+      BookingApi.createBooking({
+        type: 'boardGame',
+        dateOfBooking: '2023-12-7',
+        bookingAmount: 20,
+        bookingType: 'cash',
+        startTime: 1701868762530,
+        endTime: 1701868762530
+      });
+
       setSubmit([...submit, data]);
 
       setDate('');

@@ -1,4 +1,3 @@
-//import { BookingRequestDto } from 'dto/Booking/BookingRequestDto';
 import StoreInstance from '../store/StoreInstance';
 import { handleApiError } from '../utils/ApiUtils';
 
