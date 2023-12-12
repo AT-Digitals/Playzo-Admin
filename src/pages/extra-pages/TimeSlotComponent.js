@@ -1,13 +1,11 @@
-import moment from 'moment';
-import MainCard from 'components/MainCard';
-
 import { Button, Stack, Typography } from '@mui/material';
 
 import BookingApi from 'api/BookingApi';
 import CustomDatePicker from './CustomDatePicker';
 import CustomTextField from './CustomTextField';
+import MainCard from 'components/MainCard';
 import TimeSlotModal from './TimeSlotModal';
-
+import moment from 'moment';
 import { useState } from 'react';
 
 // import StartTimeComponent from './StartTimeComponent';
@@ -33,7 +31,10 @@ export default function TimeSlotComponet() {
     let datedata = newValue.$d;
     const parsedDate = moment(datedata);
     const formattedDate = parsedDate.format('YYYY-MM-DD');
-    console.log(formattedDate);
+    BookingApi.filterBooking({
+      dateOfBooking: '2023-12-12',
+      type: 'turf'
+    });
     setDate(formattedDate);
     setDateError(false);
     setIsModalOpen(true);
@@ -46,10 +47,8 @@ export default function TimeSlotComponet() {
     // console.log(formattedSTime, 's');
     // setStartTime(formattedSTime);
     const milliseconds = startwithTime.valueOf();
-    console.log(milliseconds, 's');
     setStartTime(milliseconds);
   };
-  console.log(startTime, endTime);
 
   const handleDialogEndTimeChange = (newValue) => {
     const end = newValue.$d;
@@ -57,7 +56,6 @@ export default function TimeSlotComponet() {
     //const formattedETime = EndwithTime.format(' hh:mm:ss a');
     //setEndTime(formattedETime);
     const milliseconds = EndwithTime.valueOf();
-    console.log(milliseconds);
     setEndTime(milliseconds);
   };
 
@@ -72,7 +70,6 @@ export default function TimeSlotComponet() {
   const convertedStartTime = formatMillisecondsToTime(startTime);
   const convertedEndTime = formatMillisecondsToTime(endTime);
 
-  console.log('submit', submit);
   const onSubmit = (event) => {
     event.preventDefault();
     // setIsSubmitted(true);
@@ -94,7 +91,6 @@ export default function TimeSlotComponet() {
         startTime: startTime,
         endTime: endTime
       };
-      console.log(data);
       // BookingApi.createBooking({
       //   type: BookingType.Turf,
       //   bookingAmount: 2000,
@@ -145,6 +141,8 @@ export default function TimeSlotComponet() {
   };
 
   const shouldDisableTime = (value, view) => {
+    console.log('value', value);
+    console.log('view', view);
     submit.map((item) => {
       // item.startTime && item.endTime
       //   formatMillisecondsToTimeForDisable(item.startTime)
@@ -154,14 +152,17 @@ export default function TimeSlotComponet() {
         const value1 = formatMillisecondsToTimeForDisable(item.startTime);
         const value2 = formatMillisecondsToTimeForDisable(item.endTime);
         console.log(value1.hour, 'sds', value1.min, value2.hour, 'fdfd', value2.min);
+
         //time >= value1 && time <= value2;
         const hour = value.hour();
         if (view === 'hours') {
-          return hour < value1.hour || hour > value2.hour;
+          console.log('hour < 9 || hour > 13', hour < 9 || hour > 13);
+          return hour < 9 || hour > 13;
+          //(12) to 8.30am , 2pm to 11.30pm
         }
         if (view === 'minutes') {
           const minute = value.minute();
-          return minute > value2.min && hour === value2.hour;
+          return minute > 20 && hour === 13;
         }
         return false;
       }

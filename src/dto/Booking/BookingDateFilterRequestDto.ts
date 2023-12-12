@@ -1,4 +1,4 @@
 export interface BookingDateFilterRequestDto {
-    startDate: Date;
-    endDate: Date;
+  startDate: string;
+  endDate: string;
 }
