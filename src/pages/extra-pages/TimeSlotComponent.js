@@ -1,13 +1,11 @@
-import moment from 'moment';
-import MainCard from 'components/MainCard';
-
 import { Button, Stack, Typography } from '@mui/material';
 
 import BookingApi from 'api/BookingApi';
 import CustomDatePicker from './CustomDatePicker';
 import CustomTextField from './CustomTextField';
+import MainCard from 'components/MainCard';
 import TimeSlotModal from './TimeSlotModal';
-
+import moment from 'moment';
 import { useState } from 'react';
 
 export default function TimeSlotComponet() {
@@ -24,7 +22,10 @@ export default function TimeSlotComponet() {
     let datedata = newValue.$d;
     const parsedDate = moment(datedata);
     const formattedDate = parsedDate.format('YYYY-MM-DD');
-    console.log(formattedDate);
+    BookingApi.filterBooking({
+      dateOfBooking: '2023-12-12',
+      type: 'turf'
+    });
     setDate(formattedDate);
     setDateError(false);
     setIsModalOpen(true);
@@ -37,7 +38,6 @@ export default function TimeSlotComponet() {
     const milliseconds = startwithTime.valueOf();
     setStartTime(milliseconds);
   };
-  console.log(startTime, endTime);
 
   const handleDialogEndTimeChange = (newValue) => {
     const end = newValue.$d;
@@ -64,7 +64,6 @@ export default function TimeSlotComponet() {
   const convertedStartTime = formatMillisecondsToTime(startTime);
   const convertedEndTime = formatMillisecondsToTime(endTime);
 
-  console.log('submit', submit);
   const onSubmit = (event) => {
     event.preventDefault();
     if (!date) {
@@ -82,8 +81,7 @@ export default function TimeSlotComponet() {
         date: date,
         startTime: startTime,
         endTime: endTime
-      };
-      console.log(data);
+      }
 
       BookingApi.createBooking({
         type: 'boardGame',
