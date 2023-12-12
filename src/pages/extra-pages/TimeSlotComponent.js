@@ -10,20 +10,11 @@ import TimeSlotModal from './TimeSlotModal';
 
 import { useState } from 'react';
 
-// import StartTimeComponent from './StartTimeComponent';
-// import EndTimeComponent from './EndTimeComponent';
-// import BookingApi from '../../api/BookingApi.ts';
-// import { BookingType } from '../../dto/Booking/BookingType.ts';
-// import { PaymentType } from '../../dto/Booking/PaymentType.ts'; 6.30 to 8.30
-
-//import Typography from 'themes/overrides/Typography';
-
 export default function TimeSlotComponet() {
   const [date, setDate] = useState('');
   const [startTime, setStartTime] = useState('');
   const [endTime, setEndTime] = useState('');
   const [submit, setSubmit] = useState([{ date: '2023-12-26', startTime: 1702269000000, endTime: 1702294200000 }]);
-  // const [isSubmitted, setIsSubmitted] = useState(false);
   const [dateError, setDateError] = useState(false);
   const [startError, setStartError] = useState(false);
   const [endError, setEndError] = useState(false);
@@ -41,12 +32,9 @@ export default function TimeSlotComponet() {
 
   const handleDialogTimeChange = (newValue) => {
     const start = newValue.$d;
-    const startwithTime = moment(start, ' hh:mm:ss a');
-    // const formattedSTime = startwithTime.format(' hh:mm:ss a');
-    // console.log(formattedSTime, 's');
-    // setStartTime(formattedSTime);
+    const startwithTime = moment(start);
+    //const formattedSTime = startwithTime.format(' hh:mm:ss a');
     const milliseconds = startwithTime.valueOf();
-    console.log(milliseconds, 's');
     setStartTime(milliseconds);
   };
   console.log(startTime, endTime);
@@ -54,19 +42,23 @@ export default function TimeSlotComponet() {
   const handleDialogEndTimeChange = (newValue) => {
     const end = newValue.$d;
     const EndwithTime = moment(end);
-    //const formattedETime = EndwithTime.format(' hh:mm:ss a');
-    //setEndTime(formattedETime);
+    // const formattedETime = EndwithTime.format(' hh:mm:ss a');
     const milliseconds = EndwithTime.valueOf();
-    console.log(milliseconds);
     setEndTime(milliseconds);
   };
 
   const formatMillisecondsToTime = (ms) => {
     if (ms === null) {
-      return ''; // Handle the case where endTime is null
+      return '';
     }
     const formattedTime = moment(ms).format('hh:mm:ss a');
     return formattedTime;
+  };
+
+  const convertTo24HourFormat = (time12h) => {
+    const time24h = moment(time12h, 'hh:mm:ss a').format('HH:mm:ss');
+
+    return time24h;
   };
 
   const convertedStartTime = formatMillisecondsToTime(startTime);
@@ -75,12 +67,9 @@ export default function TimeSlotComponet() {
   console.log('submit', submit);
   const onSubmit = (event) => {
     event.preventDefault();
-    // setIsSubmitted(true);
-
     if (!date) {
       setDateError(true);
     }
-
     if (!startTime) {
       setStartError(true);
     }
@@ -95,22 +84,14 @@ export default function TimeSlotComponet() {
         endTime: endTime
       };
       console.log(data);
-      // BookingApi.createBooking({
-      //   type: BookingType.Turf,
-      //   bookingAmount: 2000,
-      //   bookingType: PaymentType.Cash,
-      //   startTime: parseInt(startTime),
-      //   endTime: parseInt(endTime),
-      //   dateOfBooking: date
-      // });
 
       BookingApi.createBooking({
         type: 'boardGame',
-        dateOfBooking: '2023-12-7',
+        dateOfBooking: date,
         bookingAmount: 20,
         bookingType: 'cash',
-        startTime: 1701868762530,
-        endTime: 1701868762530
+        startTime: parseInt(startTime),
+        endTime: parseInt(endTime)
       });
 
       setSubmit([...submit, data]);
@@ -134,38 +115,38 @@ export default function TimeSlotComponet() {
     setInitalEnd(newValue);
   };
 
-  const formatMillisecondsToTimeForDisable = (ms) => {
-    if (ms === null) {
-      return ''; // Handle the case where endTime is null
-    }
-    const formattedHTime = moment(ms).format('hh');
-    const formattedMTime = moment(ms).format('mm');
-
-    return { hour: formattedHTime, min: formattedMTime };
-  };
-
   const shouldDisableTime = (value, view) => {
-    submit.map((item) => {
-      // item.startTime && item.endTime
-      //   formatMillisecondsToTimeForDisable(item.startTime)
-      // );
-      // console.log(disable, 'value');
-      if (item.date) {
-        const value1 = formatMillisecondsToTimeForDisable(item.startTime);
-        const value2 = formatMillisecondsToTimeForDisable(item.endTime);
-        console.log(value1.hour, 'sds', value1.min, value2.hour, 'fdfd', value2.min);
-        //time >= value1 && time <= value2;
-        const hour = value.hour();
-        if (view === 'hours') {
-          return hour < value1.hour || hour > value2.hour;
-        }
-        if (view === 'minutes') {
-          const minute = value.minute();
-          return minute > value2.min && hour === value2.hour;
-        }
-        return false;
+    const hour = value.hour();
+    const minute = value.minute();
+
+    if (submit && Array.isArray(submit)) {
+      const matchingItems = submit.filter((item) => item.date === date);
+
+      if (matchingItems.length > 0) {
+        return matchingItems.some((item) => {
+          const value1 = formatMillisecondsToTime(item.startTime);
+          const value2 = formatMillisecondsToTime(item.endTime);
+          const time = convertTo24HourFormat(value1);
+          const time2 = convertTo24HourFormat(value2);
+          const startHour = parseInt(time.split(':')[0], 10);
+          const startMinute = parseInt(time.split(':')[1], 10);
+          const endHour = parseInt(time2.split(':')[0], 10);
+          const endMinute = parseInt(time2.split(':')[1], 10);
+
+          if (view === 'hours' || view === 'minutes') {
+            return (
+              (hour === startHour && minute >= startMinute) ||
+              (hour > startHour && hour < endHour) ||
+              (hour === endHour && minute < endMinute)
+            );
+          }
+
+          return false;
+        });
       }
-    });
+    }
+
+    return false;
   };
 
   return (
@@ -183,9 +164,8 @@ export default function TimeSlotComponet() {
             error={startError}
             error1={endError}
             shouldDisableTime={shouldDisableTime}
+            shouldDisableEndTime={shouldDisableTime}
           />
-          {/* <StartTimeComponent onChange={handleDialogTimeChange} error={startError} />
-          <EndTimeComponent onChange={handleDialogEndTimeChange} error={endError} /> */}
           <Button variant="outlined" type="submit" sx={{ height: '50px', marginTop: '35px !important' }}>
             Confirm
           </Button>

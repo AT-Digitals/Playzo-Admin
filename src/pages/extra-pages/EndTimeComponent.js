@@ -1,10 +1,10 @@
-import * as React from 'react'
-import { LocalizationProvider } from '@mui/x-date-pickers/LocalizationProvider'
-import { AdapterDayjs } from '@mui/x-date-pickers/AdapterDayjs'
-import { DigitalClock } from '@mui/x-date-pickers/DigitalClock'
-import { Typography, Stack } from '@mui/material'
+import * as React from 'react';
+import { LocalizationProvider } from '@mui/x-date-pickers/LocalizationProvider';
+import { AdapterDayjs } from '@mui/x-date-pickers/AdapterDayjs';
+import { DigitalClock } from '@mui/x-date-pickers/DigitalClock';
+import { Typography, Stack } from '@mui/material';
 
-export default function EndTimeComponent({ onChange, error }) {
+export default function EndTimeComponent({ onChange, error, shouldDisableEndTime }) {
   return (
     <LocalizationProvider dateAdapter={AdapterDayjs}>
       <Stack direction="column" spacing={2} sx={{ width: '120px' }}>
@@ -15,11 +15,12 @@ export default function EndTimeComponent({ onChange, error }) {
           onChange={onChange}
           slotProps={{
             textField: {
-              helperText: error ? 'Please select a start time' : '',
-            },
+              helperText: error ? 'Please select a start time' : ''
+            }
           }}
+          shouldDisableTime={shouldDisableEndTime}
         />
       </Stack>
     </LocalizationProvider>
-  )
+  );
 }
