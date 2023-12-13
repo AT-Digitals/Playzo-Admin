@@ -1,4 +1,4 @@
-import { Button, Stack, Typography } from '@mui/material';
+import { Stack } from '@mui/material';
 
 import BookingApi from 'api/BookingApi';
 import CustomDatePicker from './CustomDatePicker';
@@ -12,23 +12,33 @@ export default function TimeSlotComponet() {
   const [date, setDate] = useState('');
   const [startTime, setStartTime] = useState('');
   const [endTime, setEndTime] = useState('');
-  const [submit, setSubmit] = useState([{ date: '2023-12-26', startTime: 1702269000000, endTime: 1702294200000 }]);
+  const [submit, setSubmit] = useState([]);
   const [dateError, setDateError] = useState(false);
   const [startError, setStartError] = useState(false);
   const [endError, setEndError] = useState(false);
   const [isModalOpen, setIsModalOpen] = useState(false);
+  const [disableData, setDisableData] = useState([]);
 
   const dateHandler = (newValue) => {
     let datedata = newValue.$d;
     const parsedDate = moment(datedata);
+    console.log(parsedDate, 'parse');
     const formattedDate = parsedDate.format('YYYY-MM-DD');
-    BookingApi.filterBooking({
-      dateOfBooking: '2023-12-12',
-      type: 'turf'
-    });
+    console.log(formattedDate);
     setDate(formattedDate);
+    BookingApi.filterBooking({
+      dateOfBooking: formattedDate,
+      type: 'boardGame'
+    })
+      .then((data) => {
+        console.log('res', data);
+        setDisableData(data);
+        setIsModalOpen(true);
+      })
+      .catch('All slots booked this date ');
+
     setDateError(false);
-    setIsModalOpen(true);
+    // setIsModalOpen(true);
   };
 
   const handleDialogTimeChange = (newValue) => {
@@ -81,22 +91,41 @@ export default function TimeSlotComponet() {
         date: date,
         startTime: startTime,
         endTime: endTime
-      }
+      };
 
-      BookingApi.createBooking({
-        type: 'boardGame',
+      BookingApi.filterBooking({
         dateOfBooking: date,
-        bookingAmount: 20,
-        bookingType: 'cash',
-        startTime: parseInt(startTime),
-        endTime: parseInt(endTime)
-      });
+        type: 'boardGame',
+        startTime: parseInt(startTime)
+      })
+        .then((data) => {
+          console.log('res2', data);
+          if (data.length > 0) {
+            alert('Slots already booked');
+          } else {
+            BookingApi.createBooking({
+              type: 'boardGame',
+              dateOfBooking: date,
+              bookingAmount: 20,
+              bookingType: 'cash',
+              startTime: parseInt(startTime),
+              endTime: parseInt(endTime)
+            })
+              .then(() => {
+                setDisableData(data);
+                setIsModalOpen(false);
+              })
+              .catch('slots are non booked');
+          }
+        })
+        .catch('All slots booked this date ');
 
       setSubmit([...submit, data]);
 
       setDate('');
       setStartTime('');
       setEndTime('');
+      setIsModalOpen(false);
     }
   };
   const handleCloseModal = () => {
@@ -117,8 +146,8 @@ export default function TimeSlotComponet() {
     const hour = value.hour();
     const minute = value.minute();
 
-    if (submit && Array.isArray(submit)) {
-      const matchingItems = submit.filter((item) => item.date === date);
+    if (disableData && Array.isArray(disableData)) {
+      const matchingItems = disableData.filter((item) => moment(item.dateOfBooking).format('YYYY-MM-DD') == date);
 
       if (matchingItems.length > 0) {
         return matchingItems.some((item) => {
@@ -149,7 +178,7 @@ export default function TimeSlotComponet() {
 
   return (
     <MainCard title="Date Validation">
-      <form onSubmit={onSubmit}>
+      <form>
         <Stack direction="row" spacing={2} alignItems="center">
           <CustomDatePicker date={date} setDate={dateHandler} error={dateError} />
           <CustomTextField label="Start Time" value={!startTime ? initalTime : convertedStartTime} setValue={TextFieldChange} />
@@ -163,22 +192,23 @@ export default function TimeSlotComponet() {
             error1={endError}
             shouldDisableTime={shouldDisableTime}
             shouldDisableEndTime={shouldDisableTime}
+            onSubmit={onSubmit}
           />
-          <Button variant="outlined" type="submit" sx={{ height: '50px', marginTop: '35px !important' }}>
+          {/* <Button variant="outlined" type="submit" sx={{ height: '50px', marginTop: '35px !important' }}>
             Confirm
-          </Button>
+          </Button> */}
         </Stack>
       </form>
-      <Typography variant="h3" marginY={3}>
+      {/* <Typography variant="h3" marginY={3}>
         Booked Slots
-      </Typography>
-      {submit.map((value, index) => (
+      </Typography> */}
+      {/* {submit.map((value, index) => (
         <Stack direction="row" spacing={2} key={index} marginY={3}>
           <Typography>{value.date}</Typography>
           <Typography>{formatMillisecondsToTime(value.startTime)}</Typography>
           <Typography>{formatMillisecondsToTime(value.endTime)}</Typography>
         </Stack>
-      ))}
+      ))} */}
     </MainCard>
   );
 }
