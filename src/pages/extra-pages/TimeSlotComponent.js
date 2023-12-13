@@ -22,20 +22,32 @@ export default function TimeSlotComponet() {
   const dateHandler = (newValue) => {
     let datedata = newValue.$d;
     const parsedDate = moment(datedata);
-    console.log(parsedDate, 'parse');
     const formattedDate = parsedDate.format('YYYY-MM-DD');
-    console.log(formattedDate);
     setDate(formattedDate);
-    BookingApi.filterBooking({
-      dateOfBooking: formattedDate,
-      type: 'boardGame'
-    })
-      .then((data) => {
-        console.log('res', data);
-        setDisableData(data);
+    const ApiCall = async () => {
+      try {
         setIsModalOpen(true);
-      })
-      .catch('All slots booked this date ');
+        const response = await BookingApi.filterBooking({
+          dateOfBooking: formattedDate,
+          type: 'boardGame'
+        });
+        console.log('data', response);
+        setDisableData(response);
+      } catch (error) {
+        console.error('Error:', error.message);
+      }
+    };
+    ApiCall();
+    // BookingApi.filterBooking({
+    //   dateOfBooking: formattedDate,
+    //   type: 'boardGame'
+    // })
+    //   .then((data) => {
+    //     console.log('res', data);
+    //     setDisableData(data);
+    //     setIsModalOpen(true);
+    //   })
+    //   .catch('All slots booked this date ');
 
     setDateError(false);
     // setIsModalOpen(true);
@@ -93,32 +105,32 @@ export default function TimeSlotComponet() {
         endTime: endTime
       };
 
-      BookingApi.filterBooking({
-        dateOfBooking: date,
-        type: 'boardGame',
-        startTime: parseInt(startTime)
-      })
-        .then((data) => {
-          console.log('res2', data);
-          if (data.length > 0) {
-            alert('Slots already booked');
-          } else {
-            BookingApi.createBooking({
-              type: 'boardGame',
-              dateOfBooking: date,
-              bookingAmount: 20,
-              bookingType: 'cash',
-              startTime: parseInt(startTime),
-              endTime: parseInt(endTime)
-            })
-              .then(() => {
-                setDisableData(data);
-                setIsModalOpen(false);
-              })
-              .catch('slots are non booked');
+      const booking = async () => {
+        try {
+          const response = await BookingApi.createBooking({
+            type: 'boardGame',
+            dateOfBooking: date,
+            bookingAmount: 20,
+            bookingType: 'cash',
+            startTime: parseInt(startTime),
+            endTime: parseInt(endTime)
+          });
+          console.log('booking', response);
+          const filterResponse = await BookingApi.filterBooking({
+            dateOfBooking: date,
+            type: 'boardGame'
+          });
+          console.log('filterdata', filterResponse);
+          if (filterResponse.length > 0) {
+            alert('booking closed');
+            setIsModalOpen(false);
           }
-        })
-        .catch('All slots booked this date ');
+        } catch {
+          console.log('slots are non booked');
+        }
+      };
+
+      booking();
 
       setSubmit([...submit, data]);
 
@@ -147,10 +159,13 @@ export default function TimeSlotComponet() {
     const minute = value.minute();
 
     if (disableData && Array.isArray(disableData)) {
+      console.log('disble', disableData);
       const matchingItems = disableData.filter((item) => moment(item.dateOfBooking).format('YYYY-MM-DD') == date);
+      // console.log('match', matchingItems);
 
       if (matchingItems.length > 0) {
         return matchingItems.some((item) => {
+          console.log('m', item.startTime, 'e', item.endTime);
           const value1 = formatMillisecondsToTime(item.startTime);
           const value2 = formatMillisecondsToTime(item.endTime);
           const time = convertTo24HourFormat(value1);
