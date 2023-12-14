@@ -29,7 +29,7 @@ export default function TimeSlotComponet() {
         setIsModalOpen(true);
         const response = await BookingApi.filterBooking({
           dateOfBooking: formattedDate,
-          type: 'boardGame'
+          type: 'turf'
         });
         console.log('data', response);
         setDisableData(response);
@@ -38,25 +38,13 @@ export default function TimeSlotComponet() {
       }
     };
     ApiCall();
-    // BookingApi.filterBooking({
-    //   dateOfBooking: formattedDate,
-    //   type: 'boardGame'
-    // })
-    //   .then((data) => {
-    //     console.log('res', data);
-    //     setDisableData(data);
-    //     setIsModalOpen(true);
-    //   })
-    //   .catch('All slots booked this date ');
 
     setDateError(false);
-    // setIsModalOpen(true);
   };
 
   const handleDialogTimeChange = (newValue) => {
     const start = newValue.$d;
     const startwithTime = moment(start);
-    //const formattedSTime = startwithTime.format(' hh:mm:ss a');
     const milliseconds = startwithTime.valueOf();
     setStartTime(milliseconds);
   };
@@ -64,7 +52,6 @@ export default function TimeSlotComponet() {
   const handleDialogEndTimeChange = (newValue) => {
     const end = newValue.$d;
     const EndwithTime = moment(end);
-    // const formattedETime = EndwithTime.format(' hh:mm:ss a');
     const milliseconds = EndwithTime.valueOf();
     setEndTime(milliseconds);
   };
@@ -108,7 +95,7 @@ export default function TimeSlotComponet() {
       const booking = async () => {
         try {
           const response = await BookingApi.createBooking({
-            type: 'boardGame',
+            type: 'turf',
             dateOfBooking: date,
             bookingAmount: 20,
             bookingType: 'cash',
@@ -116,15 +103,7 @@ export default function TimeSlotComponet() {
             endTime: parseInt(endTime)
           });
           console.log('booking', response);
-          const filterResponse = await BookingApi.filterBooking({
-            dateOfBooking: date,
-            type: 'boardGame'
-          });
-          console.log('filterdata', filterResponse);
-          if (filterResponse.length > 0) {
-            alert('booking closed');
-            setIsModalOpen(false);
-          }
+          setIsModalOpen(false);
         } catch {
           console.log('slots are non booked');
         }
@@ -159,9 +138,7 @@ export default function TimeSlotComponet() {
     const minute = value.minute();
 
     if (disableData && Array.isArray(disableData)) {
-      console.log('disble', disableData);
       const matchingItems = disableData.filter((item) => moment(item.dateOfBooking).format('YYYY-MM-DD') == date);
-      // console.log('match', matchingItems);
 
       if (matchingItems.length > 0) {
         return matchingItems.some((item) => {
@@ -209,21 +186,8 @@ export default function TimeSlotComponet() {
             shouldDisableEndTime={shouldDisableTime}
             onSubmit={onSubmit}
           />
-          {/* <Button variant="outlined" type="submit" sx={{ height: '50px', marginTop: '35px !important' }}>
-            Confirm
-          </Button> */}
         </Stack>
       </form>
-      {/* <Typography variant="h3" marginY={3}>
-        Booked Slots
-      </Typography> */}
-      {/* {submit.map((value, index) => (
-        <Stack direction="row" spacing={2} key={index} marginY={3}>
-          <Typography>{value.date}</Typography>
-          <Typography>{formatMillisecondsToTime(value.startTime)}</Typography>
-          <Typography>{formatMillisecondsToTime(value.endTime)}</Typography>
-        </Stack>
-      ))} */}
     </MainCard>
   );
 }
