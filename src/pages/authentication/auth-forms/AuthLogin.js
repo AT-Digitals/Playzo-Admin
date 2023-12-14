@@ -1,14 +1,11 @@
-import React from 'react';
-import AdminLoginApi from 'api/AdminLoginApi';
+import * as Yup from 'yup';
 
-// material-ui
 import {
   Button,
   Checkbox,
   FormControlLabel,
   FormHelperText,
   Grid,
-  // Link,
   IconButton,
   InputAdornment,
   InputLabel,
@@ -16,16 +13,21 @@ import {
   Stack,
   Typography
 } from '@mui/material';
+import { EyeInvisibleOutlined, EyeOutlined } from '@ant-design/icons';
+
+import AdminLoginApi from 'api/AdminLoginApi';
+import AnimateButton from 'components/@extended/AnimateButton';
+import { Formik } from 'formik';
+import React from 'react';
+import { useNavigate } from 'react-router-dom';
+
+// material-ui
 
 // third party
-import * as Yup from 'yup';
-import { Formik } from 'formik';
 
 // project import
-import AnimateButton from 'components/@extended/AnimateButton';
 
 // assets
-import { EyeOutlined, EyeInvisibleOutlined } from '@ant-design/icons';
 
 // ============================|| FIREBASE - LOGIN ||============================ //
 
@@ -40,7 +42,7 @@ const AuthLogin = () => {
   const handleMouseDownPassword = (event) => {
     event.preventDefault();
   };
-
+  const navigate = useNavigate();
   return (
     <>
       <Formik
@@ -56,9 +58,10 @@ const AuthLogin = () => {
           try {
             console.log('value', values);
             const response = await AdminLoginApi.loginUser({
-              email: 'antoshoba@gmail.com',
-              password: 'antoshoba'
+              email: values.email,
+              password: values.password
             });
+            navigate('/dashboard/default');
             console.log('responseApi', response);
             // if (response) {
             //   return;

@@ -1,13 +1,13 @@
-import { Stack } from '@mui/material';
-
 import BookingApi from 'api/BookingApi';
 import CustomDatePicker from './CustomDatePicker';
 import CustomTextField from './CustomTextField';
 import MainCard from 'components/MainCard';
+import NotificationToast from '../components-overview/NotificationToast';
+import { Stack } from '@mui/material';
 import TimeSlotModal from './TimeSlotModal';
+import TypeDropdown from './TypeDropdown';
 import moment from 'moment';
 import { useState } from 'react';
-import TypeDropdown from './TypeDropdown';
 
 export default function TimeSlotComponet() {
   const [date, setDate] = useState('');
@@ -21,11 +21,11 @@ export default function TimeSlotComponet() {
   const [disableData, setDisableData] = useState([]);
 
   const [bookingType, setBookingType] = useState('');
+  const [toast, setToast] = useState('');
 
   const handleChange = (event) => {
     setBookingType(event.target.value);
   };
-  console.log('c', bookingType);
   const dateHandler = (newValue) => {
     let datedata = newValue.$d;
     const parsedDate = moment(datedata);
@@ -38,7 +38,6 @@ export default function TimeSlotComponet() {
           dateOfBooking: formattedDate,
           type: bookingType
         });
-        console.log('data', response);
         setDisableData(response);
       } catch (error) {
         console.error('Error:', error.message);
@@ -109,10 +108,12 @@ export default function TimeSlotComponet() {
             startTime: parseInt(startTime),
             endTime: parseInt(endTime)
           });
-          console.log('booking', response);
+          if (response.message) {
+            setToast(response.message);
+          }
           setIsModalOpen(false);
         } catch {
-          console.log('slots are non booked');
+          setToast('Please select valid type and time');
         }
       };
 
@@ -197,6 +198,7 @@ export default function TimeSlotComponet() {
           />
         </Stack>
       </form>
+      {toast !== '' ? <NotificationToast error={toast} /> : <></>}
     </MainCard>
   );
 }
