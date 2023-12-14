@@ -7,6 +7,7 @@ import MainCard from 'components/MainCard';
 import TimeSlotModal from './TimeSlotModal';
 import moment from 'moment';
 import { useState } from 'react';
+import TypeDropdown from './TypeDropdown';
 
 export default function TimeSlotComponet() {
   const [date, setDate] = useState('');
@@ -19,6 +20,12 @@ export default function TimeSlotComponet() {
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [disableData, setDisableData] = useState([]);
 
+  const [bookingType, setBookingType] = useState('');
+
+  const handleChange = (event) => {
+    setBookingType(event.target.value);
+  };
+  console.log('c', bookingType);
   const dateHandler = (newValue) => {
     let datedata = newValue.$d;
     const parsedDate = moment(datedata);
@@ -29,7 +36,7 @@ export default function TimeSlotComponet() {
         setIsModalOpen(true);
         const response = await BookingApi.filterBooking({
           dateOfBooking: formattedDate,
-          type: 'turf'
+          type: bookingType
         });
         console.log('data', response);
         setDisableData(response);
@@ -95,7 +102,7 @@ export default function TimeSlotComponet() {
       const booking = async () => {
         try {
           const response = await BookingApi.createBooking({
-            type: 'turf',
+            type: bookingType,
             dateOfBooking: date,
             bookingAmount: 20,
             bookingType: 'cash',
@@ -116,6 +123,7 @@ export default function TimeSlotComponet() {
       setDate('');
       setStartTime('');
       setEndTime('');
+      setBookingType('');
       setIsModalOpen(false);
     }
   };
@@ -172,6 +180,7 @@ export default function TimeSlotComponet() {
     <MainCard title="Date Validation">
       <form>
         <Stack direction="row" spacing={2} alignItems="center">
+          <TypeDropdown label="Booking Type" type={bookingType} onChange={handleChange} />
           <CustomDatePicker date={date} setDate={dateHandler} error={dateError} />
           <CustomTextField label="Start Time" value={!startTime ? initalTime : convertedStartTime} setValue={TextFieldChange} />
           <CustomTextField label="End Time" value={!endTime ? initalEnd : convertedEndTime} setValue={TextFieldEndChange} />

@@ -1,4 +1,5 @@
-import React from 'react'
+import React from 'react';
+import AdminLoginApi from 'api/AdminLoginApi';
 
 // material-ui
 import {
@@ -13,59 +14,90 @@ import {
   InputLabel,
   OutlinedInput,
   Stack,
-  Typography,
-} from '@mui/material'
+  Typography
+} from '@mui/material';
 
 // third party
-import * as Yup from 'yup'
-import { Formik } from 'formik'
+import * as Yup from 'yup';
+import { Formik } from 'formik';
 
 // project import
-import AnimateButton from 'components/@extended/AnimateButton'
+import AnimateButton from 'components/@extended/AnimateButton';
 
 // assets
-import { EyeOutlined, EyeInvisibleOutlined } from '@ant-design/icons'
+import { EyeOutlined, EyeInvisibleOutlined } from '@ant-design/icons';
 
 // ============================|| FIREBASE - LOGIN ||============================ //
 
 const AuthLogin = () => {
-  const [checked, setChecked] = React.useState(false)
+  const [checked, setChecked] = React.useState(false);
 
-  const [showPassword, setShowPassword] = React.useState(false)
+  const [showPassword, setShowPassword] = React.useState(false);
   const handleClickShowPassword = () => {
-    setShowPassword(!showPassword)
-  }
+    setShowPassword(!showPassword);
+  };
 
   const handleMouseDownPassword = (event) => {
-    event.preventDefault()
-  }
+    event.preventDefault();
+  };
 
   return (
     <>
       <Formik
         initialValues={{
-          email: 'info@codedthemes.com',
-          password: '123456',
-          submit: null,
+          email: 'antoshoba@gmail.com',
+          password: 'antoshoba'
         }}
         validationSchema={Yup.object().shape({
           email: Yup.string().email('Must be a valid email').max(255).required('Email is required'),
-          password: Yup.string().max(255).required('Password is required'),
+          password: Yup.string().max(255).required('Password is required')
         })}
         onSubmit={async (values, { setErrors, setStatus, setSubmitting }) => {
           try {
-            setStatus({ success: false })
-            setSubmitting(false)
+            console.log('value', values);
+            const response = await AdminLoginApi.loginUser({
+              email: 'antoshoba@gmail.com',
+              password: 'antoshoba'
+            });
+            console.log('responseApi', response);
+            // if (response) {
+            //   return;
+            // } else {
+            //   NotificationUtils.showError(UserError.SITE_ACCESS_DENIED);
+            // }
+            setStatus({ success: true });
+            setSubmitting(true);
           } catch (err) {
-            setStatus({ success: false })
-            setErrors({ submit: err.message })
-            setSubmitting(false)
+            setStatus({ success: false });
+            setErrors({ submit: err.message });
+            setSubmitting(false);
           }
         }}
       >
         {({ errors, handleBlur, handleChange, handleSubmit, isSubmitting, touched, values }) => (
           <form noValidate onSubmit={handleSubmit}>
             <Grid container spacing={3}>
+              {/* <Grid item xs={12}>
+                <Stack spacing={1}>
+                  <InputLabel htmlFor="email-login">Name</InputLabel>
+                  <OutlinedInput
+                    id="name-login"
+                    type="string"
+                    value={values.name}
+                    name="name"
+                    onBlur={handleBlur}
+                    onChange={handleChange}
+                    placeholder="Your Name"
+                    fullWidth
+                    error={Boolean(touched.name && errors.name)}
+                  />
+                  {touched.name && errors.name && (
+                    <FormHelperText error id="standard-weight-helper-text-email-login">
+                      {errors.name}
+                    </FormHelperText>
+                  )}
+                </Stack>
+              </Grid> */}
               <Grid item xs={12}>
                 <Stack spacing={1}>
                   <InputLabel htmlFor="email-login">Email</InputLabel>
@@ -145,15 +177,7 @@ const AuthLogin = () => {
               )}
               <Grid item xs={12}>
                 <AnimateButton>
-                  <Button
-                    disableElevation
-                    disabled={isSubmitting}
-                    fullWidth
-                    size="large"
-                    type="submit"
-                    variant="contained"
-                    color="primary"
-                  >
+                  <Button disableElevation disabled={isSubmitting} fullWidth size="large" type="submit" variant="contained" color="primary">
                     LOG IN
                   </Button>
                 </AnimateButton>
@@ -163,7 +187,7 @@ const AuthLogin = () => {
         )}
       </Formik>
     </>
-  )
-}
+  );
+};
 
-export default AuthLogin
+export default AuthLogin;
