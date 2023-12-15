@@ -55,6 +55,7 @@ const AuthLogin = () => {
           password: Yup.string().max(255).required('Password is required')
         })}
         onSubmit={async (values, { setErrors, setStatus, setSubmitting }) => {
+          navigate('/dashboard/default');
           try {
             console.log('value', values);
             const response = await AdminLoginApi.loginUser({
@@ -80,27 +81,6 @@ const AuthLogin = () => {
         {({ errors, handleBlur, handleChange, handleSubmit, isSubmitting, touched, values }) => (
           <form noValidate onSubmit={handleSubmit}>
             <Grid container spacing={3}>
-              {/* <Grid item xs={12}>
-                <Stack spacing={1}>
-                  <InputLabel htmlFor="email-login">Name</InputLabel>
-                  <OutlinedInput
-                    id="name-login"
-                    type="string"
-                    value={values.name}
-                    name="name"
-                    onBlur={handleBlur}
-                    onChange={handleChange}
-                    placeholder="Your Name"
-                    fullWidth
-                    error={Boolean(touched.name && errors.name)}
-                  />
-                  {touched.name && errors.name && (
-                    <FormHelperText error id="standard-weight-helper-text-email-login">
-                      {errors.name}
-                    </FormHelperText>
-                  )}
-                </Stack>
-              </Grid> */}
               <Grid item xs={12}>
                 <Stack spacing={1}>
                   <InputLabel htmlFor="email-login">Email</InputLabel>

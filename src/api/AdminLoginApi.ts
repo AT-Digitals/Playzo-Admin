@@ -6,7 +6,6 @@ import { handleApiError } from 'utils/ApiUtils';
 export default class AdminLoginApi {
   public static loginUser = async (request: any) => {
     try {
-      console.log('resq', request);
       const user = await StoreInstance.api().post<UserDto>('/admins/login', request);
       return user.data;
     } catch (e) {

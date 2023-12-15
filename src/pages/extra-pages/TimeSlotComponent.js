@@ -25,6 +25,7 @@ export default function TimeSlotComponet() {
 
   const handleChange = (event) => {
     setBookingType(event.target.value);
+    setDate('');
   };
   const dateHandler = (newValue) => {
     let datedata = newValue.$d;
@@ -151,7 +152,6 @@ export default function TimeSlotComponet() {
 
       if (matchingItems.length > 0) {
         return matchingItems.some((item) => {
-          console.log('m', item.startTime, 'e', item.endTime);
           const value1 = formatMillisecondsToTime(item.startTime);
           const value2 = formatMillisecondsToTime(item.endTime);
           const time = convertTo24HourFormat(value1);
@@ -182,9 +182,13 @@ export default function TimeSlotComponet() {
       <form>
         <Stack direction="row" spacing={2} alignItems="center">
           <TypeDropdown label="Booking Type" type={bookingType} onChange={handleChange} />
-          <CustomDatePicker date={date} setDate={dateHandler} error={dateError} />
-          <CustomTextField label="Start Time" value={!startTime ? initalTime : convertedStartTime} setValue={TextFieldChange} />
-          <CustomTextField label="End Time" value={!endTime ? initalEnd : convertedEndTime} setValue={TextFieldEndChange} />
+          {bookingType && (
+            <>
+              <CustomDatePicker date={date} setDate={dateHandler} error={dateError} />
+              <CustomTextField label="Start Time" value={!startTime ? initalTime : convertedStartTime} setValue={TextFieldChange} />
+              <CustomTextField label="End Time" value={!endTime ? initalEnd : convertedEndTime} setValue={TextFieldEndChange} />{' '}
+            </>
+          )}
           <TimeSlotModal
             isOpen={isModalOpen}
             onClose={handleCloseModal}
