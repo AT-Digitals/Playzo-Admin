@@ -1,6 +1,7 @@
 // import { AdminRequestDto } from 'dto/user/AdminRequestDto';
-import { UserDto } from 'dto/user/UserDto';
+
 import StoreInstance from 'store/StoreInstance';
+import { UserDto } from 'dto/user/UserDto';
 import { handleApiError } from 'utils/ApiUtils';
 
 export default class AdminLoginApi {
@@ -15,7 +16,7 @@ export default class AdminLoginApi {
 
   public static logoutUser = async () => {
     try {
-      const user = await StoreInstance.api().post('/logout');
+      const user = await StoreInstance.api().post('/admins/auth/logout');
       return user.data;
     } catch (e) {
       throw handleApiError(e, 'Failed to logout user');
