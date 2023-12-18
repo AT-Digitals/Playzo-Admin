@@ -32,4 +32,13 @@ export default class BookingApi {
       throw handleApiError(e, 'Failed to create booking');
     }
   }
+  public static async getAll() {
+    try {
+      const details = await StoreInstance.api().get<any[]>('/bookings/getAll');
+      console.log('fdsfdg', details);
+      return details.data;
+    } catch (e) {
+      throw handleApiError(e, 'Failed to get all details');
+    }
+  }
 }

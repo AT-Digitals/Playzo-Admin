@@ -7,6 +7,7 @@ import MinimalLayout from 'layout/MinimalLayout';
 import PaymentPage from 'pages/extra-pages/PaymentPage';
 import { lazy } from 'react';
 import { useRoutes } from 'react-router-dom';
+import BookingListPage from 'pages/extra-pages/BookingListPage';
 
 // project import
 
@@ -83,7 +84,15 @@ export default function ThemeRoutes() {
         {
           path: 'payments',
           element: <PaymentPage />
-        }
+        },
+        {
+          path: 'bookingList',
+          element: <BookingListPage />
+        },
+        {
+          path: 'calendar',
+          element: <BookingListPage />
+        },
       ]
     }
   ]);
