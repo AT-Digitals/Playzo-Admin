@@ -1,24 +1,24 @@
-import { lazy } from 'react'
+import { lazy } from 'react';
 
 // project import
-import Loadable from 'components/Loadable'
-import MainLayout from 'layout/MainLayout'
-import BookingPage from 'pages/extra-pages/BookingPage'
-import ExpenseManagementPage from 'pages/extra-pages/ExpenseManagementPage'
-import BadmintonPage from 'pages/extra-pages/BadmintonPage'
-import PaymentPage from 'pages/extra-pages/PaymentPage'
+import Loadable from 'components/Loadable';
+import MainLayout from 'layout/MainLayout';
+import BookingPage from 'pages/extra-pages/bookings/BookingPage';
+import ExpenseManagementPage from 'pages/extra-pages/expense-management/ExpenseManagementPage';
+import BadmintonPage from 'pages/extra-pages/badminton/BadmintonPage';
+import PaymentPage from 'pages/extra-pages/payment/PaymentPage';
 
 // render - dashboard
-const DashboardDefault = Loadable(lazy(() => import('pages/dashboard')))
+const DashboardDefault = Loadable(lazy(() => import('pages/dashboard')));
 
 // render - sample page
-const SamplePage = Loadable(lazy(() => import('pages/extra-pages/SamplePage')))
+const SamplePage = Loadable(lazy(() => import('pages/extra-pages/SamplePage')));
 
 // render - utilities
-const Typography = Loadable(lazy(() => import('pages/components-overview/Typography')))
-const Color = Loadable(lazy(() => import('pages/components-overview/Color')))
-const Shadow = Loadable(lazy(() => import('pages/components-overview/Shadow')))
-const AntIcons = Loadable(lazy(() => import('pages/components-overview/AntIcons')))
+const Typography = Loadable(lazy(() => import('pages/components-overview/Typography')));
+const Color = Loadable(lazy(() => import('pages/components-overview/Color')));
+const Shadow = Loadable(lazy(() => import('pages/components-overview/Shadow')));
+const AntIcons = Loadable(lazy(() => import('pages/components-overview/AntIcons')));
 
 // ==============================|| MAIN ROUTING ||============================== //
 
@@ -28,54 +28,54 @@ const MainRoutes = {
   children: [
     {
       path: '/',
-      element: <DashboardDefault />,
+      element: <DashboardDefault />
     },
     {
       path: 'color',
-      element: <Color />,
+      element: <Color />
     },
     {
       path: 'dashboard',
       children: [
         {
           path: 'default',
-          element: <DashboardDefault />,
-        },
-      ],
+          element: <DashboardDefault />
+        }
+      ]
     },
     {
       path: 'sample-page',
-      element: <SamplePage />,
+      element: <SamplePage />
     },
     {
       path: 'shadow',
-      element: <Shadow />,
+      element: <Shadow />
     },
     {
       path: 'typography',
-      element: <Typography />,
+      element: <Typography />
     },
     {
       path: 'icons/ant',
-      element: <AntIcons />,
+      element: <AntIcons />
     },
     {
       path: 'bookings',
-      element: <BookingPage />,
+      element: <BookingPage />
     },
     {
       path: 'badminton',
-      element: <BadmintonPage />,
+      element: <BadmintonPage />
     },
     {
       path: 'expense-management',
-      element: <ExpenseManagementPage />,
+      element: <ExpenseManagementPage />
     },
     {
       path: 'payments',
-      element: <PaymentPage />,
-    },
-  ],
-}
+      element: <PaymentPage />
+    }
+  ]
+};
 
-export default MainRoutes
+export default MainRoutes;

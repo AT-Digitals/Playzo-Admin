@@ -1,12 +1,13 @@
 // assets
-import { LoginOutlined, ProfileOutlined } from '@ant-design/icons';
-import AssignmentTurnedInIcon from '@mui/icons-material/AssignmentTurnedIn';
+import FormatListBulletedIcon from '@mui/icons-material/FormatListBulleted';
+import CalendarMonthIcon from '@mui/icons-material/CalendarMonth';
+import AddBoxIcon from '@mui/icons-material/AddBox';
 
 // icons
 const icons = {
-  LoginOutlined,
-  ProfileOutlined,
-  AssignmentTurnedInIcon
+  FormatListBulletedIcon,
+  CalendarMonthIcon,
+  AddBoxIcon
 };
 
 // ==============================|| MENU ITEMS - EXTRA PAGES ||============================== //
@@ -21,28 +22,21 @@ const bookingpages = {
       title: 'Booking List',
       type: 'item',
       url: '/bookingList',
-      icon: icons.AssignmentTurnedInIcon
+      icon: icons.FormatListBulletedIcon
     },
     {
       id: 'calendar booking',
       title: 'Calendar Booking',
       type: 'item',
       url: '/calendarBooking',
-      icon: icons.ProfileOutlined
+      icon: icons.CalendarMonthIcon
     },
     {
       id: 'Add Bookings',
       title: 'Add Bookings',
       type: 'item',
-      url: '/expense-management',
-      icon: icons.AssignmentTurnedInIcon
-    },
-    {
-      id: 'payments',
-      title: 'Payments',
-      type: 'item',
-      url: '/payments',
-      icon: icons.ProfileOutlined
+      url: '/addBookings',
+      icon: icons.AddBoxIcon
     }
   ]
 };

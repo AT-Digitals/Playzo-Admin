@@ -1,13 +1,15 @@
-import BadmintonPage from 'pages/extra-pages/BadmintonPage';
-import BookingPage from 'pages/extra-pages/BookingPage';
-import ExpenseManagementPage from 'pages/extra-pages/ExpenseManagementPage';
+import BadmintonPage from 'pages/extra-pages/badminton/BadmintonPage';
+import BookingPage from 'pages/extra-pages/bookings/BookingPage';
+import ExpenseManagementPage from 'pages/extra-pages/expense-management/ExpenseManagementPage';
 import Loadable from 'components/Loadable';
 import MainLayout from 'layout/MainLayout';
 import MinimalLayout from 'layout/MinimalLayout';
-import PaymentPage from 'pages/extra-pages/PaymentPage';
+import PaymentPage from 'pages/extra-pages/payment/PaymentPage';
 import { lazy } from 'react';
 import { useRoutes } from 'react-router-dom';
-import BookingListPage from 'pages/extra-pages/BookingListPage';
+import BookingListPage from 'pages/extra-pages/bookings/BookingListPage';
+import CalendarBooking from 'pages/extra-pages/bookings/CalendarBooking';
+import AddBooking from 'pages/extra-pages/bookings/AddBooking';
 
 // project import
 
@@ -90,9 +92,13 @@ export default function ThemeRoutes() {
           element: <BookingListPage />
         },
         {
-          path: 'calendar',
-          element: <BookingListPage />
+          path: 'calendarBooking',
+          element: <CalendarBooking />
         },
+        {
+          path: 'addBookings',
+          element: <AddBooking />
+        }
       ]
     }
   ]);
