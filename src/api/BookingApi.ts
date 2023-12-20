@@ -1,4 +1,5 @@
 // import { BookingFilterRequestDto } from 'dto/Booking/BookingFilterRequestDto';
+
 import FilterUtils from 'utils/FilterUtils';
 import StoreInstance from '../store/StoreInstance';
 import { handleApiError } from '../utils/ApiUtils';
@@ -6,6 +7,7 @@ import { handleApiError } from '../utils/ApiUtils';
 export default class BookingApi {
   public static async createBooking(booking: any) {
     try {
+      console.log('dsjbgvduhfb');
       const datails = await StoreInstance.api().post<any>('/bookings', booking);
       return datails.data;
     } catch (e) {
@@ -34,8 +36,7 @@ export default class BookingApi {
   }
   public static async getAll() {
     try {
-      const details = await StoreInstance.api().get<any[]>('/bookings/getAll');
-      console.log('fdsfdg', details);
+      const details = await StoreInstance.api().get<any[]>('/bookings');
       return details.data;
     } catch (e) {
       throw handleApiError(e, 'Failed to get all details');

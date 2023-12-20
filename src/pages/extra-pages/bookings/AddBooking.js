@@ -100,6 +100,7 @@ export default function AddBooking() {
       };
 
       const booking = async () => {
+        console.log('book');
         try {
           const response = await BookingApi.createBooking({
             type: bookingType,

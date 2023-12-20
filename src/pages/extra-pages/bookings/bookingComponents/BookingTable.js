@@ -1,66 +1,67 @@
 import * as React from 'react';
+
+import Paper from '@mui/material/Paper';
 import Table from '@mui/material/Table';
 import TableBody from '@mui/material/TableBody';
 import TableCell from '@mui/material/TableCell';
 import TableContainer from '@mui/material/TableContainer';
 import TableHead from '@mui/material/TableHead';
 import TableRow from '@mui/material/TableRow';
-import Paper from '@mui/material/Paper';
 
-const rows = [
-  {
-    BookingList: 1,
-    Type: 'Turf',
-    BookingType: 'cash',
-    DateofBooking: 23 / 5 / 2023,
-    startTime: '10:00 am',
-    endTime: '12:00 pm',
-    BookingAmount: 450,
-    status: 'paid'
-  },
-  {
-    BookingList: 2,
-    Type: 'Turf',
-    BookingType: 'cash',
-    DateofBooking: 23 / 5 / 2023,
-    startTime: '10:00 am',
-    endTime: '12:00 pm',
-    BookingAmount: 450,
-    status: 'paid'
-  },
-  {
-    BookingList: 3,
-    Type: 'Turf',
-    BookingType: 'cash',
-    DateofBooking: 23 / 5 / 2023,
-    startTime: '10:00 am',
-    endTime: '12:00 pm',
-    BookingAmount: 450,
-    status: 'paid'
-  },
-  {
-    BookingList: 4,
-    Type: 'Turf',
-    BookingType: 'cash',
-    DateofBooking: 23 / 5 / 2023,
-    startTime: '10:00 am',
-    endTime: '12:00 pm',
-    BookingAmount: 450,
-    status: 'paid'
-  },
-  {
-    BookingList: 5,
-    Type: 'Turf',
-    BookingType: 'cash',
-    DateofBooking: 23 / 5 / 2023,
-    startTime: '10:00 am',
-    endTime: '12:00 pm',
-    BookingAmount: 450,
-    status: 'pending'
-  }
-];
+// const rows = [
+//   {
+//     BookingList: 1,
+//     Type: 'Turf',
+//     BookingType: 'cash',
+//     DateofBooking: 23 / 5 / 2023,
+//     startTime: '10:00 am',
+//     endTime: '12:00 pm',
+//     BookingAmount: 450,
+//     status: 'paid'
+//   },
+//   {
+//     BookingList: 2,
+//     Type: 'Turf',
+//     BookingType: 'cash',
+//     DateofBooking: 23 / 5 / 2023,
+//     startTime: '10:00 am',
+//     endTime: '12:00 pm',
+//     BookingAmount: 450,
+//     status: 'paid'
+//   },
+//   {
+//     BookingList: 3,
+//     Type: 'Turf',
+//     BookingType: 'cash',
+//     DateofBooking: 23 / 5 / 2023,
+//     startTime: '10:00 am',
+//     endTime: '12:00 pm',
+//     BookingAmount: 450,
+//     status: 'paid'
+//   },
+//   {
+//     BookingList: 4,
+//     Type: 'Turf',
+//     BookingType: 'cash',
+//     DateofBooking: 23 / 5 / 2023,
+//     startTime: '10:00 am',
+//     endTime: '12:00 pm',
+//     BookingAmount: 450,
+//     status: 'paid'
+//   },
+//   {
+//     BookingList: 5,
+//     Type: 'Turf',
+//     BookingType: 'cash',
+//     DateofBooking: 23 / 5 / 2023,
+//     startTime: '10:00 am',
+//     endTime: '12:00 pm',
+//     BookingAmount: 450,
+//     status: 'pending'
+//   }
+// ];
 
-export default function BookingTable() {
+export default function BookingTable({ bookingList }) {
   return (
     <TableContainer component={Paper}>
       <Table sx={{ minWidth: 650 }} aria-label="simple table">
@@ -77,7 +78,7 @@ export default function BookingTable() {
           </TableRow>
         </TableHead>
         <TableBody>
-          {rows.map((row) => (
+          {bookingList.map((row) => (
             <TableRow key={row.BookingList} sx={{ '&:last-child td, &:last-child th': { border: 0 } }}>
               <TableCell component="th" scope="row">
                 {row.BookingList}

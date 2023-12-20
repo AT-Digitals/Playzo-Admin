@@ -1,12 +1,14 @@
-import { useState, useEffect } from 'react';
-import BookingTable from './bookingComponents/BookingTable';
-import MainCard from 'components/MainCard';
-//import BookingApi from 'api/BookingApi';
-import MenuItem from '@mui/material/MenuItem';
-import FormControl from '@mui/material/FormControl';
-import Select from '@mui/material/Select';
-import { Typography, Stack, Box } from '@mui/material';
+import { Box, Stack, Typography } from '@mui/material';
+import { useEffect, useState } from 'react';
+
 import BookingApi from 'api/BookingApi';
+import BookingTable from './bookingComponents/BookingTable';
+import FormControl from '@mui/material/FormControl';
+import MainCard from 'components/MainCard';
+import MenuItem from '@mui/material/MenuItem';
+import Select from '@mui/material/Select';
+
+//import BookingApi from 'api/BookingApi';
 
 export default function BookingListPage() {
   const [bookingType, setBookingType] = useState('All');
@@ -19,9 +21,11 @@ export default function BookingListPage() {
   useEffect(() => {
     const fetchInfo = async () => {
       try {
-        const res = await BookingApi.getAll();
+        const res = await BookingApi.getAll().then((data) => {
+          console.log('dsf', data);
+          setData(data);
+        });
         const details = await res.json();
-        console.log('dsf', details);
         setData(details);
       } catch {
         console.log('vcxvcxv');
@@ -48,7 +52,7 @@ export default function BookingListPage() {
             </FormControl>
           </Stack>
         </Box>
-        <BookingTable />
+        <BookingTable bookingList={data} />
       </Stack>
     </MainCard>
   );
