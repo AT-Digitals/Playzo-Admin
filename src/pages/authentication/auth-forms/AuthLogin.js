@@ -47,30 +47,30 @@ const AuthLogin = () => {
     <>
       <Formik
         initialValues={{
-          email: 'antoshoba@gmail.com',
-          password: 'antoshoba'
+          email: '',
+          password: ''
         }}
         validationSchema={Yup.object().shape({
           email: Yup.string().email('Must be a valid email').max(255).required('Email is required'),
           password: Yup.string().max(255).required('Password is required')
         })}
         onSubmit={async (values, { setErrors, setStatus, setSubmitting }) => {
-          navigate('/dashboard/default');
           try {
             console.log('value', values);
             const response = await AdminLoginApi.loginUser({
               email: values.email,
               password: values.password
             });
-            navigate('/dashboard/default');
+
             console.log('responseApi', response);
-            // if (response) {
-            //   return;
-            // } else {
-            //   NotificationUtils.showError(UserError.SITE_ACCESS_DENIED);
-            // }
-            setStatus({ success: true });
-            setSubmitting(true);
+            if (response) {
+              navigate('/dashboard/default');
+              setStatus({ success: true });
+              setSubmitting(true);
+            } else {
+              // NotificationUtils.showError(UserError.SITE_ACCESS_DENIED);
+              console.log('Login Failed');
+            }
           } catch (err) {
             setStatus({ success: false });
             setErrors({ submit: err.message });

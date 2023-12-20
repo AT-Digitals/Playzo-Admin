@@ -22,7 +22,6 @@ export default function BookingListPage() {
     const fetchInfo = async () => {
       try {
         const res = await BookingApi.getAll().then((data) => {
-          console.log('dsf', data);
           setData(data);
         });
         const details = await res.json();
@@ -33,7 +32,6 @@ export default function BookingListPage() {
     };
 
     fetchInfo();
-    console.log('bookingdata', data);
   }, []);
 
   return (
@@ -52,7 +50,7 @@ export default function BookingListPage() {
             </FormControl>
           </Stack>
         </Box>
-        <BookingTable bookingList={data} />
+        <BookingTable bookingList={data} bookingtype={bookingType} />
       </Stack>
     </MainCard>
   );

@@ -27,6 +27,7 @@ export default function AddBooking() {
     setBookingType(event.target.value);
     setDate('');
   };
+  console.log('booking', bookingType);
   const dateHandler = (newValue) => {
     let datedata = newValue.$d;
     const parsedDate = moment(datedata);
@@ -106,7 +107,7 @@ export default function AddBooking() {
             type: bookingType,
             dateOfBooking: date,
             bookingAmount: 20,
-            bookingType: 'cash',
+            bookingtype: 'cash',
             startTime: parseInt(startTime),
             endTime: parseInt(endTime)
           });

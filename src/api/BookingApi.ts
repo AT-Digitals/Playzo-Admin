@@ -7,7 +7,6 @@ import { handleApiError } from '../utils/ApiUtils';
 export default class BookingApi {
   public static async createBooking(booking: any) {
     try {
-      console.log('dsjbgvduhfb');
       const datails = await StoreInstance.api().post<any>('/bookings', booking);
       return datails.data;
     } catch (e) {
