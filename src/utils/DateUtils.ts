@@ -30,4 +30,18 @@ export default class DateUtils {
   static compareDates(day1: string | Date, day2: string | Date) {
     return moment(day1).isSame(moment(day2), 'day');
   }
+
+  static formatMillisecondsToTime = (ms: moment.MomentInput) => {
+    if (ms === null) {
+      return '';
+    }
+    const formattedTime = moment(ms).format('hh:mm:ss a');
+    return formattedTime;
+  };
+
+  static convertTo24HourFormat = (time12h: moment.MomentInput) => {
+    const time24h = moment(time12h, 'hh:mm:ss a').format('HH:mm');
+
+    return time24h;
+  };
 }
