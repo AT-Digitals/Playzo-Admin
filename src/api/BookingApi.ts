@@ -3,12 +3,14 @@
 import FilterUtils from 'utils/FilterUtils';
 import StoreInstance from '../store/StoreInstance';
 import { handleApiError } from '../utils/ApiUtils';
+import axiosInstance from './CreateAxiosIntance';
 
 export default class BookingApi {
   public static async createBooking(booking: any) {
     try {
-      const datails = await StoreInstance.api().post<any>('/bookings', booking);
-      return datails.data;
+      const details = await axiosInstance.post("/bookings", booking) //example for using axios instance
+      // const datails = await StoreInstance.api().post<any>('/bookings', booking);
+      return details.data;
     } catch (e) {
       throw handleApiError(e, 'Failed to create booking');
     }
