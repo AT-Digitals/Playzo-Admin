@@ -8,6 +8,7 @@ import TimeSlotModal from './bookingComponents/TimeSlotModal';
 import TypeDropdown from './bookingComponents/TypeDropdown';
 import moment from 'moment';
 import { useState } from 'react';
+import DateUtils from 'utils/DateUtils';
 
 export default function AddBooking() {
   const [date, setDate] = useState('');
@@ -23,11 +24,22 @@ export default function AddBooking() {
   const [bookingType, setBookingType] = useState('');
   const [toast, setToast] = useState('');
 
+  const [initalTime, setInitalTime] = useState('00:00');
+  const [initalEnd, setInitalEnd] = useState('00:00');
+
+  const TextFieldChange = (newValue) => {
+    setInitalTime(newValue);
+    setStartTime(newValue);
+  };
+  const TextFieldEndChange = (newValue) => {
+    setInitalEnd(newValue);
+  };
+
   const handleChange = (event) => {
     setBookingType(event.target.value);
     setDate('');
   };
-  console.log('booking', bookingType);
+
   const dateHandler = (newValue) => {
     let datedata = newValue.$d;
     const parsedDate = moment(datedata);
@@ -64,22 +76,8 @@ export default function AddBooking() {
     setEndTime(milliseconds);
   };
 
-  const formatMillisecondsToTime = (ms) => {
-    if (ms === null) {
-      return '';
-    }
-    const formattedTime = moment(ms).format('hh:mm:ss a');
-    return formattedTime;
-  };
-
-  const convertTo24HourFormat = (time12h) => {
-    const time24h = moment(time12h, 'hh:mm:ss a').format('HH:mm:ss');
-
-    return time24h;
-  };
-
-  const convertedStartTime = formatMillisecondsToTime(startTime);
-  const convertedEndTime = formatMillisecondsToTime(endTime);
+  const convertedStartTime = DateUtils.formatMillisecondsToTime(startTime);
+  const convertedEndTime = DateUtils.formatMillisecondsToTime(endTime);
 
   const onSubmit = (event) => {
     event.preventDefault();
@@ -134,16 +132,6 @@ export default function AddBooking() {
   const handleCloseModal = () => {
     setIsModalOpen(false);
   };
-  const [initalTime, setInitalTime] = useState('00:00');
-  const [initalEnd, setInitalEnd] = useState('00:00');
-
-  const TextFieldChange = (newValue) => {
-    setInitalTime(newValue);
-    setStartTime(newValue);
-  };
-  const TextFieldEndChange = (newValue) => {
-    setInitalEnd(newValue);
-  };
 
   const shouldDisableTime = (value, view) => {
     const hour = value.hour();
@@ -154,10 +142,10 @@ export default function AddBooking() {
 
       if (matchingItems.length > 0) {
         return matchingItems.some((item) => {
-          const value1 = formatMillisecondsToTime(item.startTime);
-          const value2 = formatMillisecondsToTime(item.endTime);
-          const time = convertTo24HourFormat(value1);
-          const time2 = convertTo24HourFormat(value2);
+          const value1 = DateUtils.formatMillisecondsToTime(item.startTime);
+          const value2 = DateUtils.formatMillisecondsToTime(item.endTime);
+          const time = DateUtils.convertTo24HourFormat(value1);
+          const time2 = DateUtils.convertTo24HourFormat(value2);
           const startHour = parseInt(time.split(':')[0], 10);
           const startMinute = parseInt(time.split(':')[1], 10);
           const endHour = parseInt(time2.split(':')[0], 10);

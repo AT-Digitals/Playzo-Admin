@@ -8,8 +8,6 @@ import MainCard from 'components/MainCard';
 import MenuItem from '@mui/material/MenuItem';
 import Select from '@mui/material/Select';
 
-//import BookingApi from 'api/BookingApi';
-
 export default function BookingListPage() {
   const [bookingType, setBookingType] = useState('All');
   const [data, setData] = useState([]);

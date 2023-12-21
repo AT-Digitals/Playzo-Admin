@@ -9,15 +9,9 @@ import TableHead from '@mui/material/TableHead';
 import TableRow from '@mui/material/TableRow';
 import { useState } from 'react';
 import { TablePagination } from '@mui/material';
+import DateUtils from 'utils/DateUtils';
 
 export default function BookingTable({ bookingList, bookingtype }) {
-  const formatMillisecondsToTime = (ms) => {
-    if (ms === null) {
-      return '';
-    }
-    const formattedTime = moment(ms).format('hh:mm a');
-    return formattedTime;
-  };
   const [page, setPage] = useState(0);
   const [rowsPerPage, setRowsPerPage] = useState(10);
 
@@ -57,8 +51,8 @@ export default function BookingTable({ bookingList, bookingtype }) {
                 </TableCell>
                 <TableCell>{data.type}</TableCell>
                 <TableCell>{moment(data.dateOfBooking).format('YYYY-MM-DD')}</TableCell>
-                <TableCell>{formatMillisecondsToTime(data.startTime)}</TableCell>
-                <TableCell>{formatMillisecondsToTime(data.endTime)}</TableCell>
+                <TableCell>{DateUtils.formatMillisecondsToTime(data.startTime)}</TableCell>
+                <TableCell>{DateUtils.formatMillisecondsToTime(data.endTime)}</TableCell>
                 <TableCell>{data.bookingType}</TableCell>
                 <TableCell>{data.bookingAmount}</TableCell>
               </TableRow>

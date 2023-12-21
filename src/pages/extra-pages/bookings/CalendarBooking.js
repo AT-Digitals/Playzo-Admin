@@ -69,28 +69,19 @@ const CalendarBooking = () => {
 
   return (
     <MainCard title="Calendar Booking">
-      <div>
-        <div style={{ height: '900px' }}>
-          <Calendar
-            selectable
-            localizer={localizer}
-            events={data}
-            startAccessor="start"
-            endAccessor="end"
-            onSelectEvent={handleSelectEvent}
-            onNavigate={handleNavigate}
-            defaultDate={moment().toDate()}
-            toolbar
-            timeslots={3}
-          />
-        </div>
-        {/* {selectedEvent && (
-          <div>
-            <h2>{selectedEvent.title}</h2>
-            <p>start:{selectedEvent.start}</p>
-            <p>end: {selectedEvent.end}</p>
-          </div>
-        )} */}
+      <div style={{ height: '900px' }}>
+        <Calendar
+          selectable
+          localizer={localizer}
+          events={data}
+          startAccessor="start"
+          endAccessor="end"
+          onSelectEvent={handleSelectEvent}
+          onNavigate={handleNavigate}
+          defaultDate={moment().toDate()}
+          toolbar
+          timeslots={3}
+        />
       </div>
     </MainCard>
   );
