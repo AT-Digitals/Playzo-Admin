@@ -20,6 +20,7 @@ import AnimateButton from 'components/@extended/AnimateButton';
 import { Formik } from 'formik';
 import React from 'react';
 import { useNavigate } from 'react-router-dom';
+//import CreateAxiosInstance from 'api/CreateAxiosIntance';
 
 // material-ui
 
@@ -56,14 +57,18 @@ const AuthLogin = () => {
         })}
         onSubmit={async (values, { setErrors, setStatus, setSubmitting }) => {
           try {
-            console.log('value', values);
             const response = await AdminLoginApi.loginUser({
               email: values.email,
               password: values.password
             });
 
-            console.log('responseApi', response);
             if (response) {
+              const { token } = response;
+
+              console.log('responseApi', token);
+
+              localStorage.setItem('userData', JSON.stringify(response));
+
               navigate('/dashboard/default');
               setStatus({ success: true });
               setSubmitting(true);
