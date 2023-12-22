@@ -9,7 +9,7 @@ import EditIcon from '@mui/icons-material/Edit';
 
 // project import
 import MainCard from 'components/MainCard';
-import BookingTable from './bookingComponents/BookingTable';
+//import BookingTable from './bookingComponents/BookingTable';
 import SearchComponent from '../SearchComponent';
 
 const status = [
@@ -104,11 +104,11 @@ const BookingPage = () => {
             <EditIcon sx={{ paddingRight: '8px' }} /> Edit Bookings
           </Button>
         </Stack>
-        <Grid container>
+        {/* <Grid container>
           <Grid>
             <BookingTable />
           </Grid>
-        </Grid>
+        </Grid> */}
       </Stack>
     </MainCard>
   );

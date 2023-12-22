@@ -3,13 +3,13 @@
 import FilterUtils from 'utils/FilterUtils';
 import StoreInstance from '../store/StoreInstance';
 import { handleApiError } from '../utils/ApiUtils';
-import axiosInstance from './CreateAxiosIntance';
+//import axiosInstance, { getAuthorizationHeader } from './CreateAxiosIntance';
 
 export default class BookingApi {
   public static async createBooking(booking: any) {
     try {
-      const details = await axiosInstance.post("/bookings", booking) //example for using axios instance
-      // const datails = await StoreInstance.api().post<any>('/bookings', booking);
+      // const details = await axiosInstance.post('/bookings', { booking }, { headers: { Authorization: getAuthorizationHeader() } }); //example for using axios instance
+      const details = await StoreInstance.api().post<any>('/bookings', booking);
       return details.data;
     } catch (e) {
       throw handleApiError(e, 'Failed to create booking');

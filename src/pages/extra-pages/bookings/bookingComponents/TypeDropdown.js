@@ -3,8 +3,9 @@ import MenuItem from '@mui/material/MenuItem';
 import FormControl from '@mui/material/FormControl';
 import Select from '@mui/material/Select';
 import { Typography, Stack } from '@mui/material';
+import FormHelperText from '@mui/material/FormHelperText';
 
-export default function TypeDropdown({ type, onChange, label }) {
+export default function TypeDropdown({ type, onChange, label, error }) {
   return (
     <Stack sx={{ minWidth: 200 }} spacing={3}>
       <Typography>{label}</Typography>
@@ -14,6 +15,7 @@ export default function TypeDropdown({ type, onChange, label }) {
           <MenuItem value="boardGame">Board Game</MenuItem>
           <MenuItem value="playstation">Play Station</MenuItem>
         </Select>
+        {error ? <FormHelperText error>Please select a type</FormHelperText> : <></>}
       </FormControl>
     </Stack>
   );

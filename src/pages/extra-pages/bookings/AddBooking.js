@@ -3,12 +3,13 @@ import CustomDatePicker from './bookingComponents/CustomDatePicker';
 import CustomTextField from './bookingComponents/CustomTextField';
 import MainCard from 'components/MainCard';
 import NotificationToast from '../../components-overview/NotificationToast';
-import { Stack } from '@mui/material';
+import { Stack, Button } from '@mui/material';
 import TimeSlotModal from './bookingComponents/TimeSlotModal';
 import TypeDropdown from './bookingComponents/TypeDropdown';
 import moment from 'moment';
 import { useState } from 'react';
 import DateUtils from 'utils/DateUtils';
+import NotificationSuccessToast from 'pages/components-overview/NotificationSuccessToast';
 
 export default function AddBooking() {
   const [date, setDate] = useState('');
@@ -23,9 +24,11 @@ export default function AddBooking() {
 
   const [bookingType, setBookingType] = useState('');
   const [toast, setToast] = useState('');
+  const [bookingTypeError, setBookingTypeError] = useState(false);
 
-  const [initalTime, setInitalTime] = useState('00:00');
-  const [initalEnd, setInitalEnd] = useState('00:00');
+  const [initalTime, setInitalTime] = useState('00:00:00');
+  const [initalEnd, setInitalEnd] = useState('00:00:00');
+  const [successtoast, setSuccessToast] = useState('');
 
   const TextFieldChange = (newValue) => {
     setInitalTime(newValue);
@@ -38,6 +41,7 @@ export default function AddBooking() {
   const handleChange = (event) => {
     setBookingType(event.target.value);
     setDate('');
+    setBookingTypeError(false);
   };
 
   const dateHandler = (newValue) => {
@@ -90,17 +94,21 @@ export default function AddBooking() {
     if (!endTime) {
       setEndError(true);
     }
+    if (!bookingType) {
+      setBookingTypeError(true);
+    }
 
     if (date && startTime && endTime) {
       const data = {
+        type: bookingType,
         date: date,
         startTime: startTime,
         endTime: endTime
       };
 
       const booking = async () => {
-        console.log('book');
         try {
+          console.log('book');
           const response = await BookingApi.createBooking({
             type: bookingType,
             dateOfBooking: date,
@@ -109,10 +117,12 @@ export default function AddBooking() {
             startTime: parseInt(startTime),
             endTime: parseInt(endTime)
           });
+          console.log('book2344', response);
           if (response.message) {
             setToast(response.message);
           }
           setIsModalOpen(false);
+          setSuccessToast('Your Booking is added.');
         } catch {
           setToast('Please select valid type and time');
         }
@@ -134,6 +144,57 @@ export default function AddBooking() {
   };
 
   const shouldDisableTime = (value, view) => {
+    const hour = value.hour();
+    const minute = value.minute();
+
+    if (startTime) {
+      const startMiltoTime = DateUtils.formatMillisecondsToTime(startTime);
+      const time = DateUtils.convertTo24HourFormat(startMiltoTime);
+
+      const endMiltoTime = DateUtils.formatMillisecondsToTime(startTime);
+      const etime = DateUtils.convertTo24HourFormat(endMiltoTime);
+
+      console.log(time, 'disable');
+
+      const startH = parseInt(time.split(':')[0], 10);
+      //const startM = parseInt(time.split(':')[1], 10);
+      const endH = parseInt(etime.split(':')[0], 10);
+      const endM = parseInt(etime.split(':')[1], 10);
+
+      return (hour < startH && hour < endH) || (hour === endH && minute < endM);
+    }
+
+    if (disableData && Array.isArray(disableData)) {
+      const matchingItems = disableData.filter((item) => moment(item.dateOfBooking).format('YYYY-MM-DD') == date);
+
+      if (matchingItems.length > 0) {
+        return matchingItems.some((item) => {
+          const value1 = DateUtils.formatMillisecondsToTime(item.startTime);
+          const value2 = DateUtils.formatMillisecondsToTime(item.endTime);
+          const time = DateUtils.convertTo24HourFormat(value1);
+          const time2 = DateUtils.convertTo24HourFormat(value2);
+          const startHour = parseInt(time.split(':')[0], 10);
+          const startMinute = parseInt(time.split(':')[1], 10);
+          const endHour = parseInt(time2.split(':')[0], 10);
+          const endMinute = parseInt(time2.split(':')[1], 10);
+
+          if (view === 'hours' || view === 'minutes') {
+            return (
+              (hour === startHour && minute >= startMinute) ||
+              (hour > startHour && hour < endHour) ||
+              (hour === endHour && minute < endMinute)
+            );
+          }
+
+          return false;
+        });
+      }
+    }
+
+    return false;
+  };
+
+  const shouldDisableStartTime = (value, view) => {
     const hour = value.hour();
     const minute = value.minute();
 
@@ -171,14 +232,13 @@ export default function AddBooking() {
     <MainCard title="Add Bookings">
       <form>
         <Stack direction="row" spacing={2} alignItems="center">
-          <TypeDropdown label="Booking Type" type={bookingType} onChange={handleChange} />
-          {bookingType && (
-            <>
-              <CustomDatePicker date={date} setDate={dateHandler} error={dateError} />
-              <CustomTextField label="Start Time" value={!startTime ? initalTime : convertedStartTime} setValue={TextFieldChange} />
-              <CustomTextField label="End Time" value={!endTime ? initalEnd : convertedEndTime} setValue={TextFieldEndChange} />{' '}
-            </>
-          )}
+          <TypeDropdown label="Booking Type" type={bookingType} onChange={handleChange} error={bookingTypeError} />
+          <CustomDatePicker date={date} setDate={dateHandler} error={dateError} />
+          <CustomTextField label="Start Time" value={!startTime ? initalTime : convertedStartTime} setValue={TextFieldChange} />
+          <CustomTextField label="End Time" value={!endTime ? initalEnd : convertedEndTime} setValue={TextFieldEndChange} />{' '}
+          <Button variant="outlined" sx={{ marginTop: '45px !important', padding: '8px 15px' }} type="submit" onClick={onSubmit}>
+            Add booking
+          </Button>
           <TimeSlotModal
             isOpen={isModalOpen}
             onClose={handleCloseModal}
@@ -186,13 +246,13 @@ export default function AddBooking() {
             onSelect={handleDialogEndTimeChange}
             error={startError}
             error1={endError}
-            shouldDisableTime={shouldDisableTime}
+            shouldDisableTime={shouldDisableStartTime}
             shouldDisableEndTime={shouldDisableTime}
-            onSubmit={onSubmit}
           />
         </Stack>
       </form>
       {toast !== '' ? <NotificationToast error={toast} /> : <></>}
+      {successtoast !== '' ? <NotificationSuccessToast success={successtoast} /> : <></>}
     </MainCard>
   );
 }

@@ -4,9 +4,9 @@ import { ToastContainer, toast } from 'react-toastify';
 
 import React from 'react';
 
-export default function NotificationToast({ error }) {
-  const notify = () => toast.error(error);
-  if (error !== '') {
+export default function NotificationSuccessToast({ success }) {
+  const notify = () => toast.success(success);
+  if (success !== '') {
     notify();
   }
 
@@ -14,8 +14,8 @@ export default function NotificationToast({ error }) {
     <div>
       <ToastContainer
         position="top-center"
-        autoClose={5000}
         limit={1}
+        autoClose={5000}
         hideProgressBar
         newestOnTop={false}
         closeOnClick
@@ -23,7 +23,7 @@ export default function NotificationToast({ error }) {
         pauseOnFocusLoss
         draggable
         pauseOnHover={false}
-        theme="colored"
+        theme="light"
       />
     </div>
   );

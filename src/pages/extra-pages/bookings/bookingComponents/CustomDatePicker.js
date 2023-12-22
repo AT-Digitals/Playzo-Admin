@@ -15,10 +15,14 @@ export default function BasicDatePicker({ date, setDate, error }) {
           value={date}
           onChange={(newValue) => setDate(newValue)}
           disablePast
-          required
           slotProps={{
             textField: {
               helperText: error ? 'Please select a date' : ''
+            }
+          }}
+          sx={{
+            '.css-1phpx1i-MuiInputBase-root-MuiOutlinedInput-root.Mui-error .MuiOutlinedInput-notchedOutline': {
+              borderColor: '#d9d9d9'
             }
           }}
         />
