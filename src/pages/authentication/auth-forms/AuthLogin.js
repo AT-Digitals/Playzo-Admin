@@ -57,23 +57,30 @@ const AuthLogin = () => {
         })}
         onSubmit={async (values, { setErrors, setStatus, setSubmitting }) => {
           try {
+            console.log('login', values);
             const response = await AdminLoginApi.loginUser({
               email: values.email,
               password: values.password
             });
 
+            console.log('responseApi', response);
             if (response) {
-              const { token } = response;
+              console.log('responseApi', response);
+              //const { token } = response;
 
-              console.log('responseApi', token);
+              // console.log('responseApi2', token);
 
-              localStorage.setItem('userData', JSON.stringify(response));
+              // const value = localStorage.setItem('userData', JSON.stringify(response));
+              //console.log('fdg', value);
+              const { token, refreshToken } = response.data;
+
+              localStorage.setItem('token', token);
+              localStorage.setItem('refreshToken', refreshToken);
 
               navigate('/dashboard/default');
               setStatus({ success: true });
               setSubmitting(true);
             } else {
-              // NotificationUtils.showError(UserError.SITE_ACCESS_DENIED);
               console.log('Login Failed');
             }
           } catch (err) {
