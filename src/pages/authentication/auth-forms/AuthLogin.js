@@ -57,26 +57,13 @@ const AuthLogin = () => {
         })}
         onSubmit={async (values, { setErrors, setStatus, setSubmitting }) => {
           try {
-            console.log('login', values);
             const response = await AdminLoginApi.loginUser({
               email: values.email,
               password: values.password
             });
-
-            console.log('responseApi', response);
             if (response) {
-              console.log('responseApi', response);
-              //const { token } = response;
-
-              // console.log('responseApi2', token);
-
-              // const value = localStorage.setItem('userData', JSON.stringify(response));
-              //console.log('fdg', value);
-              const { token, refreshToken } = response.data;
-
+              const { token } = response;
               localStorage.setItem('token', token);
-              localStorage.setItem('refreshToken', refreshToken);
-
               navigate('/dashboard/default');
               setStatus({ success: true });
               setSubmitting(true);
