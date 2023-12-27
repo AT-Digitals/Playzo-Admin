@@ -38,7 +38,14 @@
       "impliedStrict": true,
       "jsx": true
     },
-    "ecmaVersion": 12
+    "ecmaVersion": 12,
+    "requireConfigFile": false,
+    "parser": "@babel/eslint-parser",
+    "babelOptions": {
+      "parserOpts": {
+        "plugins": ["jsx"]
+      }
+    }
   },
   "plugins": ["prettier", "react", "react-hooks"],
   "rules": {
