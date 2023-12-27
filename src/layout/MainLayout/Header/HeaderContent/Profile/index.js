@@ -61,10 +61,10 @@ const Profile = () => {
 
   const handleLogout = async () => {
     try {
-      AdminLoginApi.logoutUser();
-      navigate('/');
-      //sessionStorage.clear();
-      localStorage.clear();
+      await AdminLoginApi.logoutUser();
+      await navigate('/');
+      await sessionStorage.clear();
+      await localStorage.clear();
     } catch {
       console.log('Logout failed');
     }

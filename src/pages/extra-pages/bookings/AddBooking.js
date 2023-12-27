@@ -108,16 +108,15 @@ export default function AddBooking() {
 
       const booking = async () => {
         try {
-          console.log('book');
           const response = await BookingApi.createBooking({
             type: bookingType,
             dateOfBooking: date,
             bookingAmount: 20,
             bookingtype: 'cash',
             startTime: parseInt(startTime),
-            endTime: parseInt(endTime)
+            endTime: parseInt(endTime),
+            user: localStorage.getItem('id')
           });
-          console.log('book2344', response);
           if (response.message) {
             setToast(response.message);
           }
@@ -137,6 +136,8 @@ export default function AddBooking() {
       setEndTime('');
       setBookingType('');
       setIsModalOpen(false);
+      setSuccessToast('');
+      setToast('');
     }
   };
   const handleCloseModal = () => {
@@ -155,7 +156,6 @@ export default function AddBooking() {
       const etime = DateUtils.convertTo24HourFormat(endMiltoTime);
 
       const startH = parseInt(time.split(':')[0], 10);
-      //const startM = parseInt(time.split(':')[1], 10);
       const endH = parseInt(etime.split(':')[0], 10);
       const endM = parseInt(etime.split(':')[1], 10);
 

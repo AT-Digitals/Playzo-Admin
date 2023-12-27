@@ -1,14 +1,11 @@
 import FilterUtils from 'utils/FilterUtils';
-//import StoreInstance from '../store/StoreInstance';
 import { handleApiError } from '../utils/ApiUtils';
 import axiosInstance from './CreateAxiosIntance';
 
 export default class BookingApi {
   public static async createBooking(booking: any) {
     try {
-      console.log('booking', booking);
       const details = await axiosInstance.post('/bookings', booking);
-      //const details = await StoreInstance.api().post<any>('/bookings', booking);
       return details.data;
     } catch (e) {
       throw handleApiError(e, 'Failed to create booking');
@@ -17,7 +14,6 @@ export default class BookingApi {
 
   public static filterBooking = async (filter: any) => {
     try {
-      console.log('filter', filter);
       const datails = await axiosInstance.get<any[]>(`/bookingFilter/filterBookings` + FilterUtils.getQueryString(filter));
       return datails.data;
     } catch (e) {

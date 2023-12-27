@@ -61,13 +61,10 @@ const AuthLogin = () => {
               email: values.email,
               password: values.password
             });
-            // const value = response;
-            // console.log('fdfd', value);
             if (response) {
-              const { token } = response;
-              console.log('token', token);
-              // window.sessionStorage.setItem('token', token);
+              const { token, id } = response;
               localStorage.setItem('token', token);
+              localStorage.setItem('id', id);
               navigate('/dashboard/default');
               setStatus({ success: true });
               setSubmitting(true);

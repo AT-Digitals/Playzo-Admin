@@ -2,29 +2,29 @@ import 'react-toastify/dist/ReactToastify.css';
 
 import { ToastContainer, toast } from 'react-toastify';
 
-import React from 'react';
+import React, { useEffect } from 'react';
 
 export default function NotificationSuccessToast({ success }) {
-  const notify = () => toast.success(success);
-  if (success !== '') {
-    notify();
-  }
+  useEffect(() => {
+    if (success !== '') {
+      const toastId = toast.success(success, {
+        autoClose: 5000,
+        position: toast.POSITION.TOP_CENTER,
+        hideProgressBar: true,
+        closeOnClick: true,
+        pauseOnHover: false,
+        theme: 'light'
+      });
+
+      return () => {
+        toast.dismiss(toastId);
+      };
+    }
+  }, [success]);
 
   return (
     <div>
-      <ToastContainer
-        position="top-center"
-        limit={1}
-        autoClose={5000}
-        hideProgressBar
-        newestOnTop={false}
-        closeOnClick
-        rtl={false}
-        pauseOnFocusLoss
-        draggable
-        pauseOnHover={false}
-        theme="light"
-      />
+      <ToastContainer />
     </div>
   );
 }
