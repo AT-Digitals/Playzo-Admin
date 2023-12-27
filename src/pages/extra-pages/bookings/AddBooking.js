@@ -154,8 +154,6 @@ export default function AddBooking() {
       const endMiltoTime = DateUtils.formatMillisecondsToTime(startTime);
       const etime = DateUtils.convertTo24HourFormat(endMiltoTime);
 
-      console.log(time, 'disable');
-
       const startH = parseInt(time.split(':')[0], 10);
       //const startM = parseInt(time.split(':')[1], 10);
       const endH = parseInt(etime.split(':')[0], 10);
