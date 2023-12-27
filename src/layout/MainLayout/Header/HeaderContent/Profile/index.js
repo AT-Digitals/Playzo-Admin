@@ -63,6 +63,7 @@ const Profile = () => {
     try {
       AdminLoginApi.logoutUser();
       navigate('/');
+      //sessionStorage.clear();
       localStorage.clear();
     } catch {
       console.log('Logout failed');

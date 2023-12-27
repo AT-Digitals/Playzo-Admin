@@ -6,6 +6,7 @@ import axiosInstance from './CreateAxiosIntance';
 export default class BookingApi {
   public static async createBooking(booking: any) {
     try {
+      console.log('booking', booking);
       const details = await axiosInstance.post('/bookings', booking);
       //const details = await StoreInstance.api().post<any>('/bookings', booking);
       return details.data;
@@ -16,6 +17,7 @@ export default class BookingApi {
 
   public static filterBooking = async (filter: any) => {
     try {
+      console.log('filter', filter);
       const datails = await axiosInstance.get<any[]>(`/bookingFilter/filterBookings` + FilterUtils.getQueryString(filter));
       return datails.data;
     } catch (e) {

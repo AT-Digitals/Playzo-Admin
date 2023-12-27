@@ -1,7 +1,7 @@
 import axios from 'axios';
 //import { useNavigate } from 'react-router';
-const token = window.sessionStorage.getItem('token');
-// const token = localStorage.getItem('token');
+
+const token = localStorage.getItem('token');
 console.log('tokenaxios', token);
 
 const axiosInstance = axios.create({

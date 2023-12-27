@@ -66,8 +66,8 @@ const AuthLogin = () => {
             if (response) {
               const { token } = response;
               console.log('token', token);
-              window.sessionStorage.setItem('token', token);
-              //localStorage.setItem('token', value.token);
+              // window.sessionStorage.setItem('token', token);
+              localStorage.setItem('token', token);
               navigate('/dashboard/default');
               setStatus({ success: true });
               setSubmitting(true);

@@ -5,6 +5,7 @@ import axiosInstance from './CreateAxiosIntance';
 export default class AdminLoginApi {
   public static loginUser = async (request: any) => {
     try {
+      console.log('login', request);
       const user = await axiosInstance.post<any>('/admins/login', request);
       return user.data;
     } catch (e) {
