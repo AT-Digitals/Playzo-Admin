@@ -1,4 +1,5 @@
 import axios from 'axios';
+import { toast } from 'react-toastify';
 
 const axiosInstance = axios.create({
   headers: {
@@ -32,7 +33,16 @@ axiosInstance.interceptors.response.use(
 const handleTokenExpiration = () => {
   localStorage.removeItem('token');
   localStorage.removeItem('id');
+  localStorage.removeItem('name');
   window.location.href = '/';
+  toast.error('Access Token was expired!. Please log in again.', {
+    autoClose: 5000,
+    position: toast.POSITION.TOP_CENTER,
+    hideProgressBar: true,
+    closeOnClick: true,
+    pauseOnHover: false,
+    theme: 'colored'
+  });
 };
 
 export default axiosInstance;

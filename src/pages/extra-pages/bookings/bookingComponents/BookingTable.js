@@ -7,26 +7,25 @@ import TableCell from '@mui/material/TableCell';
 import TableContainer from '@mui/material/TableContainer';
 import TableHead from '@mui/material/TableHead';
 import TableRow from '@mui/material/TableRow';
-import { useState } from 'react';
 import { TablePagination } from '@mui/material';
 import DateUtils from 'utils/DateUtils';
 
-export default function BookingTable({ bookingList, bookingtype }) {
-  const [page, setPage] = useState(0);
-  const [rowsPerPage, setRowsPerPage] = useState(10);
+export default function BookingTable({ bookingList, rowsPerPage, page, handleChangeRowsPerPage, handleChange }) {
+  // const [page, setPage] = useState(0);
+  // const [rowsPerPage, setRowsPerPage] = useState(10);
 
   const data = bookingList;
 
-  const filteredData = bookingtype === 'All' ? data : data.filter((item) => item.type === bookingtype);
+  // const filteredData = bookingtype === 'All' ? data : data.filter((item) => item.type === bookingtype);
 
-  const handleChangePage = (event, newPage) => {
-    setPage(newPage);
-  };
+  // const handleChangePage = (event, newPage) => {
+  //   setPage(newPage);
+  // };
 
-  const handleChangeRowsPerPage = (event) => {
-    setRowsPerPage(parseInt(event.target.value, 10));
-    setPage(0);
-  };
+  // const handleChangeRowsPerPage = (event) => {
+  //   setRowsPerPage(parseInt(event.target.value, 10));
+  //   setPage(0);
+  // };
 
   return (
     <>
@@ -44,7 +43,7 @@ export default function BookingTable({ bookingList, bookingtype }) {
             </TableRow>
           </TableHead>
           <TableBody>
-            {filteredData.slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage).map((data, index) => (
+            {bookingList.slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage).map((data, index) => (
               <TableRow key={index} sx={{ '&:last-child td, &:last-child th': { border: 0 } }}>
                 <TableCell component="th" scope="row">
                   {index + 1}
@@ -66,7 +65,7 @@ export default function BookingTable({ bookingList, bookingtype }) {
         count={data.length}
         rowsPerPage={rowsPerPage}
         page={page}
-        onPageChange={handleChangePage}
+        onPageChange={handleChange}
         onRowsPerPageChange={handleChangeRowsPerPage}
       />
     </>

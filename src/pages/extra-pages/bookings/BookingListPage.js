@@ -1,5 +1,7 @@
-import { Box, Stack, Typography } from '@mui/material';
+import { Box, Stack, Typography, Button } from '@mui/material';
 import { useEffect, useState } from 'react';
+import moment from 'moment';
+import DateUtils from 'utils/DateUtils';
 
 import BookingApi from 'api/BookingApi';
 import BookingTable from './bookingComponents/BookingTable';
@@ -7,11 +9,18 @@ import FormControl from '@mui/material/FormControl';
 import MainCard from 'components/MainCard';
 import MenuItem from '@mui/material/MenuItem';
 import Select from '@mui/material/Select';
-import TimeSlotButton from './bookingComponents/TimeSlotButton';
+import ToggleButtonComponent from './ToggleButtonComponent';
+import * as XLSX from 'xlsx';
 
 export default function BookingListPage() {
   const [bookingType, setBookingType] = useState('All');
   const [data, setData] = useState([]);
+  const [monthType, setMonthType] = useState('');
+  const [filteredData, setFilteredData] = useState([]);
+
+  const buttonhandleChange = (event, newValue) => {
+    setMonthType(newValue);
+  };
 
   const handleChange = (event) => {
     setBookingType(event.target.value);
@@ -22,21 +31,83 @@ export default function BookingListPage() {
       try {
         const res = await BookingApi.getAll().then((data) => {
           setData(data);
+          setFilteredData(data);
         });
         const details = await res.json();
         setData(details);
       } catch {
-        console.log('vcxvcxv');
+        console.log('Error fetching data');
       }
     };
 
     fetchInfo();
   }, []);
 
+  const [page, setPage] = useState(0);
+  const [rowsPerPage, setRowsPerPage] = useState(10);
+
+  const applyFilters = () => {
+    const updatedFilteredData =
+      bookingType === 'All'
+        ? data
+        : data.filter((item) => {
+            const typeFilter = item.type === bookingType;
+
+            let dateFilter = true;
+            const currentDate = new Date();
+
+            if (monthType) {
+              const startDate = new Date(item.dateOfBooking);
+
+              if (monthType === '1month') {
+                dateFilter = currentDate.getMonth() === startDate.getMonth();
+              } else if (monthType === '3month') {
+                const monthsDifference =
+                  (currentDate.getFullYear() - startDate.getFullYear()) * 12 + currentDate.getMonth() - startDate.getMonth();
+                console.log('month', monthsDifference);
+                dateFilter = monthsDifference >= 0 && monthsDifference <= 2;
+
+                //dateFilter = currentDate.getMonth() - startDate.getMonth() >= 2;
+              } else if (monthType === '6month') {
+                dateFilter = currentDate.getMonth() - startDate.getMonth() <= 5;
+              }
+            }
+            return typeFilter && dateFilter;
+          });
+
+    const ModifiedData = updatedFilteredData.map((item) => ({
+      ...item,
+      startTime: DateUtils.formatMillisecondsToTime(item.startTime),
+      endTime: DateUtils.formatMillisecondsToTime(item.endTime),
+      dateOfBooking: moment(item.dateOfBooking).format('YYYY-MM-DD')
+    }));
+    console.log('modify', ModifiedData);
+    setFilteredData(ModifiedData);
+    console.log('filter', updatedFilteredData);
+  };
+
+  const handleChangePage = (event, newPage) => {
+    setPage(newPage);
+  };
+
+  const handleChangeRowsPerPage = (event) => {
+    setRowsPerPage(parseInt(event.target.value, 10));
+    setPage(0);
+  };
+
+  const handleDownload = () => {
+    const wb = XLSX.utils.book_new();
+
+    const ws = XLSX.utils.json_to_sheet(filteredData);
+    XLSX.utils.book_append_sheet(wb, ws, 'Sheet1');
+
+    XLSX.writeFile(wb, 'table_data.xlsx');
+  };
+
   return (
     <MainCard title="Booking List">
       <Stack direction="column" spacing={4}>
-        <Stack direction="row" spacing={4}>
+        <Stack direction="row" spacing={4} justifyContent="space-between" alignItems="center">
           <Box sx={{ width: '300px' }}>
             <Stack sx={{ minWidth: 200 }} spacing={3}>
               <Typography>Select Booking Type</Typography>
@@ -50,10 +121,23 @@ export default function BookingListPage() {
               </FormControl>
             </Stack>
           </Box>
-          <TimeSlotButton label="Start Time" />
-          <TimeSlotButton label="End Time" />
+          <Stack direction="row" spacing={2} alignItems="center">
+            <ToggleButtonComponent value={monthType} setValue={buttonhandleChange} />
+            <Button variant="outlined" onClick={applyFilters}>
+              Apply
+            </Button>
+            <Button variant="outlined" onClick={handleDownload}>
+              Download
+            </Button>
+          </Stack>
         </Stack>
-        <BookingTable bookingList={data} bookingtype={bookingType} />
+        <BookingTable
+          bookingList={filteredData}
+          handleChange={handleChangePage}
+          handleChangeRowsPerPage={handleChangeRowsPerPage}
+          page={page}
+          rowsPerPage={rowsPerPage}
+        />
       </Stack>
     </MainCard>
   );

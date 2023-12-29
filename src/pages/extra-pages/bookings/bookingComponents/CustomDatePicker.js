@@ -14,7 +14,7 @@ export default function BasicDatePicker({ date, setDate, error }) {
         <DatePicker
           value={date}
           onChange={(newValue) => setDate(newValue)}
-          disablePast
+          //disablePast
           slotProps={{
             textField: {
               helperText: error ? 'Please select a date' : ''
