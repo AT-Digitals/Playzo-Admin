@@ -18,6 +18,17 @@ export default function BookingListPage() {
   const [monthType, setMonthType] = useState('');
   const [filteredData, setFilteredData] = useState([]);
 
+  const [isApplyMode, setIsApplyMode] = useState(true);
+  const [buttonDisable, setButtonDisable] = useState(false);
+
+  const handleButtonClick = () => {
+    setFilteredData(data);
+    setBookingType('All');
+    setMonthType('');
+    setIsApplyMode(true);
+    setButtonDisable(false);
+  };
+
   const buttonhandleChange = (event, newValue) => {
     setMonthType(newValue);
   };
@@ -47,43 +58,35 @@ export default function BookingListPage() {
   const [rowsPerPage, setRowsPerPage] = useState(10);
 
   const applyFilters = () => {
-    const updatedFilteredData =
-      bookingType === 'All'
-        ? data
-        : data.filter((item) => {
-            const typeFilter = item.type === bookingType;
+    const updatedFilteredData = data.filter((item) => {
+      let typeFilter;
+      if (bookingType === 'All') {
+        typeFilter = true;
+      } else {
+        typeFilter = item.type === bookingType;
+      }
 
-            let dateFilter = true;
-            const currentDate = new Date();
+      let dateFilter = true;
+      const currentDate = new Date();
 
-            if (monthType) {
-              const startDate = new Date(item.dateOfBooking);
+      if (monthType) {
+        const startDate = new Date(item.dateOfBooking);
 
-              if (monthType === '1month') {
-                dateFilter = currentDate.getMonth() === startDate.getMonth();
-              } else if (monthType === '3month') {
-                const monthsDifference =
-                  (currentDate.getFullYear() - startDate.getFullYear()) * 12 + currentDate.getMonth() - startDate.getMonth();
-                console.log('month', monthsDifference);
-                dateFilter = monthsDifference >= 0 && monthsDifference <= 2;
+        if (monthType === '1month') {
+          dateFilter = currentDate.getMonth() === startDate.getMonth();
+        } else if (monthType === '3month') {
+          dateFilter = currentDate.getMonth() - startDate.getMonth() <= 2;
+        } else if (monthType === '6month') {
+          dateFilter = currentDate.getMonth() - startDate.getMonth() <= 5;
+        }
+      }
+      return typeFilter && dateFilter;
+    });
 
-                //dateFilter = currentDate.getMonth() - startDate.getMonth() >= 2;
-              } else if (monthType === '6month') {
-                dateFilter = currentDate.getMonth() - startDate.getMonth() <= 5;
-              }
-            }
-            return typeFilter && dateFilter;
-          });
-
-    const ModifiedData = updatedFilteredData.map((item) => ({
-      ...item,
-      startTime: DateUtils.formatMillisecondsToTime(item.startTime),
-      endTime: DateUtils.formatMillisecondsToTime(item.endTime),
-      dateOfBooking: moment(item.dateOfBooking).format('YYYY-MM-DD')
-    }));
-    console.log('modify', ModifiedData);
-    setFilteredData(ModifiedData);
-    console.log('filter', updatedFilteredData);
+    setFilteredData(updatedFilteredData);
+    setIsApplyMode(false);
+    setPage(0);
+    setButtonDisable(true);
   };
 
   const handleChangePage = (event, newPage) => {
@@ -95,10 +98,27 @@ export default function BookingListPage() {
     setPage(0);
   };
 
+  const value = (id) => {
+    const localId = localStorage.getItem('id');
+    if (id === localId) {
+      const name = localStorage.getItem('name');
+      return name;
+    }
+  };
+
   const handleDownload = () => {
     const wb = XLSX.utils.book_new();
 
-    const ws = XLSX.utils.json_to_sheet(filteredData);
+    const ModifiedData = filteredData.map((item) => ({
+      ...item,
+      startTime: DateUtils.formatMillisecondsToTime(item.startTime),
+      endTime: DateUtils.formatMillisecondsToTime(item.endTime),
+      dateOfBooking: moment(item.dateOfBooking).format('YYYY-MM-DD'),
+      user: value(item.user)
+    }));
+    console.log('modify', ModifiedData);
+
+    const ws = XLSX.utils.json_to_sheet(ModifiedData);
     XLSX.utils.book_append_sheet(wb, ws, 'Sheet1');
 
     XLSX.writeFile(wb, 'table_data.xlsx');
@@ -112,7 +132,13 @@ export default function BookingListPage() {
             <Stack sx={{ minWidth: 200 }} spacing={3}>
               <Typography>Select Booking Type</Typography>
               <FormControl fullWidth>
-                <Select labelId="demo-simple-select-label" id="demo-simple-select" value={bookingType} onChange={handleChange}>
+                <Select
+                  labelId="demo-simple-select-label"
+                  id="demo-simple-select"
+                  value={bookingType}
+                  onChange={handleChange}
+                  disabled={buttonDisable}
+                >
                   <MenuItem value="All">All</MenuItem>
                   <MenuItem value="turf">Turf</MenuItem>
                   <MenuItem value="boardGame">Board Game</MenuItem>
@@ -122,10 +148,16 @@ export default function BookingListPage() {
             </Stack>
           </Box>
           <Stack direction="row" spacing={2} alignItems="center">
-            <ToggleButtonComponent value={monthType} setValue={buttonhandleChange} />
-            <Button variant="outlined" onClick={applyFilters}>
-              Apply
-            </Button>
+            <ToggleButtonComponent value={monthType} setValue={buttonhandleChange} disableprop={buttonDisable} />
+            {isApplyMode ? (
+              <Button variant="outlined" onClick={applyFilters}>
+                Apply
+              </Button>
+            ) : (
+              <Button variant="outlined" onClick={handleButtonClick}>
+                Clear
+              </Button>
+            )}
             <Button variant="outlined" onClick={handleDownload}>
               Download
             </Button>

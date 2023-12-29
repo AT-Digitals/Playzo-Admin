@@ -30,19 +30,19 @@ axiosInstance.interceptors.response.use(
   }
 );
 
-const handleTokenExpiration = () => {
+const handleTokenExpiration = async () => {
   localStorage.removeItem('token');
   localStorage.removeItem('id');
   localStorage.removeItem('name');
-  window.location.href = '/';
-  toast.error('Access Token was expired!. Please log in again.', {
-    autoClose: 5000,
+  await toast.error('Session expired. Please log in again.', {
+    autoClose: 8000,
     position: toast.POSITION.TOP_CENTER,
     hideProgressBar: true,
     closeOnClick: true,
     pauseOnHover: false,
     theme: 'colored'
   });
+  window.location.href = '/';
 };
 
 export default axiosInstance;

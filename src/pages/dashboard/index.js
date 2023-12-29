@@ -1,4 +1,4 @@
-import { useState } from 'react'
+import { useState } from 'react';
 
 // material-ui
 import {
@@ -15,31 +15,31 @@ import {
   MenuItem,
   Stack,
   TextField,
-  Typography,
-} from '@mui/material'
+  Typography
+} from '@mui/material';
 
 // project import
-import OrdersTable from './OrdersTable'
-import IncomeAreaChart from './IncomeAreaChart'
-import MonthlyBarChart from './MonthlyBarChart'
-import ReportAreaChart from './ReportAreaChart'
-import SalesColumnChart from './SalesColumnChart'
-import MainCard from 'components/MainCard'
-import AnalyticEcommerce from 'components/cards/statistics/AnalyticEcommerce'
+import OrdersTable from './OrdersTable';
+import IncomeAreaChart from './IncomeAreaChart';
+import MonthlyBarChart from './MonthlyBarChart';
+import ReportAreaChart from './ReportAreaChart';
+import SalesColumnChart from './SalesColumnChart';
+import MainCard from 'components/MainCard';
+import AnalyticEcommerce from 'components/cards/statistics/AnalyticEcommerce';
 
 // assets
-import { GiftOutlined, MessageOutlined, SettingOutlined } from '@ant-design/icons'
-import avatar1 from 'assets/images/users/avatar-1.png'
-import avatar2 from 'assets/images/users/avatar-2.png'
-import avatar3 from 'assets/images/users/avatar-3.png'
-import avatar4 from 'assets/images/users/avatar-4.png'
+import { GiftOutlined, MessageOutlined, SettingOutlined } from '@ant-design/icons';
+import avatar1 from 'assets/images/users/avatar-1.png';
+import avatar2 from 'assets/images/users/avatar-2.png';
+import avatar3 from 'assets/images/users/avatar-3.png';
+import avatar4 from 'assets/images/users/avatar-4.png';
 
 // avatar style
 const avatarSX = {
   width: 36,
   height: 36,
-  fontSize: '1rem',
-}
+  fontSize: '1rem'
+};
 
 // action style
 const actionSX = {
@@ -48,30 +48,30 @@ const actionSX = {
   top: 'auto',
   right: 'auto',
   alignSelf: 'flex-start',
-  transform: 'none',
-}
+  transform: 'none'
+};
 
 // sales report status
 const status = [
   {
     value: 'today',
-    label: 'Today',
+    label: 'Today'
   },
   {
     value: 'month',
-    label: 'This Month',
+    label: 'This Month'
   },
   {
     value: 'year',
-    label: 'This Year',
-  },
-]
+    label: 'This Year'
+  }
+];
 
 // ==============================|| DASHBOARD - DEFAULT ||============================== //
 
 const DashboardDefault = () => {
-  const [value, setValue] = useState('today')
-  const [slot, setSlot] = useState('week')
+  const [value, setValue] = useState('today');
+  const [slot, setSlot] = useState('week');
 
   return (
     <Grid container rowSpacing={4.5} columnSpacing={2.75}>
@@ -89,14 +89,7 @@ const DashboardDefault = () => {
         <AnalyticEcommerce title="Total Order" count="18,800" percentage={27.4} isLoss color="warning" extra="1,943" />
       </Grid>
       <Grid item xs={12} sm={6} md={4} lg={3}>
-        <AnalyticEcommerce
-          title="Total Sales"
-          count="$35,078"
-          percentage={27.4}
-          isLoss
-          color="warning"
-          extra="$20,395"
-        />
+        <AnalyticEcommerce title="Total Sales" count="$35,078" percentage={27.4} isLoss color="warning" extra="$20,395" />
       </Grid>
 
       <Grid item md={8} sx={{ display: { sm: 'none', md: 'block', lg: 'none' } }} />
@@ -241,8 +234,8 @@ const DashboardDefault = () => {
               '& .MuiListItemButton-root': {
                 py: 1.5,
                 '& .MuiAvatar-root': avatarSX,
-                '& .MuiListItemSecondaryAction-root': { ...actionSX, position: 'relative' },
-              },
+                '& .MuiListItemSecondaryAction-root': { ...actionSX, position: 'relative' }
+              }
             }}
           >
             <ListItemButton divider>
@@ -250,16 +243,13 @@ const DashboardDefault = () => {
                 <Avatar
                   sx={{
                     color: 'success.main',
-                    bgcolor: 'success.lighter',
+                    bgcolor: 'success.lighter'
                   }}
                 >
                   <GiftOutlined />
                 </Avatar>
               </ListItemAvatar>
-              <ListItemText
-                primary={<Typography variant="subtitle1">Order #002434</Typography>}
-                secondary="Today, 2:00 AM"
-              />
+              <ListItemText primary={<Typography variant="subtitle1">Order #002434</Typography>} secondary="Today, 2:00 AM" />
               <ListItemSecondaryAction>
                 <Stack alignItems="flex-end">
                   <Typography variant="subtitle1" noWrap>
@@ -276,16 +266,13 @@ const DashboardDefault = () => {
                 <Avatar
                   sx={{
                     color: 'primary.main',
-                    bgcolor: 'primary.lighter',
+                    bgcolor: 'primary.lighter'
                   }}
                 >
                   <MessageOutlined />
                 </Avatar>
               </ListItemAvatar>
-              <ListItemText
-                primary={<Typography variant="subtitle1">Order #984947</Typography>}
-                secondary="5 August, 1:45 PM"
-              />
+              <ListItemText primary={<Typography variant="subtitle1">Order #984947</Typography>} secondary="5 August, 1:45 PM" />
               <ListItemSecondaryAction>
                 <Stack alignItems="flex-end">
                   <Typography variant="subtitle1" noWrap>
@@ -302,16 +289,13 @@ const DashboardDefault = () => {
                 <Avatar
                   sx={{
                     color: 'error.main',
-                    bgcolor: 'error.lighter',
+                    bgcolor: 'error.lighter'
                   }}
                 >
                   <SettingOutlined />
                 </Avatar>
               </ListItemAvatar>
-              <ListItemText
-                primary={<Typography variant="subtitle1">Order #988784</Typography>}
-                secondary="7 hours ago"
-              />
+              <ListItemText primary={<Typography variant="subtitle1">Order #988784</Typography>} secondary="7 hours ago" />
               <ListItemSecondaryAction>
                 <Stack alignItems="flex-end">
                   <Typography variant="subtitle1" noWrap>
@@ -354,7 +338,7 @@ const DashboardDefault = () => {
         </MainCard>
       </Grid>
     </Grid>
-  )
-}
+  );
+};
 
-export default DashboardDefault
+export default DashboardDefault;
