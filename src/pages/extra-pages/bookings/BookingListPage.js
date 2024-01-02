@@ -99,9 +99,10 @@ export default function BookingListPage() {
   };
 
   const value = (id) => {
-    const localId = localStorage.getItem('id');
-    if (id === localId) {
-      const name = localStorage.getItem('name');
+    const user = localStorage.getItem('user');
+    const userData = JSON.parse(user);
+    if (id === userData.id) {
+      const name = userData.name;
       return name;
     }
   };
@@ -116,7 +117,6 @@ export default function BookingListPage() {
       dateOfBooking: moment(item.dateOfBooking).format('YYYY-MM-DD'),
       user: value(item.user)
     }));
-    console.log('modify', ModifiedData);
 
     const ws = XLSX.utils.json_to_sheet(ModifiedData);
     XLSX.utils.book_append_sheet(wb, ws, 'Sheet1');

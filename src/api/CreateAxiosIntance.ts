@@ -11,8 +11,11 @@ const axiosInstance = axios.create({
 });
 
 axiosInstance.interceptors.request.use((config) => {
-  const userToken = localStorage.getItem('token');
-  if (userToken) {
+  const User = localStorage.getItem('user');
+  if (User) {
+    const userData = JSON.parse(User);
+    const userToken = userData.token;
+
     config.headers['Authorization'] = `Bearer ${userToken}`;
   }
   return config;
@@ -31,9 +34,7 @@ axiosInstance.interceptors.response.use(
 );
 
 const handleTokenExpiration = async () => {
-  localStorage.removeItem('token');
-  localStorage.removeItem('id');
-  localStorage.removeItem('name');
+  localStorage.clear();
   await toast.error('Session expired. Please log in again.', {
     autoClose: 8000,
     position: toast.POSITION.TOP_CENTER,

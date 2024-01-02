@@ -18,8 +18,8 @@ export default function AddBooking() {
   const [endTime, setEndTime] = useState('');
   const [submit, setSubmit] = useState([]);
   const [dateError, setDateError] = useState(false);
-  const [startError, setStartError] = useState(false);
-  const [endError, setEndError] = useState(false);
+  // const [startError, setStartError] = useState(false);
+  // const [endError, setEndError] = useState(false);
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [disableData, setDisableData] = useState([]);
 
@@ -55,6 +55,7 @@ export default function AddBooking() {
   };
   const TextFieldEndChange = (newValue) => {
     setInitalEnd(newValue);
+    setEndTime(newValue);
   };
 
   const handleChange = (event) => {
@@ -107,12 +108,12 @@ export default function AddBooking() {
     if (!date) {
       setDateError(true);
     }
-    if (!startTime) {
-      setStartError(true);
-    }
-    if (!endTime) {
-      setEndError(true);
-    }
+    // if (!startTime) {
+    //   setStartError(true);
+    // }
+    // if (!endTime) {
+    //   setEndError(true);
+    // }
     if (!bookingType) {
       setBookingTypeError(true);
     }
@@ -128,6 +129,8 @@ export default function AddBooking() {
       setBookingModalOpen(true);
 
       const booking = async () => {
+        const user = localStorage.getItem('user');
+        const userData = JSON.parse(user);
         try {
           const response = await BookingApi.createBooking({
             type: bookingType,
@@ -136,7 +139,7 @@ export default function AddBooking() {
             bookingtype: 'cash',
             startTime: parseInt(startTime),
             endTime: parseInt(endTime),
-            user: localStorage.getItem('id')
+            user: userData.id
           });
           if (response.message) {
             setToast(response.message);
@@ -263,8 +266,8 @@ export default function AddBooking() {
             onClose={handleCloseModal}
             onChange={handleDialogTimeChange}
             onSelect={handleDialogEndTimeChange}
-            error={startError}
-            error1={endError}
+            // error={startError}
+            // error1={endError}
             shouldDisableTime={shouldDisableStartTime}
             shouldDisableEndTime={shouldDisableTime}
           />
