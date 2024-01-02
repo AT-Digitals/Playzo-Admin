@@ -57,6 +57,24 @@ export default function BookingListPage() {
   const [page, setPage] = useState(0);
   const [rowsPerPage, setRowsPerPage] = useState(10);
 
+  const isWithinLastMonths = (startDate, months) => {
+    const currentDate = new Date();
+
+    const currentYear = currentDate.getFullYear();
+    const currentMonth = currentDate.getMonth();
+
+    const startYear = startDate.getFullYear();
+    const startMonth = startDate.getMonth();
+
+    if (startYear > currentYear || (startYear === currentYear && startMonth > currentMonth)) {
+      return false;
+    }
+
+    const monthDiff = (currentYear - startYear) * 12 + currentMonth - startMonth;
+
+    return monthDiff <= months;
+  };
+
   const applyFilters = () => {
     const updatedFilteredData = data.filter((item) => {
       let typeFilter;
@@ -75,9 +93,9 @@ export default function BookingListPage() {
         if (monthType === '1month') {
           dateFilter = currentDate.getMonth() === startDate.getMonth();
         } else if (monthType === '3month') {
-          dateFilter = currentDate.getMonth() - startDate.getMonth() <= 2;
+          dateFilter = isWithinLastMonths(startDate, 2);
         } else if (monthType === '6month') {
-          dateFilter = currentDate.getMonth() - startDate.getMonth() <= 5;
+          dateFilter = isWithinLastMonths(startDate, 5);
         }
       }
       return typeFilter && dateFilter;

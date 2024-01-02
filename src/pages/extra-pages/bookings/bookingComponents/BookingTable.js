@@ -11,22 +11,7 @@ import { TablePagination } from '@mui/material';
 import DateUtils from 'utils/DateUtils';
 
 export default function BookingTable({ bookingList, rowsPerPage, page, handleChangeRowsPerPage, handleChange }) {
-  // const [page, setPage] = useState(0);
-  // const [rowsPerPage, setRowsPerPage] = useState(10);
-
   const data = bookingList;
-
-  // const filteredData = bookingtype === 'All' ? data : data.filter((item) => item.type === bookingtype);
-
-  // const handleChangePage = (event, newPage) => {
-  //   setPage(newPage);
-  // };
-
-  // const handleChangeRowsPerPage = (event) => {
-  //   setRowsPerPage(parseInt(event.target.value, 10));
-  //   setPage(0);
-  // };
-
   return (
     <>
       <TableContainer component={Paper}>

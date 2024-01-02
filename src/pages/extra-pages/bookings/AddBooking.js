@@ -46,6 +46,28 @@ export default function AddBooking() {
     setBookingModalOpen(false);
   };
 
+  const dateHandler = (newValue) => {
+    let datedata = newValue.$d;
+    const parsedDate = moment(datedata);
+    const formattedDate = parsedDate.format('YYYY-MM-DD');
+    setDate(formattedDate);
+    const ApiCall = async () => {
+      try {
+        setIsModalOpen(true);
+        const response = await BookingApi.filter({
+          dateOfBooking: formattedDate,
+          type: bookingType
+        });
+        setDisableData(response);
+      } catch (error) {
+        console.error('Error:', error.message);
+      }
+    };
+    ApiCall();
+
+    setDateError(false);
+  };
+
   const bookingApiCall = (bookingData) => {
     if (date && startTime && endTime) {
       const data = {
@@ -183,27 +205,6 @@ export default function AddBooking() {
   //   const response = await PaymentApi.refundPayment({ paymentId: 'pay_NI1waewqrkpRhQeCW', amount: 3000 });
   //   console.log('res', response);
   // };
-  const dateHandler = (newValue) => {
-    let datedata = newValue.$d;
-    const parsedDate = moment(datedata);
-    const formattedDate = parsedDate.format('YYYY-MM-DD');
-    setDate(formattedDate);
-    const ApiCall = async () => {
-      try {
-        setIsModalOpen(true);
-        const response = await BookingApi.filterBooking({
-          dateOfBooking: formattedDate,
-          type: bookingType
-        });
-        setDisableData(response);
-      } catch (error) {
-        console.error('Error:', error.message);
-      }
-    };
-    ApiCall();
-
-    setDateError(false);
-  };
 
   const handleDialogTimeChange = (newValue) => {
     const start = newValue.$d;
