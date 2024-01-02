@@ -12,7 +12,7 @@ export default class BookingApi {
     }
   }
 
-  public static filterBooking = async (filter: any) => {
+  public static filter = async (filter: any) => {
     try {
       const datails = await axiosInstance.get<any[]>(`/bookingFilter/filterBookings` + FilterUtils.getQueryString(filter));
       return datails.data;

@@ -1,16 +1,19 @@
+import { Button, Stack } from '@mui/material';
+
 import BookingApi from 'api/BookingApi';
+import BookingModal from './BookingModal';
 import CustomDatePicker from './bookingComponents/CustomDatePicker';
 import CustomTextField from './bookingComponents/CustomTextField';
+import DateUtils from 'utils/DateUtils';
 import MainCard from 'components/MainCard';
+import NotificationSuccessToast from 'pages/components-overview/NotificationSuccessToast';
 import NotificationToast from '../../components-overview/NotificationToast';
-import { Stack, Button } from '@mui/material';
+import PaymentApi from 'api/PaymentApi';
+import { PaymentType } from 'enum/PaymentType';
 import TimeSlotModal from './bookingComponents/TimeSlotModal';
 import TypeDropdown from './bookingComponents/TypeDropdown';
 import moment from 'moment';
 import { useState } from 'react';
-import DateUtils from 'utils/DateUtils';
-import NotificationSuccessToast from 'pages/components-overview/NotificationSuccessToast';
-import BookingModal from './BookingModal';
 
 export default function AddBooking() {
   const [date, setDate] = useState('');
@@ -30,8 +33,10 @@ export default function AddBooking() {
   const [initalTime, setInitalTime] = useState('00:00:00');
   const [initalEnd, setInitalEnd] = useState('00:00:00');
   const [successtoast, setSuccessToast] = useState('');
-  const [paymentType, setPaymentType] = useState('');
+  const [paymentType, setPaymentType] = useState(PaymentType.Cash);
   const [bookingModalOpen, setBookingModalOpen] = useState(false);
+  const user = localStorage.getItem('user');
+  const userData = JSON.parse(user);
 
   const handleModalChange = (event) => {
     setPaymentType(event.target.value);
@@ -41,12 +46,60 @@ export default function AddBooking() {
     setBookingModalOpen(false);
   };
 
-  const paymentSubmit = () => {
+  const bookingApiCall = (bookingData) => {
+    if (date && startTime && endTime) {
+      const data = {
+        type: bookingType,
+        date: date,
+        startTime: startTime,
+        endTime: endTime
+      };
+
+      setBookingModalOpen(true);
+      const booking = async () => {
+        try {
+          const response = await BookingApi.createBooking(bookingData);
+          if (response.message) {
+            setToast(response.message);
+          }
+          setIsModalOpen(false);
+          await setSuccessToast('Your Booking is added.');
+          setBookingModalOpen(false);
+        } catch {
+          setToast('Please select valid type and time');
+        }
+      };
+      booking();
+      setSubmit([...submit, data]);
+
+      setDate('');
+      setStartTime('');
+      setEndTime('');
+      setBookingType('');
+      setIsModalOpen(false);
+      setSuccessToast('');
+      setToast('');
+    }
+  };
+
+  const paymentSubmit = async () => {
     const data = {
       payment: paymentType
     };
+    if (data.payment === PaymentType.Cash) {
+      await bookingApiCall({
+        type: bookingType,
+        dateOfBooking: date,
+        bookingAmount: 3000,
+        bookingtype: paymentType,
+        startTime: parseInt(startTime),
+        endTime: parseInt(endTime),
+        user: userData.id
+      });
+    } else {
+      await paymentMethod();
+    }
     console.log(data);
-    setBookingModalOpen(false);
   };
 
   const TextFieldChange = (newValue) => {
@@ -64,6 +117,72 @@ export default function AddBooking() {
     setBookingTypeError(false);
   };
 
+  const paymentMethod = async () => {
+    try {
+      console.log('res');
+      const response = await PaymentApi.createPayment({ amount: 3000 });
+      console.log('res', response);
+
+      let options = {
+        key: 'rzp_test_mHxfzyhsCG5tZ0', // Enter the Key ID generated from the Dashboard
+        amount: response.amount, // Amount is in currency subunits. Default currency is INR. Hence, 50000 refers to 50000 paise
+        currency: response.currency,
+        name: 'Antoshoba',
+        description: 'Test Transaction',
+        // image: 'https://example.com/your_logo',
+        order_id: response.id, //This is a sample Order ID. Pass the `id` obtained in the response of Step 1
+        handler: async function (response) {
+          // alert(response.razorpay_payment_id);
+          // alert(response.razorpay_order_id);
+          // alert(response.razorpay_signature);
+          await PaymentApi.verifyPayment({
+            orderId: response.razorpay_order_id,
+            paymentId: response.razorpay_payment_id,
+            signature: response.razorpay_signature
+          });
+          await bookingApiCall({
+            type: bookingType,
+            dateOfBooking: date,
+            bookingAmount: 3000,
+            bookingtype: paymentType,
+            startTime: parseInt(startTime),
+            endTime: parseInt(endTime),
+            user: userData.id,
+            bookingId: response.razorpay_payment_id
+          });
+        },
+        prefill: {
+          name: 'Gaurav Kumar',
+          email: 'gaurav.kumar@example.com',
+          contact: '9000090000'
+        },
+        notes: {
+          address: 'Razorpay Corporate Office'
+        },
+        theme: {
+          color: '#3399cc'
+        }
+      };
+      var rzp1 = new Razorpay(options);
+      rzp1.on('payment.failed', function (response) {
+        alert(response.error.code);
+        alert(response.error.description);
+        alert(response.error.source);
+        alert(response.error.step);
+        alert(response.error.reason);
+        alert(response.error.metadata.order_id);
+        alert(response.error.metadata.payment_id);
+      });
+      rzp1.open();
+    } catch (error) {
+      console.error('Error:', error.message);
+    }
+  };
+
+  // const refund = async () => {
+  //   const response = await PaymentApi.refundPayment({ paymentId: 'pay_NI1waewqrkpRhQeCW', amount: 3000 });
+  //   console.log('res', response);
+  // };
   const dateHandler = (newValue) => {
     let datedata = newValue.$d;
     const parsedDate = moment(datedata);
@@ -117,51 +236,8 @@ export default function AddBooking() {
     if (!bookingType) {
       setBookingTypeError(true);
     }
-
     if (date && startTime && endTime) {
-      const data = {
-        type: bookingType,
-        date: date,
-        startTime: startTime,
-        endTime: endTime
-      };
-
       setBookingModalOpen(true);
-
-      const booking = async () => {
-        const user = localStorage.getItem('user');
-        const userData = JSON.parse(user);
-        try {
-          const response = await BookingApi.createBooking({
-            type: bookingType,
-            dateOfBooking: date,
-            bookingAmount: 20,
-            bookingtype: 'cash',
-            startTime: parseInt(startTime),
-            endTime: parseInt(endTime),
-            user: userData.id
-          });
-          if (response.message) {
-            setToast(response.message);
-          }
-          setIsModalOpen(false);
-          setSuccessToast('Your Booking is added.');
-        } catch {
-          setToast('Please select valid type and time');
-        }
-      };
-
-      booking();
-
-      setSubmit([...submit, data]);
-
-      setDate('');
-      setStartTime('');
-      setEndTime('');
-      setBookingType('');
-      setIsModalOpen(false);
-      setSuccessToast('');
-      setToast('');
     }
   };
   const handleCloseModal = () => {
@@ -279,6 +355,8 @@ export default function AddBooking() {
             onSubmit={paymentSubmit}
           />
         </Stack>
+        {/* <Button onClick={click}>order</Button>
+        <Button onClick={refund}>refund</Button> */}
       </form>
       {toast !== '' ? <NotificationToast error={toast} /> : <></>}
       {successtoast !== '' ? <NotificationSuccessToast success={successtoast} /> : <></>}

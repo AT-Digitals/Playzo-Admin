@@ -1,13 +1,16 @@
 import * as React from 'react';
+
+import { Stack, Typography } from '@mui/material';
+
 import Box from '@mui/material/Box';
 import Button from '@mui/material/Button';
+import CloseIcon from '@mui/icons-material/Close';
+import FormControl from '@mui/material/FormControl';
+import FormControlLabel from '@mui/material/FormControlLabel';
 import Modal from '@mui/material/Modal';
-import { Stack, Typography } from '@mui/material';
+import { PaymentType } from '../../../enum/PaymentType';
 import Radio from '@mui/material/Radio';
 import RadioGroup from '@mui/material/RadioGroup';
-import FormControlLabel from '@mui/material/FormControlLabel';
-import FormControl from '@mui/material/FormControl';
-import CloseIcon from '@mui/icons-material/Close';
 
 const style = {
   position: 'absolute',
@@ -34,8 +37,8 @@ export default function BookingModal({ onChange, value, isOpen, onClose, onSubmi
                 Payment Method
               </Typography>
               <RadioGroup row value={value} onChange={onChange}>
-                <FormControlLabel value="cash" control={<Radio />} label="Cash" />
-                <FormControlLabel value="online" control={<Radio />} label="Online" />
+                <FormControlLabel value={PaymentType.Cash} control={<Radio />} label="Cash" />
+                <FormControlLabel value={PaymentType.Online} control={<Radio />} label="Online" />
               </RadioGroup>
             </FormControl>
           </Stack>

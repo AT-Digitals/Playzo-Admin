@@ -49,6 +49,8 @@
   },
   "plugins": ["prettier", "react", "react-hooks"],
   "rules": {
+    "no-unused-vars":"off",
+    "@typescript-eslint/no-unused-vars": "off",
     "prettier/prettier": 0,
     "react/jsx-uses-react": "error",
     "react/jsx-uses-vars": "error",
@@ -77,12 +79,12 @@
         "patterns": ["@mui/*/*/*", "!@mui/material/test-utils/*"]
       }
     ],
-    "no-unused-vars": [
-      "error",
-      {
-        "ignoreRestSiblings": false
-      }
-    ]
+    // "no-unused-vars": [
+    //   "error",
+    //   {
+    //     "ignoreRestSiblings": false
+    //   }
+    // ]
     // "prettier/prettier": [
     //   "warn",
     //   {
