@@ -10,6 +10,7 @@ import moment from 'moment';
 import { useState } from 'react';
 import DateUtils from 'utils/DateUtils';
 import NotificationSuccessToast from 'pages/components-overview/NotificationSuccessToast';
+import BookingModal from './BookingModal';
 
 export default function AddBooking() {
   const [date, setDate] = useState('');
@@ -29,6 +30,24 @@ export default function AddBooking() {
   const [initalTime, setInitalTime] = useState('00:00:00');
   const [initalEnd, setInitalEnd] = useState('00:00:00');
   const [successtoast, setSuccessToast] = useState('');
+  const [paymentType, setPaymentType] = useState('');
+  const [bookingModalOpen, setBookingModalOpen] = useState(false);
+
+  const handleModalChange = (event) => {
+    setPaymentType(event.target.value);
+  };
+
+  const handleClose = () => {
+    setBookingModalOpen(false);
+  };
+
+  const paymentSubmit = () => {
+    const data = {
+      payment: paymentType
+    };
+    console.log(data);
+    setBookingModalOpen(false);
+  };
 
   const TextFieldChange = (newValue) => {
     setInitalTime(newValue);
@@ -105,6 +124,8 @@ export default function AddBooking() {
         startTime: startTime,
         endTime: endTime
       };
+
+      setBookingModalOpen(true);
 
       const booking = async () => {
         try {
@@ -246,6 +267,13 @@ export default function AddBooking() {
             error1={endError}
             shouldDisableTime={shouldDisableStartTime}
             shouldDisableEndTime={shouldDisableTime}
+          />
+          <BookingModal
+            onChange={handleModalChange}
+            value={paymentType}
+            isOpen={bookingModalOpen}
+            onClose={handleClose}
+            onSubmit={paymentSubmit}
           />
         </Stack>
       </form>
