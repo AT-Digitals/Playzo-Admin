@@ -35,7 +35,7 @@ axiosInstance.interceptors.response.use(
 
 const handleTokenExpiration = async () => {
   localStorage.clear();
-  await toast.error('Session expired. Please log in again.', {
+  toast.error('Session expired. Please log in again.', {
     autoClose: 8000,
     position: toast.POSITION.TOP_CENTER,
     hideProgressBar: true,

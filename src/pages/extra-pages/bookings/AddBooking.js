@@ -13,7 +13,7 @@ import { PaymentType } from 'enum/PaymentType';
 import TimeSlotModal from './bookingComponents/TimeSlotModal';
 import TypeDropdown from './bookingComponents/TypeDropdown';
 import moment from 'moment';
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 
 export default function AddBooking() {
   const [date, setDate] = useState('');
@@ -27,9 +27,11 @@ export default function AddBooking() {
   const [bookingType, setBookingType] = useState('');
   const [toast, setToast] = useState('');
   const [bookingTypeError, setBookingTypeError] = useState(false);
+  const [startError, setStartError] = useState('');
+  const [endError, setEndError] = useState('');
 
-  const [initalTime, setInitalTime] = useState('00:00:00');
-  const [initalEnd, setInitalEnd] = useState('00:00:00');
+  const [initalTime, setInitalTime] = useState('');
+  const [initalEnd, setInitalEnd] = useState('');
   const [successtoast, setSuccesstoast] = useState('');
   const [paymentType, setPaymentType] = useState(PaymentType.Cash);
   const [bookingModalOpen, setBookingModalOpen] = useState(false);
@@ -99,6 +101,8 @@ export default function AddBooking() {
       setIsModalOpen(false);
       setSuccesstoast('');
       setToast('');
+      setInitalTime('');
+      setInitalEnd('');
     }
   };
 
@@ -120,15 +124,6 @@ export default function AddBooking() {
       await paymentMethod();
     }
     console.log(data);
-  };
-
-  const TextFieldChange = (newValue) => {
-    setInitalTime(newValue);
-    setStartTime(newValue);
-  };
-  const TextFieldEndChange = (newValue) => {
-    setInitalEnd(newValue);
-    setEndTime(newValue);
   };
 
   const handleChange = (event) => {
@@ -200,18 +195,78 @@ export default function AddBooking() {
     const start = newValue.$d;
     const startwithTime = moment(start);
     const milliseconds = startwithTime.valueOf();
-    setStartTime(milliseconds);
+    setStartTime(milliseconds || 0);
+    setInitalTime(formatTime(startwithTime));
   };
 
   const handleDialogEndTimeChange = (newValue) => {
     const end = newValue.$d;
     const EndwithTime = moment(end);
     const milliseconds = EndwithTime.valueOf();
-    setEndTime(milliseconds);
+    setEndTime(milliseconds || 0);
+    setInitalEnd(formatTime(EndwithTime));
   };
 
-  const convertedStartTime = DateUtils.formatMillisecondsToTime(startTime);
-  const convertedEndTime = DateUtils.formatMillisecondsToTime(endTime);
+  const TextFieldChange = (event) => {
+    const editedTimeString = event.target.value;
+    setInitalTime(editedTimeString);
+    const currentDate = new Date();
+    const [hours, minutes, ampm] = editedTimeString.split(/:|\s/);
+    const editedDate = new Date(
+      currentDate.getFullYear(),
+      currentDate.getMonth(),
+      currentDate.getDate(),
+      ampm === 'AM' ? parseInt(hours, 10) : parseInt(hours, 10) + 12,
+      parseInt(minutes, 10)
+    );
+    const editedMilliseconds = editedDate.getTime();
+    setStartTime(editedMilliseconds || 0);
+    setStartError('');
+  };
+
+  const formatTime = (milliseconds) => {
+    const date = new Date(milliseconds);
+    const formattedTime = date.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit', hour12: true });
+    return formattedTime;
+  };
+
+  useEffect(() => {
+    if (startTime && endTime) {
+      setInitalTime(formatTime(startTime));
+      setInitalEnd(formatTime(endTime));
+    }
+  }, [startTime, endTime]);
+
+  const TextFieldEndChange = (event) => {
+    const editedTimeString = event.target.value;
+    setInitalEnd(editedTimeString);
+    const currentDate = new Date();
+    const [hours, minutes, ampm] = editedTimeString.split(/:|\s/);
+    const editedDate = new Date(
+      currentDate.getFullYear(),
+      currentDate.getMonth(),
+      currentDate.getDate(),
+      ampm === 'AM' ? parseInt(hours, 10) : parseInt(hours, 10) + 12,
+      parseInt(minutes, 10)
+    );
+    const editedMilliseconds = editedDate.getTime();
+    setEndTime(editedMilliseconds || 0);
+    setEndError('');
+  };
+
+  const isDateComparisonValid = () => {
+    if (initalTime >= initalEnd) {
+      setStartError('Start time must be less than the end time');
+      return false;
+    }
+
+    if (initalEnd <= initalTime) {
+      setEndError('End time must be greater than the start time');
+      return false;
+    }
+
+    return true;
+  };
 
   const onSubmit = (event) => {
     event.preventDefault();
@@ -221,9 +276,23 @@ export default function AddBooking() {
     if (!bookingType) {
       setBookingTypeError(true);
     }
-    if (date && startTime && endTime) {
-      setBookingModalOpen(true);
+    if (!initalTime) {
+      setStartError('please select a time');
     }
+    if (!initalEnd) {
+      setEndError('please select a time');
+    }
+
+    console.log('convet start', initalTime);
+    console.log('convet end', initalEnd);
+
+    if (!isDateComparisonValid()) {
+      setBookingModalOpen(false);
+    }
+
+    // if (date && initalTime && initalEnd) {
+    setBookingModalOpen(true);
+    // }
   };
   const handleCloseModal = () => {
     setIsModalOpen(false);
@@ -317,8 +386,8 @@ export default function AddBooking() {
         <Stack direction="row" spacing={2} alignItems="center">
           <TypeDropdown label="Booking Type" type={bookingType} onChange={handleChange} error={bookingTypeError} />
           <CustomDatePicker date={date} setDate={dateHandler} error={dateError} />
-          <CustomTextField label="Start Time" value={!startTime ? initalTime : convertedStartTime} setValue={TextFieldChange} />
-          <CustomTextField label="End Time" value={!endTime ? initalEnd : convertedEndTime} setValue={TextFieldEndChange} />{' '}
+          <CustomTextField label="Start Time" value={initalTime} setValue={TextFieldChange} error={startError} />
+          <CustomTextField label="End Time" value={initalEnd} setValue={TextFieldEndChange} error={endError} />
           <Button variant="outlined" sx={{ marginTop: '45px !important', padding: '8px 15px' }} type="submit" onClick={onSubmit}>
             Add booking
           </Button>
