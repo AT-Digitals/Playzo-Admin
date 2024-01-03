@@ -21,8 +21,6 @@ export default function AddBooking() {
   const [endTime, setEndTime] = useState('');
   const [submit, setSubmit] = useState([]);
   const [dateError, setDateError] = useState(false);
-  // const [startError, setStartError] = useState(false);
-  // const [endError, setEndError] = useState(false);
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [disableData, setDisableData] = useState([]);
 
@@ -32,7 +30,7 @@ export default function AddBooking() {
 
   const [initalTime, setInitalTime] = useState('00:00:00');
   const [initalEnd, setInitalEnd] = useState('00:00:00');
-  const [successtoast, setSuccessToast] = useState('');
+  const [successtoast, setSuccesstoast] = useState('');
   const [paymentType, setPaymentType] = useState(PaymentType.Cash);
   const [bookingModalOpen, setBookingModalOpen] = useState(false);
   const user = localStorage.getItem('user');
@@ -85,7 +83,7 @@ export default function AddBooking() {
             setToast(response.message);
           }
           setIsModalOpen(false);
-          await setSuccessToast('Your Booking is added.');
+          setSuccesstoast('Your Booking is added.');
           setBookingModalOpen(false);
         } catch {
           setToast('Please select valid type and time');
@@ -99,7 +97,7 @@ export default function AddBooking() {
       setEndTime('');
       setBookingType('');
       setIsModalOpen(false);
-      setSuccessToast('');
+      setSuccesstoast('');
       setToast('');
     }
   };
@@ -109,7 +107,7 @@ export default function AddBooking() {
       payment: paymentType
     };
     if (data.payment === PaymentType.Cash) {
-      await bookingApiCall({
+      bookingApiCall({
         type: bookingType,
         dateOfBooking: date,
         bookingAmount: 3000,
@@ -154,15 +152,12 @@ export default function AddBooking() {
         // image: 'https://example.com/your_logo',
         order_id: response.id, //This is a sample Order ID. Pass the `id` obtained in the response of Step 1
         handler: async function (response) {
-          // alert(response.razorpay_payment_id);
-          // alert(response.razorpay_order_id);
-          // alert(response.razorpay_signature);
           await PaymentApi.verifyPayment({
             orderId: response.razorpay_order_id,
             paymentId: response.razorpay_payment_id,
             signature: response.razorpay_signature
           });
-          await bookingApiCall({
+          bookingApiCall({
             type: bookingType,
             dateOfBooking: date,
             bookingAmount: 3000,
@@ -185,7 +180,7 @@ export default function AddBooking() {
           color: '#3399cc'
         }
       };
-      var rzp1 = new Razorpay(options);
+      const rzp1 = new Razorpay(options);
       rzp1.on('payment.failed', function (response) {
         alert(response.error.code);
         alert(response.error.description);
@@ -200,11 +195,6 @@ export default function AddBooking() {
       console.error('Error:', error.message);
     }
   };
-
-  // const refund = async () => {
-  //   const response = await PaymentApi.refundPayment({ paymentId: 'pay_NI1waewqrkpRhQeCW', amount: 3000 });
-  //   console.log('res', response);
-  // };
 
   const handleDialogTimeChange = (newValue) => {
     const start = newValue.$d;
@@ -228,12 +218,6 @@ export default function AddBooking() {
     if (!date) {
       setDateError(true);
     }
-    // if (!startTime) {
-    //   setStartError(true);
-    // }
-    // if (!endTime) {
-    //   setEndError(true);
-    // }
     if (!bookingType) {
       setBookingTypeError(true);
     }
@@ -343,8 +327,6 @@ export default function AddBooking() {
             onClose={handleCloseModal}
             onChange={handleDialogTimeChange}
             onSelect={handleDialogEndTimeChange}
-            // error={startError}
-            // error1={endError}
             shouldDisableTime={shouldDisableStartTime}
             shouldDisableEndTime={shouldDisableTime}
           />
@@ -356,8 +338,6 @@ export default function AddBooking() {
             onSubmit={paymentSubmit}
           />
         </Stack>
-        {/* <Button onClick={click}>order</Button>
-        <Button onClick={refund}>refund</Button> */}
       </form>
       {toast !== '' ? <NotificationToast error={toast} /> : <></>}
       {successtoast !== '' ? <NotificationSuccessToast success={successtoast} /> : <></>}
