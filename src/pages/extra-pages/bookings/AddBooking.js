@@ -14,6 +14,7 @@ import TimeSlotModal from './bookingComponents/TimeSlotModal';
 import TypeDropdown from './bookingComponents/TypeDropdown';
 import moment from 'moment';
 import { useState, useEffect } from 'react';
+import CalendarComponent from './CalendarComponent';
 
 export default function AddBooking() {
   const [date, setDate] = useState('');
@@ -29,6 +30,7 @@ export default function AddBooking() {
   const [bookingTypeError, setBookingTypeError] = useState(false);
   const [startError, setStartError] = useState('');
   const [endError, setEndError] = useState('');
+  //const [error, setError] = useState('');
 
   const [initalTime, setInitalTime] = useState('');
   const [initalEnd, setInitalEnd] = useState('');
@@ -221,6 +223,7 @@ export default function AddBooking() {
     );
     const editedMilliseconds = editedDate.getTime();
     setStartTime(editedMilliseconds || 0);
+    isDateComparisonValid();
     setStartError('');
   };
 
@@ -251,20 +254,23 @@ export default function AddBooking() {
     );
     const editedMilliseconds = editedDate.getTime();
     setEndTime(editedMilliseconds || 0);
+    isDateComparisonValid();
     setEndError('');
   };
 
   const isDateComparisonValid = () => {
-    if (initalTime >= initalEnd) {
-      setStartError('Start time must be less than the end time');
-      return false;
-    }
+    const currentDate = new Date();
+    const startDate = new Date(currentDate.toDateString() + ' ' + initalTime);
+    const endDate = new Date(currentDate.toDateString() + ' ' + initalEnd);
 
-    if (initalEnd <= initalTime) {
+    if (startDate >= endDate || endDate <= startDate) {
+      setStartError('Start time must be less than the end time');
       setEndError('End time must be greater than the start time');
       return false;
     }
 
+    setStartError('');
+    setEndError('');
     return true;
   };
 
@@ -276,23 +282,10 @@ export default function AddBooking() {
     if (!bookingType) {
       setBookingTypeError(true);
     }
-    if (!initalTime) {
-      setStartError('please select a time');
-    }
-    if (!initalEnd) {
-      setEndError('please select a time');
-    }
 
-    console.log('convet start', initalTime);
-    console.log('convet end', initalEnd);
-
-    if (!isDateComparisonValid()) {
-      setBookingModalOpen(false);
+    if (date && bookingType && isDateComparisonValid()) {
+      setBookingModalOpen(true);
     }
-
-    // if (date && initalTime && initalEnd) {
-    setBookingModalOpen(true);
-    // }
   };
   const handleCloseModal = () => {
     setIsModalOpen(false);

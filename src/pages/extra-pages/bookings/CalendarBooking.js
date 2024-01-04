@@ -1,26 +1,12 @@
 import 'react-big-calendar/lib/css/react-big-calendar.css';
-
-import { Calendar, momentLocalizer } from 'react-big-calendar';
 import React, { useEffect, useState } from 'react';
 
 import BookingApi from 'api/BookingApi';
-import MainCard from 'components/MainCard';
-import moment from 'moment';
 import DateUtils from 'utils/DateUtils';
+import CalendarComponent from './CalendarComponent';
 
-const localizer = momentLocalizer(moment);
 const CalendarBooking = () => {
-  const [selectedEvent, setSelectedEvent] = useState(null);
-  const [selectedDate, setSelectedDate] = useState(moment().toDate());
   const [data, setData] = useState([]);
-
-  const handleSelectEvent = (event) => {
-    setSelectedEvent(event);
-  };
-
-  const handleNavigate = (date) => {
-    setSelectedDate(date);
-  };
 
   useEffect(() => {
     const fetchInfo = async () => {
@@ -65,25 +51,11 @@ const CalendarBooking = () => {
 
     fetchInfo();
   }, []);
-  console.log('data', selectedEvent, selectedDate);
 
   return (
-    <MainCard title="Calendar Booking">
-      <div style={{ height: '900px' }}>
-        <Calendar
-          selectable
-          localizer={localizer}
-          events={data}
-          startAccessor="start"
-          endAccessor="end"
-          onSelectEvent={handleSelectEvent}
-          onNavigate={handleNavigate}
-          defaultDate={moment().toDate()}
-          toolbar
-          timeslots={3}
-        />
-      </div>
-    </MainCard>
+    <>
+      <CalendarComponent label="Calendar Booking" data={data} />
+    </>
   );
 };
 
