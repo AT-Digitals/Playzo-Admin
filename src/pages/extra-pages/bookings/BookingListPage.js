@@ -115,15 +115,6 @@ export default function BookingListPage() {
     setPage(0);
   };
 
-  const value = (id) => {
-    const user = localStorage.getItem('user');
-    const userData = JSON.parse(user);
-    if (id === userData.id) {
-      const name = userData.name;
-      return name;
-    }
-  };
-
   const handleDownload = () => {
     const wb = XLSX.utils.book_new();
 
@@ -132,7 +123,9 @@ export default function BookingListPage() {
       startTime: DateUtils.formatMillisecondsToTime(item.startTime),
       endTime: DateUtils.formatMillisecondsToTime(item.endTime),
       dateOfBooking: moment(item.dateOfBooking).format('YYYY-MM-DD'),
-      user: value(item.user)
+      user: JSON.parse(item.user).name,
+      userType: JSON.parse(item.user).userType,
+      email: JSON.parse(item.user).email
     }));
 
     const ws = XLSX.utils.json_to_sheet(ModifiedData);
