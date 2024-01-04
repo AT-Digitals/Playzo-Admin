@@ -106,7 +106,7 @@ const BookingPage = () => {
         </Stack>
         {/* <Grid container>
           <Grid>
-            <BookingTable />
+            <BookingTable bookingList={} rowsPerPage={} page={} handleChangeRowsPerPage={} handleChange={} />
           </Grid>
         </Grid> */}
       </Stack>

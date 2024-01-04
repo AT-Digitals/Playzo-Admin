@@ -4,19 +4,21 @@ import moment from 'moment';
 import DateUtils from 'utils/DateUtils';
 
 import BookingApi from 'api/BookingApi';
-import BookingTable from './bookingComponents/BookingTable';
 import FormControl from '@mui/material/FormControl';
 import MainCard from 'components/MainCard';
 import MenuItem from '@mui/material/MenuItem';
 import Select from '@mui/material/Select';
 import ToggleButtonComponent from './ToggleButtonComponent';
 import * as XLSX from 'xlsx';
+import CommonTable from './bookingComponents/CommonTable';
 
 export default function BookingListPage() {
   const [bookingType, setBookingType] = useState('All');
   const [data, setData] = useState([]);
   const [monthType, setMonthType] = useState('');
   const [filteredData, setFilteredData] = useState([]);
+  const [page, setPage] = useState(0);
+  const [rowsPerPage, setRowsPerPage] = useState(10);
 
   const [isApplyMode, setIsApplyMode] = useState(true);
   const [buttonDisable, setButtonDisable] = useState(false);
@@ -54,8 +56,23 @@ export default function BookingListPage() {
     fetchInfo();
   }, []);
 
-  const [page, setPage] = useState(0);
-  const [rowsPerPage, setRowsPerPage] = useState(10);
+  const isWithinLastMonths = (startDate, months) => {
+    const currentDate = new Date();
+
+    const currentYear = currentDate.getFullYear();
+    const currentMonth = currentDate.getMonth();
+
+    const startYear = startDate.getFullYear();
+    const startMonth = startDate.getMonth();
+
+    if (startYear > currentYear || (startYear === currentYear && startMonth > currentMonth)) {
+      return false;
+    }
+
+    const monthDiff = (currentYear - startYear) * 12 + currentMonth - startMonth;
+
+    return monthDiff <= months;
+  };
 
   const applyFilters = () => {
     const updatedFilteredData = data.filter((item) => {
@@ -75,9 +92,9 @@ export default function BookingListPage() {
         if (monthType === '1month') {
           dateFilter = currentDate.getMonth() === startDate.getMonth();
         } else if (monthType === '3month') {
-          dateFilter = currentDate.getMonth() - startDate.getMonth() <= 2;
+          dateFilter = isWithinLastMonths(startDate, 2);
         } else if (monthType === '6month') {
-          dateFilter = currentDate.getMonth() - startDate.getMonth() <= 5;
+          dateFilter = isWithinLastMonths(startDate, 5);
         }
       }
       return typeFilter && dateFilter;
@@ -124,6 +141,16 @@ export default function BookingListPage() {
     XLSX.writeFile(wb, 'table_data.xlsx');
   };
 
+  const columns = [
+    { id: 'bookingListNo', label: 'Booking List No' },
+    { id: 'type', label: 'Type' },
+    { id: 'dateOfBooking', label: 'Selected Date' },
+    { id: 'startTime', label: 'Selected Start Time' },
+    { id: 'endTime', label: 'Selected End Time' },
+    { id: 'bookingType', label: 'Booking Type' },
+    { id: 'bookingAmount', label: 'Booking Amount' }
+  ];
+
   return (
     <MainCard title="Booking List">
       <Stack direction="column" spacing={4}>
@@ -163,12 +190,13 @@ export default function BookingListPage() {
             </Button>
           </Stack>
         </Stack>
-        <BookingTable
-          bookingList={filteredData}
-          handleChange={handleChangePage}
-          handleChangeRowsPerPage={handleChangeRowsPerPage}
-          page={page}
+        <CommonTable
+          columns={columns}
+          data={filteredData}
           rowsPerPage={rowsPerPage}
+          page={page}
+          handleChangeRowsPerPage={handleChangeRowsPerPage}
+          handleChange={handleChangePage}
         />
       </Stack>
     </MainCard>
