@@ -124,10 +124,10 @@ export default function AddBooking() {
       console.log('res', response);
 
       let options = {
-        key: 'rzp_test_mHxfzyhsCG5tZ0', // Enter the Key ID generated from the Dashboard
+        key: process.env.KEY_ID, // Enter the Key ID generated from the Dashboard
         amount: response.amount, // Amount is in currency subunits. Default currency is INR. Hence, 50000 refers to 50000 paise
         currency: response.currency,
-        name: 'Antoshoba',
+        name: userData.name,
         description: 'Test Transaction',
         // image: 'https://example.com/your_logo',
         order_id: response.id, //This is a sample Order ID. Pass the `id` obtained in the response of Step 1
@@ -152,8 +152,8 @@ export default function AddBooking() {
           });
         },
         prefill: {
-          name: 'Gaurav Kumar',
-          email: 'gaurav.kumar@example.com',
+          name: userData.name,
+          email: userData.email,
           contact: '9000090000'
         },
         notes: {
