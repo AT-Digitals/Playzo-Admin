@@ -10,14 +10,23 @@ import TableRow from '@mui/material/TableRow';
 import { TablePagination } from '@mui/material';
 import DateUtils from 'utils/DateUtils';
 
-const CommonTable = ({ columns, data, rowsPerPage, page, handleChangeRowsPerPage, handleChange }) => {
+const CommonTable = ({ columns, data, rowsPerPage, page, handleChangeRowsPerPage, handleChange, value }) => {
   const renderCellContent = (column, rowData) => {
-    const { id } = column;
+    const { id, label } = column;
 
     if (id === 'dateOfBooking') {
       return moment(rowData[id]).format('YYYY-MM-DD');
     } else if (id === 'startTime' || id === 'endTime') {
       return DateUtils.formatMillisecondsToTime(rowData[id]);
+    } else if (id === 'user' && label === 'User Type') {
+      const data = JSON.parse(rowData[id]).userType;
+      return data;
+    } else if (id === 'user' && label === 'Email ID') {
+      const data = JSON.parse(rowData[id]).email;
+      return data;
+    } else if (id === 'user' && label === 'User Name') {
+      const data = JSON.parse(rowData[id]).name;
+      return data;
     } else {
       return rowData[id];
     }
@@ -37,7 +46,7 @@ const CommonTable = ({ columns, data, rowsPerPage, page, handleChangeRowsPerPage
             {data.slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage).map((rowData, index) => (
               <TableRow key={index} sx={{ '&:last-child td, &:last-child th': { border: 0 } }}>
                 {columns.map((column) => (
-                  <TableCell key={column.id}>{column.id === 'bookingListNo' ? index + 1 : renderCellContent(column, rowData)}</TableCell>
+                  <TableCell key={column.id}>{column.id === 'No' ? index + 1 : renderCellContent(column, rowData)}</TableCell>
                 ))}
               </TableRow>
             ))}
@@ -45,7 +54,7 @@ const CommonTable = ({ columns, data, rowsPerPage, page, handleChangeRowsPerPage
         </Table>
       </TableContainer>
       <TablePagination
-        rowsPerPageOptions={[10, 25, 50, 100]}
+        rowsPerPageOptions={value}
         component="div"
         count={data.length}
         rowsPerPage={rowsPerPage}

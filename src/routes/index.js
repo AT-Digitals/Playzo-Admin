@@ -1,5 +1,4 @@
 import BadmintonPage from 'pages/extra-pages/badminton/BadmintonPage';
-import BookingPage from 'pages/extra-pages/bookings/BookingPage';
 import ExpenseManagementPage from 'pages/extra-pages/expense-management/ExpenseManagementPage';
 import Loadable from 'components/Loadable';
 import MainLayout from 'layout/MainLayout';
@@ -10,6 +9,7 @@ import { useRoutes } from 'react-router-dom';
 import BookingListPage from 'pages/extra-pages/bookings/BookingListPage';
 import CalendarBooking from 'pages/extra-pages/bookings/CalendarBooking';
 import AddBooking from 'pages/extra-pages/bookings/AddBooking';
+import EnquiriesPage from 'pages/extra-pages/Enquiry/EnquiriesPage';
 
 // project import
 
@@ -72,10 +72,6 @@ export default function ThemeRoutes() {
           element: <AntIcons />
         },
         {
-          path: 'bookings',
-          element: <BookingPage />
-        },
-        {
           path: 'badminton',
           element: <BadmintonPage />
         },
@@ -98,6 +94,10 @@ export default function ThemeRoutes() {
         {
           path: 'addBookings',
           element: <AddBooking />
+        },
+        {
+          path: 'enquiries',
+          element: <EnquiriesPage />
         }
       ]
     }

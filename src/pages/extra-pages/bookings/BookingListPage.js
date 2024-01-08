@@ -31,6 +31,15 @@ export default function BookingListPage() {
     setButtonDisable(false);
   };
 
+  // const fetchDataAndUpdateState = async (currentPage, pageSize) => {
+  //   const result = await BookingApi.filter(currentPage, pageSize);
+  //   setData(result.data);
+  // };
+
+  // useEffect(() => {
+  //   fetchDataAndUpdateState(page, rowsPerPage);
+  // }, [page, rowsPerPage]);
+
   const buttonhandleChange = (event, newValue) => {
     setMonthType(newValue);
   };
@@ -115,6 +124,8 @@ export default function BookingListPage() {
     setPage(0);
   };
 
+  console.log('filter', filteredData);
+
   const handleDownload = () => {
     const wb = XLSX.utils.book_new();
 
@@ -135,13 +146,18 @@ export default function BookingListPage() {
   };
 
   const columns = [
-    { id: 'bookingListNo', label: 'Booking List No' },
+    { id: 'No', label: 'No' },
+    { id: 'id', label: 'Id' },
     { id: 'type', label: 'Type' },
+    { id: 'user', label: 'User Name' },
     { id: 'dateOfBooking', label: 'Selected Date' },
-    { id: 'startTime', label: 'Selected Start Time' },
-    { id: 'endTime', label: 'Selected End Time' },
+    { id: 'startTime', label: 'Start Time' },
+    { id: 'endTime', label: 'End Time' },
     { id: 'bookingType', label: 'Booking Type' },
-    { id: 'bookingAmount', label: 'Booking Amount' }
+    { id: 'bookingAmount', label: 'Booking Amount' },
+    { id: 'user', label: 'User Type' },
+    { id: 'user', label: 'Email ID' },
+    { id: 'bookingId', label: 'Booking Id' }
   ];
 
   return (
@@ -190,6 +206,7 @@ export default function BookingListPage() {
           page={page}
           handleChangeRowsPerPage={handleChangeRowsPerPage}
           handleChange={handleChangePage}
+          value={[10, 25, 50, 100]}
         />
       </Stack>
     </MainCard>
