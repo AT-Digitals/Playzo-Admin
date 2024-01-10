@@ -1,16 +1,16 @@
-import React from 'react';
-import moment from 'moment';
+import DateUtils from 'utils/DateUtils';
 import Paper from '@mui/material/Paper';
+import React from 'react';
 import Table from '@mui/material/Table';
 import TableBody from '@mui/material/TableBody';
 import TableCell from '@mui/material/TableCell';
 import TableContainer from '@mui/material/TableContainer';
 import TableHead from '@mui/material/TableHead';
-import TableRow from '@mui/material/TableRow';
 import { TablePagination } from '@mui/material';
-import DateUtils from 'utils/DateUtils';
+import TableRow from '@mui/material/TableRow';
+import moment from 'moment';
 
-const CommonTable = ({ columns, data, rowsPerPage, page, handleChangeRowsPerPage, handleChange }) => {
+const CommonTable = ({ columns, data, rowsPerPage, page, handleChangeRowsPerPage, handleChange, count }) => {
   const renderCellContent = (column, rowData) => {
     const { id, label } = column;
 
@@ -55,7 +55,7 @@ const CommonTable = ({ columns, data, rowsPerPage, page, handleChangeRowsPerPage
       </TableContainer>
       <TablePagination
         component="div"
-        count={data.length}
+        count={count}
         rowsPerPage={rowsPerPage}
         page={page}
         onPageChange={handleChange}

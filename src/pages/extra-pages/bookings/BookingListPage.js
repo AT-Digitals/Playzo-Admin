@@ -1,16 +1,17 @@
-import { Box, Stack, Typography, Button } from '@mui/material';
+import * as XLSX from 'xlsx';
+
+import { Box, Button, Stack, Typography } from '@mui/material';
 import { useEffect, useState } from 'react';
-import moment from 'moment';
-import DateUtils from 'utils/DateUtils';
 
 import BookingApi from 'api/BookingApi';
+import CommonTable from './bookingComponents/CommonTable';
+import DateUtils from 'utils/DateUtils';
 import FormControl from '@mui/material/FormControl';
 import MainCard from 'components/MainCard';
 import MenuItem from '@mui/material/MenuItem';
 import Select from '@mui/material/Select';
 import ToggleButtonComponent from './ToggleButtonComponent';
-import * as XLSX from 'xlsx';
-import CommonTable from './bookingComponents/CommonTable';
+import moment from 'moment';
 
 export default function BookingListPage() {
   const [bookingType, setBookingType] = useState('All');
@@ -19,6 +20,7 @@ export default function BookingListPage() {
   const [filteredData, setFilteredData] = useState([]);
   const [page, setPage] = useState(0);
   const [rowsPerPage, setRowsPerPage] = useState(10);
+  const [count, setCount] = useState(0);
 
   const [isApplyMode, setIsApplyMode] = useState(true);
   const [buttonDisable, setButtonDisable] = useState(false);
@@ -49,23 +51,36 @@ export default function BookingListPage() {
     setBookingType(event.target.value);
   };
 
+  // const handleChangePage = (event, newPage) => {
+  //   console.log('val', newPage);
+  //   setPage(newPage);
+  // };
+
+  const handleChangePage = (_event, newPage) => {
+    setPage(newPage);
+  };
+
+  const handleChangeRowsPerPage = (event) => {
+    setRowsPerPage(parseInt(event.target.value, 10));
+    setPage(0);
+  };
+
   useEffect(() => {
     const fetchInfo = async () => {
       try {
-        const res = await BookingApi.getAll({ page: page, limit: rowsPerPage }).then((data) => {
+        const res = await BookingApi.getAll({}).then((data) => {
+          setCount(data.length);
+        });
+        const res1 = await BookingApi.getAllPaging({ page: page + 1, limit: rowsPerPage }).then((data) => {
           setData(data);
           setFilteredData(data);
         });
-        const details = await res.json();
-        setData(details);
       } catch {
         console.log('Error fetching data');
       }
     };
-
     fetchInfo();
-    //fetchDataAndUpdateState(page, rowsPerPage); page, rowsPerPage
-  }, []);
+  }, [page, rowsPerPage]);
 
   const isWithinLastMonths = (startDate, months) => {
     const currentDate = new Date();
@@ -117,17 +132,6 @@ export default function BookingListPage() {
     setButtonDisable(true);
   };
 
-  const handleChangePage = (event, newPage) => {
-    setPage(newPage);
-  };
-
-  const handleChangeRowsPerPage = (event) => {
-    setRowsPerPage(parseInt(event.target.value, 10));
-    setPage(0);
-  };
-
-  console.log('filter', filteredData);
-
   const handleDownload = () => {
     const wb = XLSX.utils.book_new();
 
@@ -149,7 +153,7 @@ export default function BookingListPage() {
 
   const columns = [
     { id: 'No', label: 'No' },
-    { id: 'id', label: 'Id' },
+    // { id: 'id', label: 'Id' },
     { id: 'type', label: 'Type' },
     { id: 'user', label: 'User Name' },
     { id: 'dateOfBooking', label: 'Selected Date' },
@@ -159,7 +163,7 @@ export default function BookingListPage() {
     { id: 'bookingAmount', label: 'Booking Amount' },
     { id: 'user', label: 'User Type' },
     { id: 'user', label: 'Email ID' },
-    { id: 'bookingId', label: 'Booking Id' }
+    { id: 'bookingId', label: 'PaymentId' }
   ];
 
   return (
@@ -203,6 +207,7 @@ export default function BookingListPage() {
         </Stack>
         <CommonTable
           columns={columns}
+          count={count}
           data={filteredData}
           rowsPerPage={rowsPerPage}
           page={page}
