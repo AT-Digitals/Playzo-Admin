@@ -32,7 +32,8 @@ export default function BookingListPage() {
   };
 
   // const fetchDataAndUpdateState = async (currentPage, pageSize) => {
-  //   const result = await BookingApi.filter(currentPage, pageSize);
+  //   const result = await BookingApi.getAll(page, pageSize);
+  //   console.log('result', result);
   //   setData(result.data);
   // };
 
@@ -51,7 +52,10 @@ export default function BookingListPage() {
   useEffect(() => {
     const fetchInfo = async () => {
       try {
-        const res = await BookingApi.getAll().then((data) => {
+        const value = await BookingApi.getAll({ page: 1, limit: 20 }).then((data) => {
+          console.log('data', data);
+        });
+        const res = await BookingApi.getAll({ page: 2, limit: 5 }).then((data) => {
           setData(data);
           setFilteredData(data);
         });
@@ -63,6 +67,7 @@ export default function BookingListPage() {
     };
 
     fetchInfo();
+    // fetchDataAndUpdateState(page, rowsPerPage); page, rowsPerPage
   }, []);
 
   const isWithinLastMonths = (startDate, months) => {
@@ -206,7 +211,6 @@ export default function BookingListPage() {
           page={page}
           handleChangeRowsPerPage={handleChangeRowsPerPage}
           handleChange={handleChangePage}
-          value={[10, 25, 50, 100]}
         />
       </Stack>
     </MainCard>

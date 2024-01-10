@@ -10,7 +10,7 @@ import TableRow from '@mui/material/TableRow';
 import { TablePagination } from '@mui/material';
 import DateUtils from 'utils/DateUtils';
 
-const CommonTable = ({ columns, data, rowsPerPage, page, handleChangeRowsPerPage, handleChange, value }) => {
+const CommonTable = ({ columns, data, rowsPerPage, page, handleChangeRowsPerPage, handleChange }) => {
   const renderCellContent = (column, rowData) => {
     const { id, label } = column;
 
@@ -43,7 +43,7 @@ const CommonTable = ({ columns, data, rowsPerPage, page, handleChangeRowsPerPage
             </TableRow>
           </TableHead>
           <TableBody>
-            {data.slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage).map((rowData, index) => (
+            {data.map((rowData, index) => (
               <TableRow key={index} sx={{ '&:last-child td, &:last-child th': { border: 0 } }}>
                 {columns.map((column) => (
                   <TableCell key={column.id}>{column.id === 'No' ? index + 1 : renderCellContent(column, rowData)}</TableCell>
@@ -54,7 +54,6 @@ const CommonTable = ({ columns, data, rowsPerPage, page, handleChangeRowsPerPage
         </Table>
       </TableContainer>
       <TablePagination
-        rowsPerPageOptions={value}
         component="div"
         count={data.length}
         rowsPerPage={rowsPerPage}
