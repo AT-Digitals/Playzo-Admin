@@ -1,4 +1,5 @@
 import { Button, Stack } from '@mui/material';
+import dayjs from 'dayjs';
 
 import BookingApi from 'api/BookingApi';
 import BookingModal from './BookingModal';
@@ -24,6 +25,8 @@ export default function AddBooking() {
   const [dateError, setDateError] = useState(false);
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [disableData, setDisableData] = useState([]);
+  const [endDate, setEndDate] = useState('');
+  const [enddateError, setEndDateError] = useState(false);
 
   const [bookingType, setBookingType] = useState('');
   const [toast, setToast] = useState('');
@@ -69,6 +72,14 @@ export default function AddBooking() {
 
     setDateError(false);
   };
+  const handleEndDateChange = (newValue) => {
+    let enddatedata = newValue.$d;
+    const parsedDate = moment(enddatedata);
+    const formattedDate = parsedDate.format('YYYY-MM-DD');
+    setEndDate(formattedDate);
+    setEndDateError(false);
+  };
+  console.log('enddate', endDate, 'startDate', date);
 
   const bookingApiCall = (bookingData) => {
     if (date && startTime && endTime) {
@@ -373,15 +384,51 @@ export default function AddBooking() {
     return false;
   };
 
+  const shouldDisableDate = (startDate) => {
+    if (!date) {
+      return false;
+    }
+    return dayjs(startDate).isBefore(dayjs(date), 'day');
+  };
+
   return (
     <MainCard title="Add Bookings">
       <form>
         <Stack direction="row" spacing={2} alignItems="center">
           <TypeDropdown label="Booking Type" type={bookingType} onChange={handleChange} error={bookingTypeError} />
-          <CustomDatePicker date={date} setDate={dateHandler} error={dateError} />
+          <CustomDatePicker
+            date={date}
+            setDate={dateHandler}
+            error={dateError}
+            label={'Start Date'}
+            disablePast={true}
+            customStyles={{
+              '.css-1phpx1i-MuiInputBase-root-MuiOutlinedInput-root.Mui-error .MuiOutlinedInput-notchedOutline': {
+                borderColor: '#d9d9d9'
+              }
+            }}
+          />
           <CustomTextField label="Start Time" value={initalTime} setValue={TextFieldChange} error={startError} />
           <CustomTextField label="End Time" value={initalEnd} setValue={TextFieldEndChange} error={endError} />
-          <Button variant="outlined" sx={{ marginTop: '45px !important', padding: '8px 15px' }} type="submit" onClick={onSubmit}>
+          <CustomDatePicker
+            date={endDate}
+            setDate={handleEndDateChange}
+            error={enddateError}
+            label={'End Date'}
+            disablePast={false}
+            customStyles={{
+              '.css-1phpx1i-MuiInputBase-root-MuiOutlinedInput-root.Mui-error .MuiOutlinedInput-notchedOutline': {
+                borderColor: '#d9d9d9'
+              }
+            }}
+            shouldDisableDate={shouldDisableDate}
+          />
+          <Button
+            variant="outlined"
+            sx={{ marginTop: '45px !important', padding: '8px 15px', width: '130px' }}
+            type="submit"
+            onClick={onSubmit}
+          >
             Add booking
           </Button>
           <TimeSlotModal

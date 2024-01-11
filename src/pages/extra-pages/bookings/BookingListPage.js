@@ -185,6 +185,9 @@ export default function BookingListPage() {
                   <MenuItem value="turf">Turf</MenuItem>
                   <MenuItem value="boardGame">Board Game</MenuItem>
                   <MenuItem value="playstation">Play Station</MenuItem>
+                  <MenuItem value="cricketNet">Cricket Net</MenuItem>
+                  <MenuItem value="ballMachine">Ball Machine</MenuItem>
+                  <MenuItem value="badminton">Badminton</MenuItem>
                 </Select>
               </FormControl>
             </Stack>
