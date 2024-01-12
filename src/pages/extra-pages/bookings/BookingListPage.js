@@ -27,6 +27,7 @@ export default function BookingListPage() {
 
   const [isApplyMode, setIsApplyMode] = useState(true);
   const [buttonDisable, setButtonDisable] = useState(false);
+  const [paymentType, setPaymentType] = useState('');
 
   const handleButtonClick = () => {
     setFilteredData(data);
@@ -35,6 +36,7 @@ export default function BookingListPage() {
     setIsApplyMode(true);
     setStartDate('');
     setEndDate('');
+    setPaymentType('');
     setButtonDisable(false);
   };
 
@@ -44,6 +46,10 @@ export default function BookingListPage() {
 
   const handleChange = (event) => {
     setBookingType(event.target.value);
+  };
+
+  const handlePaymentChange = (event) => {
+    setPaymentType(event.target.value);
   };
 
   const handleChangePage = (_event, newPage) => {
@@ -134,7 +140,8 @@ export default function BookingListPage() {
       type: bookingType,
       startdate: startDate,
       enddate: endDate,
-      month: monthType
+      month: monthType,
+      paymentType: paymentType
     };
 
     console.log('details', details);
@@ -188,8 +195,8 @@ export default function BookingListPage() {
     <MainCard title="Booking List">
       <Stack direction="column" spacing={4}>
         <Stack direction="row" spacing={4} justifyContent="space-between" alignItems="center">
-          <Box sx={{ width: '200px' }}>
-            <Stack sx={{ minWidth: 200 }} spacing={3}>
+          <Box sx={{ width: '150px' }}>
+            <Stack sx={{ minWidth: 150 }} spacing={3}>
               <Typography>Select Booking Type</Typography>
               <FormControl fullWidth>
                 <Select
@@ -225,6 +232,21 @@ export default function BookingListPage() {
               disablePast={false}
               disableprop={buttonDisable}
             />
+            <Stack sx={{ minWidth: 150 }} spacing={3}>
+              <Typography>Payment Type</Typography>
+              <FormControl fullWidth>
+                <Select
+                  labelId="demo-simple-select-label"
+                  id="demo-simple-select"
+                  value={paymentType}
+                  onChange={handlePaymentChange}
+                  disabled={buttonDisable}
+                >
+                  <MenuItem value="Cash">Cash</MenuItem>
+                  <MenuItem value="online">Online</MenuItem>
+                </Select>
+              </FormControl>
+            </Stack>
             <ToggleButtonComponent value={monthType} setValue={buttonhandleChange} disableprop={buttonDisable} />
             {isApplyMode ? (
               <Button variant="outlined" onClick={applyFilters}>
