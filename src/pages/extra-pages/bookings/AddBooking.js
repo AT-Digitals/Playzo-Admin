@@ -1,8 +1,9 @@
 import { Button, Stack } from '@mui/material';
-import dayjs from 'dayjs';
+import { useEffect, useState } from 'react';
 
 import BookingApi from 'api/BookingApi';
 import BookingModal from './BookingModal';
+import CalendarComponent from './CalendarComponent';
 import CustomDatePicker from './bookingComponents/CustomDatePicker';
 import CustomTextField from './bookingComponents/CustomTextField';
 import DateUtils from 'utils/DateUtils';
@@ -13,9 +14,8 @@ import PaymentApi from 'api/PaymentApi';
 import { PaymentType } from 'enum/PaymentType';
 import TimeSlotModal from './bookingComponents/TimeSlotModal';
 import TypeDropdown from './bookingComponents/TypeDropdown';
+import dayjs from 'dayjs';
 import moment from 'moment';
-import { useState, useEffect } from 'react';
-import CalendarComponent from './CalendarComponent';
 
 export default function AddBooking() {
   const [date, setDate] = useState('');
@@ -126,12 +126,12 @@ export default function AddBooking() {
     if (data.payment === PaymentType.Cash) {
       bookingApiCall({
         type: bookingType,
-        dateOfBooking: date,
-        bookingAmount: 3000,
         bookingtype: paymentType,
         startTime: parseInt(startTime),
         endTime: parseInt(endTime),
-        user: userData.id
+        user: userData.id,
+        startDate: date,
+        endDate: '2024-3-1'
       });
     } else {
       await paymentMethod();

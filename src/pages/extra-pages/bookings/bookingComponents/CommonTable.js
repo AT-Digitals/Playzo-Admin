@@ -18,14 +18,17 @@ const CommonTable = ({ columns, data, rowsPerPage, page, handleChangeRowsPerPage
       return moment(rowData[id]).format('YYYY-MM-DD');
     } else if (id === 'startTime' || id === 'endTime') {
       return DateUtils.formatMillisecondsToTime(rowData[id]);
-    } else if (id === 'user' && label === 'User Type') {
-      const data = JSON.parse(rowData[id]).userType;
+    } else if (id === 'userType' && label === 'User Type') {
+      const data = JSON.parse(rowData['user']).userType;
       return data;
-    } else if (id === 'user' && label === 'Email ID') {
-      const data = JSON.parse(rowData[id]).email;
+    } else if (id === 'userId' && label === 'Email ID') {
+      const data = JSON.parse(rowData['user']).email;
       return data;
     } else if (id === 'user' && label === 'User Name') {
       const data = JSON.parse(rowData[id]).name;
+      return data;
+    } else if (id === 'bookingAmount' && label === 'Booking Amount') {
+      const data = rowData[id].total;
       return data;
     } else {
       return rowData[id];
@@ -37,7 +40,7 @@ const CommonTable = ({ columns, data, rowsPerPage, page, handleChangeRowsPerPage
         <Table sx={{ minWidth: 650 }} aria-label="simple table">
           <TableHead>
             <TableRow>
-              {columns.map((column) => (
+              {columns.map((column, index) => (
                 <TableCell key={column.id}>{column.label}</TableCell>
               ))}
             </TableRow>

@@ -1,10 +1,11 @@
 import * as XLSX from 'xlsx';
 
 import { Box, Button, Stack, Typography } from '@mui/material';
-import { useEffect, useState } from 'react';
+import { useCallback, useEffect, useState } from 'react';
 
 import BookingApi from 'api/BookingApi';
 import CommonTable from './bookingComponents/CommonTable';
+import CustomDatePicker from './bookingComponents/CustomDatePicker';
 import DateUtils from 'utils/DateUtils';
 import FormControl from '@mui/material/FormControl';
 import MainCard from 'components/MainCard';
@@ -12,7 +13,6 @@ import MenuItem from '@mui/material/MenuItem';
 import Select from '@mui/material/Select';
 import ToggleButtonComponent from './ToggleButtonComponent';
 import moment from 'moment';
-import CustomDatePicker from './bookingComponents/CustomDatePicker';
 
 export default function BookingListPage() {
   const [bookingType, setBookingType] = useState('All');
@@ -68,22 +68,23 @@ export default function BookingListPage() {
     setEndDate(formattedDate);
   };
 
-  useEffect(() => {
-    const fetchInfo = async () => {
-      try {
-        const res = await BookingApi.getAll({}).then((data) => {
-          setCount(data.length);
-        });
-        const res1 = await BookingApi.getAllPaging({ page: page + 1, limit: rowsPerPage }).then((data) => {
-          setData(data);
-          setFilteredData(data);
-        });
-      } catch {
-        console.log('Error fetching data');
-      }
-    };
-    fetchInfo();
+  const fetchInfo = useCallback(async () => {
+    try {
+      const res = await BookingApi.getAll({}).then((data) => {
+        setCount(data.length);
+        setData(data);
+      });
+      const res1 = await BookingApi.getAllPaging({ page: page + 1, limit: rowsPerPage }).then((data) => {
+        setFilteredData(data);
+      });
+    } catch {
+      console.log('Error fetching data');
+    }
   }, [page, rowsPerPage]);
+
+  useEffect(() => {
+    fetchInfo();
+  }, [fetchInfo]);
 
   const isWithinLastMonths = (startDate, months) => {
     const currentDate = new Date();
@@ -103,7 +104,7 @@ export default function BookingListPage() {
     return monthDiff <= months;
   };
 
-  const applyFilters = () => {
+  const applyFilters = useCallback(async () => {
     const updatedFilteredData = data.filter((item) => {
       let typeFilter;
       if (bookingType === 'All') {
@@ -138,11 +139,12 @@ export default function BookingListPage() {
 
     console.log('details', details);
 
+    setCount(updatedFilteredData.length);
     setFilteredData(updatedFilteredData);
     setIsApplyMode(false);
     setPage(0);
     setButtonDisable(true);
-  };
+  }, []);
 
   const handleDownload = () => {
     const wb = XLSX.utils.book_new();
@@ -172,9 +174,13 @@ export default function BookingListPage() {
     { id: 'startTime', label: 'Start Time' },
     { id: 'endTime', label: 'End Time' },
     { id: 'bookingType', label: 'Booking Type' },
-    { id: 'bookingAmount', label: 'Booking Amount' },
-    { id: 'user', label: 'User Type' },
-    { id: 'user', label: 'Email ID' },
+    {
+      id: 'bookingAmount',
+
+      label: 'Booking Amount'
+    },
+    { id: 'userType', label: 'User Type' },
+    { id: 'userId', label: 'Email ID' },
     { id: 'bookingId', label: 'PaymentId' }
   ];
 
