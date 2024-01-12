@@ -8,6 +8,7 @@ export default function ToggleButtonComponent({ value, setValue, disableprop }) 
       <ToggleButton value="1month">1 Month</ToggleButton>
       <ToggleButton value="3month">3 Month</ToggleButton>
       <ToggleButton value="6month">6 Month</ToggleButton>
+      <ToggleButton value="1 Year">1 Year</ToggleButton>
     </ToggleButtonGroup>
   );
 }

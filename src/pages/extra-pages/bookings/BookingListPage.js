@@ -12,6 +12,7 @@ import MenuItem from '@mui/material/MenuItem';
 import Select from '@mui/material/Select';
 import ToggleButtonComponent from './ToggleButtonComponent';
 import moment from 'moment';
+import CustomDatePicker from './bookingComponents/CustomDatePicker';
 
 export default function BookingListPage() {
   const [bookingType, setBookingType] = useState('All');
@@ -21,6 +22,8 @@ export default function BookingListPage() {
   const [page, setPage] = useState(0);
   const [rowsPerPage, setRowsPerPage] = useState(10);
   const [count, setCount] = useState(0);
+  const [startDate, setStartDate] = useState('');
+  const [endDate, setEndDate] = useState('');
 
   const [isApplyMode, setIsApplyMode] = useState(true);
   const [buttonDisable, setButtonDisable] = useState(false);
@@ -30,18 +33,10 @@ export default function BookingListPage() {
     setBookingType('All');
     setMonthType('');
     setIsApplyMode(true);
+    setStartDate('');
+    setEndDate('');
     setButtonDisable(false);
   };
-
-  // const fetchDataAndUpdateState = async (currentPage, pageSize) => {
-  //   const result = await BookingApi.getAll(currentPage, pageSize);
-  //   console.log('result', result);
-  //   setData(result.data);
-  // };
-
-  // useEffect(() => {
-  //   fetchDataAndUpdateState(page, rowsPerPage);
-  // }, [page, rowsPerPage]);
 
   const buttonhandleChange = (event, newValue) => {
     setMonthType(newValue);
@@ -51,11 +46,6 @@ export default function BookingListPage() {
     setBookingType(event.target.value);
   };
 
-  // const handleChangePage = (event, newPage) => {
-  //   console.log('val', newPage);
-  //   setPage(newPage);
-  // };
-
   const handleChangePage = (_event, newPage) => {
     setPage(newPage);
   };
@@ -63,6 +53,19 @@ export default function BookingListPage() {
   const handleChangeRowsPerPage = (event) => {
     setRowsPerPage(parseInt(event.target.value, 10));
     setPage(0);
+  };
+
+  const handleStartDateChange = (newValue) => {
+    let enddatedata = newValue.$d;
+    const parsedDate = moment(enddatedata);
+    const formattedDate = parsedDate.format('YYYY-MM-DD');
+    setStartDate(formattedDate);
+  };
+  const handleEndDateChange = (newValue) => {
+    let enddatedata = newValue.$d;
+    const parsedDate = moment(enddatedata);
+    const formattedDate = parsedDate.format('YYYY-MM-DD');
+    setEndDate(formattedDate);
   };
 
   useEffect(() => {
@@ -126,6 +129,15 @@ export default function BookingListPage() {
       return typeFilter && dateFilter;
     });
 
+    const details = {
+      type: bookingType,
+      startdate: startDate,
+      enddate: endDate,
+      month: monthType
+    };
+
+    console.log('details', details);
+
     setFilteredData(updatedFilteredData);
     setIsApplyMode(false);
     setPage(0);
@@ -170,7 +182,7 @@ export default function BookingListPage() {
     <MainCard title="Booking List">
       <Stack direction="column" spacing={4}>
         <Stack direction="row" spacing={4} justifyContent="space-between" alignItems="center">
-          <Box sx={{ width: '300px' }}>
+          <Box sx={{ width: '200px' }}>
             <Stack sx={{ minWidth: 200 }} spacing={3}>
               <Typography>Select Booking Type</Typography>
               <FormControl fullWidth>
@@ -193,6 +205,20 @@ export default function BookingListPage() {
             </Stack>
           </Box>
           <Stack direction="row" spacing={2} alignItems="center">
+            <CustomDatePicker
+              label="Start Date"
+              date={startDate}
+              setDate={handleStartDateChange}
+              disablePast={false}
+              disableprop={buttonDisable}
+            />
+            <CustomDatePicker
+              label="End Date"
+              date={endDate}
+              setDate={handleEndDateChange}
+              disablePast={false}
+              disableprop={buttonDisable}
+            />
             <ToggleButtonComponent value={monthType} setValue={buttonhandleChange} disableprop={buttonDisable} />
             {isApplyMode ? (
               <Button variant="outlined" onClick={applyFilters}>

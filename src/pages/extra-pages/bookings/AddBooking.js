@@ -396,18 +396,7 @@ export default function AddBooking() {
       <form>
         <Stack direction="row" spacing={2} alignItems="center">
           <TypeDropdown label="Booking Type" type={bookingType} onChange={handleChange} error={bookingTypeError} />
-          <CustomDatePicker
-            date={date}
-            setDate={dateHandler}
-            error={dateError}
-            label={'Start Date'}
-            disablePast={true}
-            customStyles={{
-              '.css-1phpx1i-MuiInputBase-root-MuiOutlinedInput-root.Mui-error .MuiOutlinedInput-notchedOutline': {
-                borderColor: '#d9d9d9'
-              }
-            }}
-          />
+          <CustomDatePicker date={date} setDate={dateHandler} error={dateError} label={'Start Date'} disablePast={true} />
           <CustomTextField label="Start Time" value={initalTime} setValue={TextFieldChange} error={startError} />
           <CustomTextField label="End Time" value={initalEnd} setValue={TextFieldEndChange} error={endError} />
           <CustomDatePicker
@@ -416,11 +405,6 @@ export default function AddBooking() {
             error={enddateError}
             label={'End Date'}
             disablePast={false}
-            customStyles={{
-              '.css-1phpx1i-MuiInputBase-root-MuiOutlinedInput-root.Mui-error .MuiOutlinedInput-notchedOutline': {
-                borderColor: '#d9d9d9'
-              }
-            }}
             shouldDisableDate={shouldDisableDate}
           />
           <Button

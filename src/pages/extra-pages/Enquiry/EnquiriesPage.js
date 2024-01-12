@@ -3,6 +3,9 @@ import EnquiryApi from 'api/EnquiryApi';
 import MainCard from 'components/MainCard';
 import { useEffect } from 'react';
 import { useState } from 'react';
+import { Stack, Button } from '@mui/material';
+import CustomDatePicker from '../bookings/bookingComponents/CustomDatePicker';
+import moment from 'moment';
 
 const columns = [
   { id: 'No', label: 'No' },
@@ -18,6 +21,19 @@ export default function EnquiriesPage() {
   const [data, setData] = useState([]);
   const [count, setCount] = useState(0);
 
+  const [startDate, setStartDate] = useState('');
+  const [endDate, setEndDate] = useState('');
+
+  const [isApplyMode, setIsApplyMode] = useState(true);
+  const [buttonDisable, setButtonDisable] = useState(false);
+
+  const handleButtonClick = () => {
+    setIsApplyMode(true);
+    setStartDate('');
+    setEndDate('');
+    setButtonDisable(false);
+  };
+
   const handleChangePage = (_event, newPage) => {
     setPage(newPage);
   };
@@ -25,6 +41,20 @@ export default function EnquiriesPage() {
   const handleChangeRowsPerPage = (event) => {
     setRowsPerPage(parseInt(event.target.value, 10));
     setPage(0);
+  };
+
+  const handleStartDateChange = (newValue) => {
+    let enddatedata = newValue.$d;
+    const parsedDate = moment(enddatedata);
+    const formattedDate = parsedDate.format('YYYY-MM-DD');
+    setStartDate(formattedDate);
+  };
+
+  const handleEndDateChange = (newValue) => {
+    let enddatedata = newValue.$d;
+    const parsedDate = moment(enddatedata);
+    const formattedDate = parsedDate.format('YYYY-MM-DD');
+    setEndDate(formattedDate);
   };
 
   useEffect(() => {
@@ -43,19 +73,59 @@ export default function EnquiriesPage() {
     };
     fetchInfo();
   }, [page, rowsPerPage]);
-  console.log('data', data);
+
+  const ApplyFilter = (event) => {
+    event.preventDefault();
+
+    const filterdata = {
+      startdate: startDate,
+      enddate: endDate
+    };
+    console.log('filter', filterdata);
+    setIsApplyMode(false);
+    setButtonDisable(true);
+  };
 
   return (
     <MainCard title="Enquiries">
-      <CommonTable
-        columns={columns}
-        count={count}
-        data={data}
-        rowsPerPage={rowsPerPage}
-        page={page}
-        handleChangeRowsPerPage={handleChangeRowsPerPage}
-        handleChange={handleChangePage}
-      />
+      <Stack direction="column" spacing={4}>
+        <Stack direction="row" spacing={2} alignItems="center" justifyContent="space-between">
+          <Stack direction="row" spacing={2}>
+            <CustomDatePicker
+              label="Start Date"
+              date={startDate}
+              setDate={handleStartDateChange}
+              disablePast={false}
+              disableprop={buttonDisable}
+            />
+            <CustomDatePicker
+              label="End Date"
+              date={endDate}
+              setDate={handleEndDateChange}
+              disablePast={false}
+              disableprop={buttonDisable}
+            />
+          </Stack>
+          {isApplyMode ? (
+            <Button variant="outlined" onClick={ApplyFilter} sx={{ width: '150px', height: '50px' }}>
+              Apply
+            </Button>
+          ) : (
+            <Button variant="outlined" onClick={handleButtonClick} sx={{ width: '150px', height: '50px' }}>
+              Clear
+            </Button>
+          )}
+        </Stack>
+        <CommonTable
+          columns={columns}
+          count={count}
+          data={data}
+          rowsPerPage={rowsPerPage}
+          page={page}
+          handleChangeRowsPerPage={handleChangeRowsPerPage}
+          handleChange={handleChangePage}
+        />
+      </Stack>
     </MainCard>
   );
 }
