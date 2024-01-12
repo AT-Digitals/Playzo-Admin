@@ -28,6 +28,8 @@ export default function BookingListPage() {
   const [isApplyMode, setIsApplyMode] = useState(true);
   const [buttonDisable, setButtonDisable] = useState(false);
   const [paymentType, setPaymentType] = useState('');
+  const [filterData, setFilterData] = useState();
+  const [bool, setBool] = useState(false);
 
   const handleButtonClick = () => {
     setFilteredData(data);
@@ -38,6 +40,7 @@ export default function BookingListPage() {
     setEndDate('');
     setPaymentType('');
     setButtonDisable(false);
+    setBool(false);
   };
 
   const buttonhandleChange = (event, newValue) => {
@@ -76,21 +79,38 @@ export default function BookingListPage() {
 
   const fetchInfo = useCallback(async () => {
     try {
-      const res = await BookingApi.getAll({}).then((data) => {
-        setCount(data.length);
-        setData(data);
-      });
-      const res1 = await BookingApi.getAllPaging({ page: page + 1, limit: rowsPerPage }).then((data) => {
-        setFilteredData(data);
-      });
+      if (bool && filterData) {
+        if (filterData.type === 'All') {
+          filterData.type = '';
+        }
+        const res = await BookingApi.filterDateBooking(filterData).then((data) => {
+          setCount(data.length);
+          setData(data);
+        });
+        let a = filterData;
+        a.page = page + 1;
+        a.limit = rowsPerPage;
+        const res1 = await BookingApi.filterDateBooking(a).then((data) => {
+          setFilteredData(data);
+        });
+      } else {
+        const res = await BookingApi.getAll({}).then((data) => {
+          setCount(data.length);
+          setData(data);
+        });
+        const res1 = await BookingApi.getAllPaging({ page: page + 1, limit: rowsPerPage }).then((data) => {
+          setFilteredData(data);
+        });
+      }
     } catch {
       console.log('Error fetching data');
     }
-  }, [page, rowsPerPage]);
+  }, [bool, filterData, page, rowsPerPage]);
 
   useEffect(() => {
     fetchInfo();
-  }, [fetchInfo]);
+    console.log(filterData);
+  }, [fetchInfo, filterData]);
 
   const isWithinLastMonths = (startDate, months) => {
     const currentDate = new Date();
@@ -111,47 +131,49 @@ export default function BookingListPage() {
   };
 
   const applyFilters = useCallback(async () => {
-    const updatedFilteredData = data.filter((item) => {
-      let typeFilter;
-      if (bookingType === 'All') {
-        typeFilter = true;
-      } else {
-        typeFilter = item.type === bookingType;
-      }
+    // const updatedFilteredData = data.filter((item) => {
+    //   let typeFilter;
+    //   if (bookingType === 'All') {
+    //     typeFilter = true;
+    //   } else {
+    //     typeFilter = item.type === bookingType;
+    //   }
 
-      let dateFilter = true;
-      const currentDate = new Date();
+    //   let dateFilter = true;
+    //   const currentDate = new Date();
 
-      if (monthType) {
-        const startDate = new Date(item.dateOfBooking);
+    //   if (monthType) {
+    //     const startDate = new Date(item.dateOfBooking);
 
-        if (monthType === '1month') {
-          dateFilter = currentDate.getMonth() === startDate.getMonth();
-        } else if (monthType === '3month') {
-          dateFilter = isWithinLastMonths(startDate, 2);
-        } else if (monthType === '6month') {
-          dateFilter = isWithinLastMonths(startDate, 5);
-        }
-      }
-      return typeFilter && dateFilter;
-    });
+    //     if (monthType === '1month') {
+    //       dateFilter = currentDate.getMonth() === startDate.getMonth();
+    //     } else if (monthType === '3month') {
+    //       dateFilter = isWithinLastMonths(startDate, 2);
+    //     } else if (monthType === '6month') {
+    //       dateFilter = isWithinLastMonths(startDate, 5);
+    //     }
+    //   }
+    //   return typeFilter && dateFilter;
+    // });
+    if (bookingType !== 'All' || startDate !== '' || endDate !== '' || paymentType !== '') {
+      const details = {
+        type: bookingType,
+        startdate: startDate,
+        enddate: endDate,
+        bookingType: paymentType
+      };
+      setFilterData(details);
+      console.log('details', details);
+      setBool(true);
+    } else {
+      setBool(false);
+    }
+    // month: monthType,
 
-    const details = {
-      type: bookingType,
-      startdate: startDate,
-      enddate: endDate,
-      month: monthType,
-      paymentType: paymentType
-    };
-
-    console.log('details', details);
-
-    setCount(updatedFilteredData.length);
-    setFilteredData(updatedFilteredData);
     setIsApplyMode(false);
-    setPage(0);
+    // setPage(0);
     setButtonDisable(true);
-  }, []);
+  }, [bookingType, endDate, paymentType, startDate]);
 
   const handleDownload = () => {
     const wb = XLSX.utils.book_new();
@@ -242,7 +264,7 @@ export default function BookingListPage() {
                   onChange={handlePaymentChange}
                   disabled={buttonDisable}
                 >
-                  <MenuItem value="Cash">Cash</MenuItem>
+                  <MenuItem value="cash">Cash</MenuItem>
                   <MenuItem value="online">Online</MenuItem>
                 </Select>
               </FormControl>

@@ -23,9 +23,7 @@ export default class BookingApi {
 
   public static async filterDateBooking(request: any) {
     try {
-      const datails = await axiosInstance.get<any[]>(
-        `/bookingFilter/filterDateBookings?startDate=${request.startDate}&&endDate=${request.endDate}`
-      );
+      const datails = await axiosInstance.get<any[]>(`/bookingFilter/filterDateBookings` + FilterUtils.getQueryString(request));
       return datails.data;
     } catch (e) {
       throw handleApiError(e, 'Failed to create booking');
