@@ -1,10 +1,10 @@
+import { Button, Stack } from '@mui/material';
+import { useCallback, useEffect, useState } from 'react';
+
 import CommonTable from '../bookings/bookingComponents/CommonTable';
+import CustomDatePicker from '../bookings/bookingComponents/CustomDatePicker';
 import EnquiryApi from 'api/EnquiryApi';
 import MainCard from 'components/MainCard';
-import { useEffect } from 'react';
-import { useState } from 'react';
-import { Stack, Button } from '@mui/material';
-import CustomDatePicker from '../bookings/bookingComponents/CustomDatePicker';
 import moment from 'moment';
 
 const columns = [
@@ -26,12 +26,15 @@ export default function EnquiriesPage() {
 
   const [isApplyMode, setIsApplyMode] = useState(true);
   const [buttonDisable, setButtonDisable] = useState(false);
+  const [bool, setBool] = useState(false);
+  const [filterData, setFilterData] = useState();
 
   const handleButtonClick = () => {
     setIsApplyMode(true);
     setStartDate('');
     setEndDate('');
     setButtonDisable(false);
+    setBool(false);
   };
 
   const handleChangePage = (_event, newPage) => {
@@ -57,34 +60,79 @@ export default function EnquiriesPage() {
     setEndDate(formattedDate);
   };
 
-  useEffect(() => {
-    const fetchInfo = async () => {
-      try {
-        const res = await EnquiryApi.getAll({}).then((data) => {
+  const fetchInfo = useCallback(async () => {
+    console.log('filterData', filterData, bool);
+    try {
+      if (bool && filterData) {
+        console.log('filterData1', filterData);
+        const res = await EnquiryApi.filterEnquiry(filterData).then((data) => {
           setCount(data.length);
-        });
-        const res1 = await EnquiryApi.getAllPaging({ page: page + 1, limit: rowsPerPage }).then((data) => {
           setData(data);
+        });
+        let a = filterData;
+        a.page = page + 1;
+        a.limit = rowsPerPage;
+        const res1 = await EnquiryApi.filterDateEnquiry(a).then((data) => {
           setFilteredData(data);
         });
-      } catch {
-        console.log('Error fetching data');
+      } else {
+        const res = await EnquiryApi.getAll({}).then((data) => {
+          setCount(data.length);
+          setData(data);
+        });
+        const res1 = await EnquiryApi.getAllPaging({ page: page + 1, limit: rowsPerPage }).then((data) => {
+          setFilteredData(data);
+        });
       }
-    };
+    } catch {
+      console.log('Error fetching data');
+    }
+  }, [bool, filterData, page, rowsPerPage]);
+
+  useEffect(() => {
     fetchInfo();
-  }, [page, rowsPerPage]);
+  }, [fetchInfo]);
+  // useEffect(() => {
+  //   const fetchInfo = async () => {
+  //     try {
+  //       const res = await EnquiryApi.getAll({}).then((data) => {
+  //         setCount(data.length);
+  //       });
+  //       const res1 = await EnquiryApi.getAllPaging({ page: page + 1, limit: rowsPerPage }).then((data) => {
+  //         setData(data);
+  //         setFilteredData(data);
+  //       });
+  //     } catch {
+  //       console.log('Error fetching data');
+  //     }
+  //   };
+  //   fetchInfo();
+  // }, [page, rowsPerPage]);
 
-  const ApplyFilter = (event) => {
-    event.preventDefault();
+  const ApplyFilter = useCallback(
+    async (event) => {
+      event.preventDefault();
+      if (startDate !== '' || endDate !== '') {
+        const filter = {
+          startdate: startDate,
+          enddate: endDate
+        };
+        if (filter.startDate && filter.endDate) {
+          const a = DateUtils.add(new Date(filter.endDate), 1, 'day');
+          filter.endDate = DateUtils.formatDate(new Date(a), 'yyyy-MM-DD');
+        }
+        console.log('filter', filter);
+        setFilterData(filter);
+        setBool(true);
+      } else {
+        setBool(false);
+      }
+      setButtonDisable(true);
 
-    const filterdata = {
-      startdate: startDate,
-      enddate: endDate
-    };
-    console.log('filter', filterdata);
-    setIsApplyMode(false);
-    setButtonDisable(true);
-  };
+      setIsApplyMode(false);
+    },
+    [endDate, startDate]
+  );
 
   return (
     <MainCard title="Enquiries">
