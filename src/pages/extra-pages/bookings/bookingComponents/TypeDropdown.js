@@ -1,9 +1,11 @@
 import * as React from 'react';
-import MenuItem from '@mui/material/MenuItem';
+
+import { Stack, Typography } from '@mui/material';
+
 import FormControl from '@mui/material/FormControl';
-import Select from '@mui/material/Select';
-import { Typography, Stack } from '@mui/material';
 import FormHelperText from '@mui/material/FormHelperText';
+import MenuItem from '@mui/material/MenuItem';
+import Select from '@mui/material/Select';
 
 export default function TypeDropdown({ type, onChange, label, error }) {
   return (

@@ -46,4 +46,22 @@ export default class BookingApi {
       throw handleApiError(e, 'Failed to get all details');
     }
   }
+
+  public static async filterPage(request: any) {
+    try {
+      const datails = await axiosInstance.get<any[]>(`/bookingFilter/filterPage` + FilterUtils.getQueryString(request));
+      return datails.data;
+    } catch (e) {
+      throw handleApiError(e, 'Failed to create booking');
+    }
+  }
+
+  public static async filterBook(request: any) {
+    try {
+      const datails = await axiosInstance.get<any[]>(`/bookingFilter/filterBook` + FilterUtils.getQueryString(request));
+      return datails.data;
+    } catch (e) {
+      throw handleApiError(e, 'Failed to create booking');
+    }
+  }
 }

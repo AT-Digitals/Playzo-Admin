@@ -83,14 +83,15 @@ export default function BookingListPage() {
         if (filterData.type === 'All') {
           filterData.type = '';
         }
-        const res = await BookingApi.filterDateBooking(filterData).then((data) => {
+
+        const res = await BookingApi.filterBook(filterData).then((data) => {
           setCount(data.length);
           setData(data);
         });
         let a = filterData;
         a.page = page + 1;
         a.limit = rowsPerPage;
-        const res1 = await BookingApi.filterDateBooking(a).then((data) => {
+        const res1 = await BookingApi.filterPage(a).then((data) => {
           setFilteredData(data);
         });
       } else {
@@ -109,71 +110,69 @@ export default function BookingListPage() {
 
   useEffect(() => {
     fetchInfo();
-    console.log(filterData);
-  }, [fetchInfo, filterData]);
+  }, [fetchInfo]);
 
-  const isWithinLastMonths = (startDate, months) => {
-    const currentDate = new Date();
+  // const isWithinLastMonths = (startDate, months) => {
+  //   const currentDate = new Date();
 
-    const currentYear = currentDate.getFullYear();
-    const currentMonth = currentDate.getMonth();
+  //   const currentYear = currentDate.getFullYear();
+  //   const currentMonth = currentDate.getMonth();
 
-    const startYear = startDate.getFullYear();
-    const startMonth = startDate.getMonth();
+  //   const startYear = startDate.getFullYear();
+  //   const startMonth = startDate.getMonth();
 
-    if (startYear > currentYear || (startYear === currentYear && startMonth > currentMonth)) {
-      return false;
-    }
+  //   if (startYear > currentYear || (startYear === currentYear && startMonth > currentMonth)) {
+  //     return false;
+  //   }
 
-    const monthDiff = (currentYear - startYear) * 12 + currentMonth - startMonth;
+  //   const monthDiff = (currentYear - startYear) * 12 + currentMonth - startMonth;
 
-    return monthDiff <= months;
-  };
+  //   return monthDiff <= months;
+  // };
 
   const applyFilters = useCallback(async () => {
-    // const updatedFilteredData = data.filter((item) => {
-    //   let typeFilter;
-    //   if (bookingType === 'All') {
-    //     typeFilter = true;
-    //   } else {
-    //     typeFilter = item.type === bookingType;
-    //   }
-
-    //   let dateFilter = true;
-    //   const currentDate = new Date();
-
-    //   if (monthType) {
-    //     const startDate = new Date(item.dateOfBooking);
-
-    //     if (monthType === '1month') {
-    //       dateFilter = currentDate.getMonth() === startDate.getMonth();
-    //     } else if (monthType === '3month') {
-    //       dateFilter = isWithinLastMonths(startDate, 2);
-    //     } else if (monthType === '6month') {
-    //       dateFilter = isWithinLastMonths(startDate, 5);
-    //     }
-    //   }
-    //   return typeFilter && dateFilter;
-    // });
     if (bookingType !== 'All' || startDate !== '' || endDate !== '' || paymentType !== '') {
       const details = {
         type: bookingType,
-        startdate: startDate,
-        enddate: endDate,
-        bookingType: paymentType
+        startDate: startDate,
+        endDate: endDate,
+        bookingtype: paymentType
       };
+
+      let dateFilter = '';
+      if (monthType === 'oneMonth') {
+        dateFilter = DateUtils.subtract(new Date(), 1, 'month', 'yyyy-MM-DD');
+      } else if (monthType === 'threeMonth') {
+        dateFilter = DateUtils.subtract(new Date(), 3, 'month', 'yyyy-MM-DD');
+      } else if (monthType === 'sixMonth') {
+        dateFilter = DateUtils.subtract(new Date(), 6, 'month', 'yyyy-MM-DD');
+      } else if (monthType === 'oneYear') {
+        dateFilter = DateUtils.subtract(new Date(), 1, 'year', 'yyyy-MM-DD');
+      }
+
+      console.log('dateFilter', dateFilter);
+      if (details.startDate && details.endDate && dateFilter === '') {
+        const a = DateUtils.add(new Date(details.endDate), 1, 'day');
+        details.endDate = DateUtils.formatDate(new Date(a), 'yyyy-MM-DD');
+      }
+
+      if (dateFilter !== '') {
+        const currentDateValue = DateUtils.add(new Date(), 1, 'day');
+        details.endDate = DateUtils.formatDate(new Date(currentDateValue), 'yyyy-MM-DD');
+        details.startDate = DateUtils.formatDate(new Date(dateFilter), 'yyyy-MM-DD');
+      }
+      console.log('dateFilter', dateFilter);
       setFilterData(details);
       console.log('details', details);
       setBool(true);
     } else {
       setBool(false);
     }
-    // month: monthType,
 
     setIsApplyMode(false);
     // setPage(0);
     setButtonDisable(true);
-  }, [bookingType, endDate, paymentType, startDate]);
+  }, [bookingType, endDate, monthType, paymentType, startDate]);
 
   const handleDownload = () => {
     const wb = XLSX.utils.book_new();
@@ -199,10 +198,11 @@ export default function BookingListPage() {
     // { id: 'id', label: 'Id' },
     { id: 'type', label: 'Type' },
     { id: 'user', label: 'User Name' },
-    { id: 'dateOfBooking', label: 'Selected Date' },
+    { id: 'startDate', label: 'Start Date' },
+    { id: 'endDate', label: 'End Date' },
     { id: 'startTime', label: 'Start Time' },
     { id: 'endTime', label: 'End Time' },
-    { id: 'bookingType', label: 'Booking Type' },
+    { id: 'bookingtype', label: 'Booking Type' },
     {
       id: 'bookingAmount',
 

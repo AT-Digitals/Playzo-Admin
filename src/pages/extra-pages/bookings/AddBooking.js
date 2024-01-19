@@ -131,7 +131,7 @@ export default function AddBooking() {
         endTime: parseInt(endTime),
         user: userData.id,
         startDate: date,
-        endDate: '2024-3-1'
+        endDate: endDate
       });
     } else {
       await paymentMethod();
@@ -167,12 +167,12 @@ export default function AddBooking() {
           });
           bookingApiCall({
             type: bookingType,
-            dateOfBooking: date,
-            bookingAmount: 3000,
             bookingtype: paymentType,
             startTime: parseInt(startTime),
             endTime: parseInt(endTime),
             user: userData.id,
+            startDate: date,
+            endDate: endDate,
             bookingId: response.razorpay_payment_id
           });
         },
