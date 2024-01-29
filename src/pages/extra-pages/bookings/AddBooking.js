@@ -60,7 +60,7 @@ export default function AddBooking() {
       try {
         setIsModalOpen(true);
         const response = await BookingApi.filter({
-          dateOfBooking: formattedDate,
+          startDate: formattedDate,
           type: bookingType
         });
         setDisableData(response);
