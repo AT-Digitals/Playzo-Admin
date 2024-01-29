@@ -55,15 +55,16 @@ export default function AddBooking() {
     let datedata = newValue.$d;
     const parsedDate = moment(datedata);
     const formattedDate = parsedDate.format('YYYY-MM-DD');
-    console.error('format', formattedDate);
     setDate(formattedDate);
     const ApiCall = async () => {
       try {
         setIsModalOpen(true);
         const response = await BookingApi.filter({
           startDate: formattedDate,
-          type: bookingType
+          type: bookingType,
+          endDate: endDate
         });
+        console.log('response', response);
         setDisableData(response);
       } catch (error) {
         console.error('Error:', error.message);
@@ -80,7 +81,6 @@ export default function AddBooking() {
     setEndDate(formattedDate);
     setEndDateError(false);
   };
-  console.log('enddate', endDate, 'startDate', date);
 
   const bookingApiCall = (bookingData) => {
     if (date && startTime && endTime && endDate) {
@@ -144,7 +144,6 @@ export default function AddBooking() {
 
   const handleChange = (event) => {
     setBookingType(event.target.value);
-    setDate('');
     setBookingTypeError(false);
   };
 
@@ -300,7 +299,7 @@ export default function AddBooking() {
       setBookingTypeError(true);
     }
 
-    if (date && bookingType && isDateComparisonValid() && endDate) {
+    if (date && endDate && bookingType && isDateComparisonValid()) {
       setBookingModalOpen(true);
     }
   };

@@ -14,7 +14,7 @@ const CommonTable = ({ columns, data, rowsPerPage, page, handleChangeRowsPerPage
   const renderCellContent = (column, rowData) => {
     const { id, label } = column;
 
-    if (id === 'dateOfBooking') {
+    if (id === 'startDate' || id === 'endDate') {
       return moment(rowData[id]).format('YYYY-MM-DD');
     } else if (id === 'startTime' || id === 'endTime') {
       return DateUtils.formatMillisecondsToTime(rowData[id]);

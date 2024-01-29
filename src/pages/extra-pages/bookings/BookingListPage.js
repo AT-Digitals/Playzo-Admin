@@ -214,76 +214,80 @@ export default function BookingListPage() {
   ];
 
   return (
-    <MainCard title="Booking List">
-      <Stack direction="column" spacing={4}>
-        <Stack direction="row" spacing={4} justifyContent="space-between" alignItems="center">
-          <Box sx={{ width: '150px' }}>
-            <Stack sx={{ minWidth: 150 }} spacing={3}>
-              <Typography>Select Booking Type</Typography>
-              <FormControl fullWidth>
-                <Select
-                  labelId="demo-simple-select-label"
-                  id="demo-simple-select"
-                  value={bookingType}
-                  onChange={handleChange}
-                  disabled={buttonDisable}
-                >
-                  <MenuItem value="All">All</MenuItem>
-                  <MenuItem value="turf">Turf</MenuItem>
-                  <MenuItem value="boardGame">Board Game</MenuItem>
-                  <MenuItem value="playstation">Play Station</MenuItem>
-                  <MenuItem value="cricketNet">Cricket Net</MenuItem>
-                  <MenuItem value="ballMachine">Ball Machine</MenuItem>
-                  <MenuItem value="badminton">Badminton</MenuItem>
-                </Select>
-              </FormControl>
-            </Stack>
-          </Box>
-          <Stack direction="row" spacing={2} alignItems="center">
-            <CustomDatePicker
-              label="Start Date"
-              date={startDate}
-              setDate={handleStartDateChange}
-              disablePast={false}
-              disableprop={buttonDisable}
-            />
-            <CustomDatePicker
-              label="End Date"
-              date={endDate}
-              setDate={handleEndDateChange}
-              disablePast={false}
-              disableprop={buttonDisable}
-            />
-            <Stack sx={{ minWidth: 150 }} spacing={3}>
-              <Typography>Payment Type</Typography>
-              <FormControl fullWidth>
-                <Select
-                  labelId="demo-simple-select-label"
-                  id="demo-simple-select"
-                  value={paymentType}
-                  onChange={handlePaymentChange}
-                  disabled={buttonDisable}
-                >
-                  <MenuItem value="cash">Cash</MenuItem>
-                  <MenuItem value="online">Online</MenuItem>
-                </Select>
-              </FormControl>
-            </Stack>
-            <ToggleButtonComponent value={monthType} setValue={buttonhandleChange} disableprop={buttonDisable} />
-            {isApplyMode ? (
-              <Button variant="outlined" onClick={applyFilters}>
-                Apply
+    <>
+      <MainCard title="Booking List">
+        <Stack direction="column" spacing={4}>
+          <Stack direction="row" spacing={4} justifyContent="space-between" alignItems="center">
+            <Box sx={{ width: '200px' }}>
+              <Stack spacing={3}>
+                <Typography>Select Booking Type</Typography>
+                <FormControl fullWidth>
+                  <Select
+                    labelId="demo-simple-select-label"
+                    id="demo-simple-select"
+                    value={bookingType}
+                    onChange={handleChange}
+                    disabled={buttonDisable}
+                  >
+                    <MenuItem value="All">All</MenuItem>
+                    <MenuItem value="turf">Turf</MenuItem>
+                    <MenuItem value="boardGame">Board Game</MenuItem>
+                    <MenuItem value="playstation">Play Station</MenuItem>
+                    <MenuItem value="cricketNet">Cricket Net</MenuItem>
+                    <MenuItem value="ballMachine">Ball Machine</MenuItem>
+                    <MenuItem value="badminton">Badminton</MenuItem>
+                  </Select>
+                </FormControl>
+              </Stack>
+            </Box>
+            <Stack direction="row" spacing={2} alignItems="center">
+              <CustomDatePicker
+                label="Start Date"
+                date={startDate}
+                setDate={handleStartDateChange}
+                disablePast={false}
+                disableprop={buttonDisable}
+              />
+              <CustomDatePicker
+                label="End Date"
+                date={endDate}
+                setDate={handleEndDateChange}
+                disablePast={false}
+                disableprop={buttonDisable}
+              />
+              <Stack sx={{ minWidth: 200 }} spacing={3}>
+                <Typography>Payment Type</Typography>
+                <FormControl fullWidth>
+                  <Select
+                    labelId="demo-simple-select-label"
+                    id="demo-simple-select"
+                    value={paymentType}
+                    onChange={handlePaymentChange}
+                    disabled={buttonDisable}
+                  >
+                    <MenuItem value="cash">Cash</MenuItem>
+                    <MenuItem value="online">Online</MenuItem>
+                  </Select>
+                </FormControl>
+              </Stack>
+              <ToggleButtonComponent value={monthType} setValue={buttonhandleChange} disableprop={buttonDisable} />
+              {isApplyMode ? (
+                <Button variant="outlined" onClick={applyFilters}>
+                  Apply
+                </Button>
+              ) : (
+                <Button variant="outlined" onClick={handleButtonClick}>
+                  Clear
+                </Button>
+              )}
+              <Button variant="outlined" onClick={handleDownload}>
+                Download
               </Button>
-            ) : (
-              <Button variant="outlined" onClick={handleButtonClick}>
-                Clear
-              </Button>
-            )}
-            <Button variant="outlined" onClick={handleDownload}>
-              Download
-            </Button>
+            </Stack>
           </Stack>
         </Stack>
+      </MainCard>
+      <MainCard sx={{ marginTop: '30px' }}>
         <CommonTable
           columns={columns}
           count={count}
@@ -293,7 +297,7 @@ export default function BookingListPage() {
           handleChangeRowsPerPage={handleChangeRowsPerPage}
           handleChange={handleChangePage}
         />
-      </Stack>
-    </MainCard>
+      </MainCard>
+    </>
   );
 }

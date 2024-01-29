@@ -5,7 +5,7 @@ import { handleApiError } from '../utils/ApiUtils';
 export default class EnquiryApi {
   public static async create(enquiry: any) {
     try {
-      const details = await axiosInstance.post('/enquiries', enquiry);
+      const details = await axiosInstance.post('/admin/enquiries', enquiry);
       return details.data;
     } catch (e) {
       throw handleApiError(e, 'Failed to create enquiry');
@@ -13,7 +13,7 @@ export default class EnquiryApi {
   }
   public static async getAll() {
     try {
-      const details = await axiosInstance.get<any[]>('/enquiries');
+      const details = await axiosInstance.get<any[]>('/admin/enquiries');
       return details.data;
     } catch (e) {
       throw handleApiError(e, 'Failed to get all details');
@@ -22,7 +22,7 @@ export default class EnquiryApi {
 
   public static async getAllPaging(value: any) {
     try {
-      const details = await axiosInstance.get<any[]>(`/enquiryFilter/filterPagination?page=${value.page}&&limit=${value.limit}`);
+      const details = await axiosInstance.get<any[]>(`/admin/enquiryFilter/filterPagination?page=${value.page}&&limit=${value.limit}`);
       return details.data;
     } catch (e) {
       throw handleApiError(e, 'Failed to get all details');
@@ -31,7 +31,7 @@ export default class EnquiryApi {
 
   public static async filterEnquiry(request: any) {
     try {
-      const datails = await axiosInstance.get<any[]>(`/enquiryFilter/filterEnquiry` + FilterUtils.getQueryString(request));
+      const datails = await axiosInstance.get<any[]>(`/admin/enquiryFilter/filterEnquiry` + FilterUtils.getQueryString(request));
       return datails.data;
     } catch (e) {
       throw handleApiError(e, 'Failed to create booking');
@@ -40,7 +40,7 @@ export default class EnquiryApi {
 
   public static async filterDateEnquiry(request: any) {
     try {
-      const datails = await axiosInstance.get<any[]>(`/enquiryFilter/filterDateEnquiry` + FilterUtils.getQueryString(request));
+      const datails = await axiosInstance.get<any[]>(`/admin/enquiryFilter/filterDateEnquiry` + FilterUtils.getQueryString(request));
       return datails.data;
     } catch (e) {
       throw handleApiError(e, 'Failed to create booking');
