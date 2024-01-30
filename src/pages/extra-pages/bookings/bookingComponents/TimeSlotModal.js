@@ -3,6 +3,7 @@ import Box from '@mui/material/Box';
 import Button from '@mui/material/Button';
 import Modal from '@mui/material/Modal';
 import StartTimeComponent from './StartTimeComponent';
+// import EndTimeComponent from './EndTimeComponent';
 import { Stack } from '@mui/material';
 
 const style = {
@@ -25,6 +26,7 @@ export default function TimeSlotModal({ onChange, onSelect, isOpen, onClose, sho
           <Stack direction="row" spacing={2}>
             <StartTimeComponent onChange={onChange} shouldDisableTime={shouldDisableTime} label="Start Time" />
             <StartTimeComponent onChange={onSelect} shouldDisableTime={shouldDisableEndTime} label="End Time" />
+            {/* <EndTimeComponent onChange={onSelect} error={error1} shouldDisableEndTime={shouldDisableEndTime} /> */}
           </Stack>
           <Button variant="outlined" onClick={onClose} sx={{ width: '100%', marginTop: '30px' }}>
             Book Slots

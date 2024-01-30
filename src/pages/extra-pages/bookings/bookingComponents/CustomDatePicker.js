@@ -19,6 +19,7 @@ export default function BasicDatePicker({ date, setDate, error, label, disablePa
           disablePast={disablePast}
           shouldDisableDate={shouldDisableDate}
           disabled={disableprop}
+          //disablePast
           slotProps={{
             textField: {
               helperText: error ? 'Please select a date' : ''

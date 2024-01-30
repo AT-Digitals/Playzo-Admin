@@ -286,6 +286,7 @@ export default function BookingListPage() {
                 disablePast={false}
                 disableprop={buttonDisable}
                 shouldDisableDate={shouldDisableStartDate}
+                error={startDateError}
               />
               <CustomDatePicker
                 label="End Date"
@@ -294,6 +295,7 @@ export default function BookingListPage() {
                 disablePast={false}
                 disableprop={buttonDisable}
                 shouldDisableDate={shouldDisableEndDate}
+                error={endDateError}
               />
               <Stack sx={{ minWidth: 200 }} spacing={3}>
                 <Typography>Payment Type</Typography>
