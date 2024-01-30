@@ -58,7 +58,7 @@ export default function AddBooking() {
     setDate(formattedDate);
     const ApiCall = async () => {
       try {
-        setIsModalOpen(true);
+        // setIsModalOpen(true);
         const response = await BookingApi.filter({
           startDate: formattedDate,
           type: bookingType,
@@ -79,6 +79,21 @@ export default function AddBooking() {
     const parsedDate = moment(enddatedata);
     const formattedDate = parsedDate.format('YYYY-MM-DD');
     setEndDate(formattedDate);
+    const ApiCall = async () => {
+      try {
+        setIsModalOpen(true);
+        const response = await BookingApi.filter({
+          startDate: date,
+          type: bookingType,
+          endDate: formattedDate
+        });
+        console.log('response', response);
+        setDisableData(response);
+      } catch (error) {
+        console.error('Error:', error.message);
+      }
+    };
+    ApiCall();
     setEndDateError(false);
   };
 
@@ -402,8 +417,6 @@ export default function AddBooking() {
         <Stack direction="row" spacing={2} alignItems="center">
           <TypeDropdown label="Booking Type" type={bookingType} onChange={handleChange} error={bookingTypeError} />
           <CustomDatePicker date={date} setDate={dateHandler} error={dateError} label={'Start Date'} disablePast={true} />
-          <CustomTextField label="Start Time" value={initalTime} setValue={TextFieldChange} error={startError} />
-          <CustomTextField label="End Time" value={initalEnd} setValue={TextFieldEndChange} error={endError} />
           <CustomDatePicker
             date={endDate}
             setDate={handleEndDateChange}
@@ -412,6 +425,9 @@ export default function AddBooking() {
             disablePast={false}
             shouldDisableDate={shouldDisableDate}
           />
+          <CustomTextField label="Start Time" value={initalTime} setValue={TextFieldChange} error={startError} />
+          <CustomTextField label="End Time" value={initalEnd} setValue={TextFieldEndChange} error={endError} />
+
           <Button
             variant="outlined"
             sx={{ marginTop: '45px !important', padding: '8px 15px', width: '130px' }}
