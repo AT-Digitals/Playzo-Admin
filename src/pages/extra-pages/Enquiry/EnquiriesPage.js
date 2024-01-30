@@ -6,6 +6,7 @@ import CustomDatePicker from '../bookings/bookingComponents/CustomDatePicker';
 import EnquiryApi from 'api/EnquiryApi';
 import MainCard from 'components/MainCard';
 import moment from 'moment';
+import dayjs from 'dayjs';
 
 const columns = [
   { id: 'No', label: 'No' },
@@ -29,6 +30,9 @@ export default function EnquiriesPage() {
   const [bool, setBool] = useState(false);
   const [filterData, setFilterData] = useState();
 
+  const [startDateError, setStartDateError] = useState('');
+  const [endDateError, setEndDateError] = useState(false);
+
   const handleButtonClick = () => {
     setIsApplyMode(true);
     setStartDate('');
@@ -51,6 +55,7 @@ export default function EnquiriesPage() {
     const parsedDate = moment(enddatedata);
     const formattedDate = parsedDate.format('YYYY-MM-DD');
     setStartDate(formattedDate);
+    setStartDateError(false);
   };
 
   const handleEndDateChange = (newValue) => {
@@ -58,6 +63,7 @@ export default function EnquiriesPage() {
     const parsedDate = moment(enddatedata);
     const formattedDate = parsedDate.format('YYYY-MM-DD');
     setEndDate(formattedDate);
+    setEndDateError(false);
   };
 
   const fetchInfo = useCallback(async () => {
@@ -73,7 +79,7 @@ export default function EnquiriesPage() {
         a.page = page + 1;
         a.limit = rowsPerPage;
         const res1 = await EnquiryApi.filterDateEnquiry(a).then((data) => {
-          setFilteredData(data);
+          setFilterData(data);
         });
       } else {
         const res = await EnquiryApi.getAll({}).then((data) => {
@@ -81,7 +87,7 @@ export default function EnquiriesPage() {
           setData(data);
         });
         const res1 = await EnquiryApi.getAllPaging({ page: page + 1, limit: rowsPerPage }).then((data) => {
-          setFilteredData(data);
+          setFilterData(data);
         });
       }
     } catch {
@@ -133,6 +139,38 @@ export default function EnquiriesPage() {
     },
     [endDate, startDate]
   );
+  //   if (startDate && endDate === '') {
+  //     setEndDateError(true);
+  //   }
+
+  //   if (endDate && startDate === '') {
+  //     setStartDateError(true);
+  //   }
+
+  //   if (startDate && endDate) {
+  //     setIsApplyMode(false);
+  //     setButtonDisable(true);
+  //   }
+
+  //   const filterdata = {
+  //     startdate: startDate,
+  //     enddate: endDate
+  //   };
+  //   console.log('filter', filterdata);
+  // };
+
+  const shouldDisableEndDate = (date) => {
+    if (!startDate) {
+      return false;
+    }
+    return dayjs(date).isBefore(dayjs(startDate), 'day');
+  };
+  const shouldDisableStartDate = (date) => {
+    if (!endDate) {
+      return false;
+    }
+    return dayjs(date).isAfter(dayjs(endDate), 'day');
+  };
 
   return (
     <MainCard title="Enquiries">
@@ -145,6 +183,8 @@ export default function EnquiriesPage() {
               setDate={handleStartDateChange}
               disablePast={false}
               disableprop={buttonDisable}
+              error={startDateError}
+              shouldDisableDate={shouldDisableStartDate}
             />
             <CustomDatePicker
               label="End Date"
@@ -152,6 +192,8 @@ export default function EnquiriesPage() {
               setDate={handleEndDateChange}
               disablePast={false}
               disableprop={buttonDisable}
+              shouldDisableDate={shouldDisableEndDate}
+              error={endDateError}
             />
           </Stack>
           {isApplyMode ? (

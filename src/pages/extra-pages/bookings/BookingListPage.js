@@ -1,4 +1,5 @@
 import * as XLSX from 'xlsx';
+import dayjs from 'dayjs';
 
 import { Box, Button, Stack, Typography } from '@mui/material';
 import { useCallback, useEffect, useState } from 'react';
@@ -22,8 +23,8 @@ export default function BookingListPage() {
   const [page, setPage] = useState(0);
   const [rowsPerPage, setRowsPerPage] = useState(10);
   const [count, setCount] = useState(0);
-  const [startDate, setStartDate] = useState('');
-  const [endDate, setEndDate] = useState('');
+  const [startDateValue, setStartDateValue] = useState('');
+  const [endDateValue, setEndDateValue] = useState('');
 
   const [isApplyMode, setIsApplyMode] = useState(true);
   const [buttonDisable, setButtonDisable] = useState(false);
@@ -31,20 +32,27 @@ export default function BookingListPage() {
   const [filterData, setFilterData] = useState();
   const [bool, setBool] = useState(false);
 
+  const [startDateError, setStartDateError] = useState(false);
+  const [endDateError, setEndDateError] = useState(false);
+
   const handleButtonClick = () => {
     setFilteredData(data);
     setBookingType('All');
     setMonthType('');
     setIsApplyMode(true);
-    setStartDate('');
-    setEndDate('');
+    setStartDateValue('');
+    setEndDateValue('');
     setPaymentType('');
     setButtonDisable(false);
     setBool(false);
+    setStartDateError(false);
+    setEndDateError(false);
   };
 
   const buttonhandleChange = (event, newValue) => {
     setMonthType(newValue);
+    setStartDateValue('');
+    setEndDateValue('');
   };
 
   const handleChange = (event) => {
@@ -65,16 +73,22 @@ export default function BookingListPage() {
   };
 
   const handleStartDateChange = (newValue) => {
-    let enddatedata = newValue.$d;
-    const parsedDate = moment(enddatedata);
+    let startdatedata = newValue.$d;
+    console.log('startdate', startdatedata);
+    const parsedDate = moment(startdatedata);
     const formattedDate = parsedDate.format('YYYY-MM-DD');
-    setStartDate(formattedDate);
+    console.log('startdate', formattedDate);
+    setStartDateValue(formattedDate);
+    setStartDateError(false);
   };
   const handleEndDateChange = (newValue) => {
     let enddatedata = newValue.$d;
+    console.log('enddate', enddatedata);
     const parsedDate = moment(enddatedata);
     const formattedDate = parsedDate.format('YYYY-MM-DD');
-    setEndDate(formattedDate);
+    console.log('enddate', formattedDate);
+    setEndDateValue(formattedDate);
+    setEndDateError(false);
   };
 
   const fetchInfo = useCallback(async () => {
@@ -131,12 +145,21 @@ export default function BookingListPage() {
   // };
 
   const applyFilters = useCallback(async () => {
-    if (bookingType !== 'All' || startDate !== '' || endDate !== '' || paymentType !== '') {
+    if (startDateValue && endDateValue === '') {
+      setEndDateError(true);
+    }
+
+    if (endDateValue && startDateValue === '') {
+      setStartDateError(true);
+    }
+
+    if (bookingType !== 'All' || startDateValue !== '' || endDateValue !== '' || paymentType !== '' || monthType !== '') {
       const details = {
         type: bookingType,
-        startDate: startDate,
-        endDate: endDate,
-        bookingtype: paymentType
+        startDate: startDateValue,
+        endDate: endDateValue,
+        bookingtype: paymentType,
+        monthType: monthType
       };
 
       let dateFilter = '';
@@ -151,15 +174,15 @@ export default function BookingListPage() {
       }
 
       console.log('dateFilter', dateFilter);
-      if (details.startDate && details.endDate && dateFilter === '') {
-        const a = DateUtils.add(new Date(details.endDate), 1, 'day');
-        details.endDate = DateUtils.formatDate(new Date(a), 'yyyy-MM-DD');
+      if (details.startDateValue && details.endDateValue && dateFilter === '') {
+        const a = DateUtils.add(new Date(details.endDateValue), 1, 'day');
+        details.endDateValue = DateUtils.formatDate(new Date(a), 'yyyy-MM-DD');
       }
 
       if (dateFilter !== '') {
         const currentDateValue = DateUtils.add(new Date(), 1, 'day');
-        details.endDate = DateUtils.formatDate(new Date(currentDateValue), 'yyyy-MM-DD');
-        details.startDate = DateUtils.formatDate(new Date(dateFilter), 'yyyy-MM-DD');
+        details.endDateValue = DateUtils.formatDate(new Date(currentDateValue), 'yyyy-MM-DD');
+        details.startDateValue = DateUtils.formatDate(new Date(dateFilter), 'yyyy-MM-DD');
       }
       console.log('dateFilter', dateFilter);
       setFilterData(details);
@@ -170,9 +193,9 @@ export default function BookingListPage() {
     }
 
     setIsApplyMode(false);
-    // setPage(0);
+    //setPage(0);
     setButtonDisable(true);
-  }, [bookingType, endDate, monthType, paymentType, startDate]);
+  }, [bookingType, endDateValue, monthType, paymentType, startDateValue]);
 
   const handleDownload = () => {
     const wb = XLSX.utils.book_new();
@@ -181,7 +204,8 @@ export default function BookingListPage() {
       ...item,
       startTime: DateUtils.formatMillisecondsToTime(item.startTime),
       endTime: DateUtils.formatMillisecondsToTime(item.endTime),
-      dateOfBooking: moment(item.dateOfBooking).format('YYYY-MM-DD'),
+      startDate: moment(item.startDate).format('YYYY-MM-DD'),
+      endDate: moment(item.endDate).format('YYYY-MM-DD'),
       user: JSON.parse(item.user).name,
       userType: JSON.parse(item.user).userType,
       email: JSON.parse(item.user).email
@@ -191,6 +215,20 @@ export default function BookingListPage() {
     XLSX.utils.book_append_sheet(wb, ws, 'Sheet1');
 
     XLSX.writeFile(wb, 'table_data.xlsx');
+  };
+
+  const shouldDisableEndDate = (date) => {
+    if (!startDateValue) {
+      return false;
+    }
+    return dayjs(date).isBefore(dayjs(startDateValue), 'day');
+  };
+
+  const shouldDisableStartDate = (date) => {
+    if (!endDateValue) {
+      return false;
+    }
+    return dayjs(date).isAfter(dayjs(endDateValue), 'day');
   };
 
   const columns = [
@@ -243,17 +281,19 @@ export default function BookingListPage() {
             <Stack direction="row" spacing={2} alignItems="center">
               <CustomDatePicker
                 label="Start Date"
-                date={startDate}
+                date={startDateValue}
                 setDate={handleStartDateChange}
                 disablePast={false}
                 disableprop={buttonDisable}
+                shouldDisableDate={shouldDisableStartDate}
               />
               <CustomDatePicker
                 label="End Date"
-                date={endDate}
+                date={endDateValue}
                 setDate={handleEndDateChange}
                 disablePast={false}
                 disableprop={buttonDisable}
+                shouldDisableDate={shouldDisableEndDate}
               />
               <Stack sx={{ minWidth: 200 }} spacing={3}>
                 <Typography>Payment Type</Typography>
