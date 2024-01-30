@@ -4,7 +4,7 @@ import { handleApiError } from 'utils/ApiUtils';
 export default class AdminLoginApi {
   public static loginUser = async (request: any) => {
     try {
-      const user = await axiosInstance.post<any>('admin/admins/login', request);
+      const user = await axiosInstance.post<any>('/admins/login', request);
       return user.data;
     } catch (e) {
       throw handleApiError(e, 'Failed to login user');

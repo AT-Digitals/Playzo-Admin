@@ -7,7 +7,7 @@ export default class PaymentApi {
   public static async createPayment(pay: any) {
     try {
       console.log('pay', pay);
-      const details = await axiosInstance.post('/admin/payments/create/orderId', pay);
+      const details = await axiosInstance.post('/payments/create/orderId', pay);
       return details.data;
     } catch (e) {
       throw handleApiError(e, 'Failed to create pay');
@@ -17,7 +17,7 @@ export default class PaymentApi {
   public static async verifyPayment(pay: any) {
     try {
       console.log('pay', pay);
-      const details = await axiosInstance.post('/admin/payments/verify', pay);
+      const details = await axiosInstance.post('/payments/verify', pay);
       return details.data;
     } catch (e) {
       throw handleApiError(e, 'Failed to create pay');
@@ -27,7 +27,7 @@ export default class PaymentApi {
   public static async refundPayment(pay: any) {
     try {
       console.log('refund', pay);
-      const details = await axiosInstance.post('/admin/payments/refund', pay);
+      const details = await axiosInstance.post('/payments/refund', pay);
       return details.data;
     } catch (e) {
       throw handleApiError(e, 'Failed to create pay');
