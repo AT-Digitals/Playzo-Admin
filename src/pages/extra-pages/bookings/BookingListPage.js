@@ -1,7 +1,7 @@
 import * as XLSX from 'xlsx';
 import dayjs from 'dayjs';
 
-import { Box, Button, Stack, Typography } from '@mui/material';
+import { Box, Button, Stack, Typography, Grid } from '@mui/material';
 import { useCallback, useEffect, useState } from 'react';
 
 import BookingApi from 'api/BookingApi';
@@ -80,6 +80,7 @@ export default function BookingListPage() {
     console.log('startdate', formattedDate);
     setStartDateValue(formattedDate);
     setStartDateError(false);
+    setMonthType('');
   };
   const handleEndDateChange = (newValue) => {
     let enddatedata = newValue.$d;
@@ -89,6 +90,7 @@ export default function BookingListPage() {
     console.log('enddate', formattedDate);
     setEndDateValue(formattedDate);
     setEndDateError(false);
+    setMonthType('');
   };
 
   const fetchInfo = useCallback(async () => {
@@ -126,31 +128,15 @@ export default function BookingListPage() {
     fetchInfo();
   }, [fetchInfo]);
 
-  // const isWithinLastMonths = (startDate, months) => {
-  //   const currentDate = new Date();
-
-  //   const currentYear = currentDate.getFullYear();
-  //   const currentMonth = currentDate.getMonth();
-
-  //   const startYear = startDate.getFullYear();
-  //   const startMonth = startDate.getMonth();
-
-  //   if (startYear > currentYear || (startYear === currentYear && startMonth > currentMonth)) {
-  //     return false;
-  //   }
-
-  //   const monthDiff = (currentYear - startYear) * 12 + currentMonth - startMonth;
-
-  //   return monthDiff <= months;
-  // };
-
   const applyFilters = useCallback(async () => {
     if (startDateValue && endDateValue === '') {
       setEndDateError(true);
+      return;
     }
 
     if (endDateValue && startDateValue === '') {
       setStartDateError(true);
+      return;
     }
 
     if (bookingType !== 'All' || startDateValue !== '' || endDateValue !== '' || paymentType !== '' || monthType !== '') {
@@ -199,8 +185,9 @@ export default function BookingListPage() {
 
   const handleDownload = () => {
     const wb = XLSX.utils.book_new();
+    console.log(data, 'filter');
 
-    const ModifiedData = filteredData.map((item) => ({
+    const ModifiedData = data.map((item) => ({
       ...item,
       startTime: DateUtils.formatMillisecondsToTime(item.startTime),
       endTime: DateUtils.formatMillisecondsToTime(item.endTime),
@@ -210,6 +197,8 @@ export default function BookingListPage() {
       userType: JSON.parse(item.user).userType,
       email: JSON.parse(item.user).email
     }));
+
+    console.log('modified', ModifiedData);
 
     const ws = XLSX.utils.json_to_sheet(ModifiedData);
     XLSX.utils.book_append_sheet(wb, ws, 'Sheet1');
@@ -235,6 +224,7 @@ export default function BookingListPage() {
     { id: 'No', label: 'No' },
     // { id: 'id', label: 'Id' },
     { id: 'type', label: 'Type' },
+    // { id: 'dateOfBooking', label: 'Date Of Booking' },
     { id: 'user', label: 'User Name' },
     { id: 'startDate', label: 'Start Date' },
     { id: 'endDate', label: 'End Date' },
@@ -254,10 +244,10 @@ export default function BookingListPage() {
   return (
     <>
       <MainCard title="Booking List">
-        <Stack direction="column" spacing={4}>
-          <Stack direction="row" spacing={4} justifyContent="space-between" alignItems="center">
-            <Box sx={{ width: '200px' }}>
-              <Stack spacing={3}>
+        <Stack direction="column" spacing={4} width="100%" maxWidth={1120}>
+          <Grid container spacing={3}>
+            <Grid item md={3}>
+              <Stack spacing={2}>
                 <Typography>Select Booking Type</Typography>
                 <FormControl fullWidth>
                   <Select
@@ -277,8 +267,8 @@ export default function BookingListPage() {
                   </Select>
                 </FormControl>
               </Stack>
-            </Box>
-            <Stack direction="row" spacing={2} alignItems="center">
+            </Grid>
+            <Grid item md={3}>
               <CustomDatePicker
                 label="Start Date"
                 date={startDateValue}
@@ -288,6 +278,8 @@ export default function BookingListPage() {
                 shouldDisableDate={shouldDisableStartDate}
                 error={startDateError}
               />
+            </Grid>
+            <Grid item md={3}>
               <CustomDatePicker
                 label="End Date"
                 date={endDateValue}
@@ -297,7 +289,9 @@ export default function BookingListPage() {
                 shouldDisableDate={shouldDisableEndDate}
                 error={endDateError}
               />
-              <Stack sx={{ minWidth: 200 }} spacing={3}>
+            </Grid>
+            <Grid item md={3}>
+              <Stack spacing={2}>
                 <Typography>Payment Type</Typography>
                 <FormControl fullWidth>
                   <Select
@@ -312,21 +306,29 @@ export default function BookingListPage() {
                   </Select>
                 </FormControl>
               </Stack>
+            </Grid>
+            <Grid item md={4}>
               <ToggleButtonComponent value={monthType} setValue={buttonhandleChange} disableprop={buttonDisable} />
-              {isApplyMode ? (
+            </Grid>
+            {isApplyMode ? (
+              <Grid item md={3}>
                 <Button variant="outlined" onClick={applyFilters}>
                   Apply
                 </Button>
-              ) : (
+              </Grid>
+            ) : (
+              <Grid item md={3}>
                 <Button variant="outlined" onClick={handleButtonClick}>
                   Clear
                 </Button>
-              )}
+              </Grid>
+            )}
+            <Grid item md={3}>
               <Button variant="outlined" onClick={handleDownload}>
                 Download
               </Button>
-            </Stack>
-          </Stack>
+            </Grid>
+          </Grid>
         </Stack>
       </MainCard>
       <MainCard sx={{ marginTop: '30px' }}>

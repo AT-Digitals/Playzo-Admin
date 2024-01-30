@@ -1,4 +1,4 @@
-import { Button, Stack } from '@mui/material';
+import { Button, Stack, Grid } from '@mui/material';
 import { useEffect, useState } from 'react';
 
 import BookingApi from 'api/BookingApi';
@@ -56,21 +56,21 @@ export default function AddBooking() {
     const parsedDate = moment(datedata);
     const formattedDate = parsedDate.format('YYYY-MM-DD');
     setDate(formattedDate);
-    const ApiCall = async () => {
-      try {
-        // setIsModalOpen(true);
-        const response = await BookingApi.filter({
-          startDate: formattedDate,
-          type: bookingType,
-          endDate: endDate
-        });
-        console.log('response', response);
-        setDisableData(response);
-      } catch (error) {
-        console.error('Error:', error.message);
-      }
-    };
-    ApiCall();
+    // const ApiCall = async () => {
+    //   try {
+    //     // setIsModalOpen(true);
+    //     const response = await BookingApi.filter({
+    //       startDate: formattedDate,
+    //       type: bookingType,
+    //       endDate: endDate
+    //     });
+    //     console.log('response', response);
+    //     setDisableData(response);
+    //   } catch (error) {
+    //     console.error('Error:', error.message);
+    //   }
+    // };
+    // ApiCall();
 
     setDateError(false);
   };
@@ -117,8 +117,10 @@ export default function AddBooking() {
           setIsModalOpen(false);
           setSuccesstoast('Your Booking is added.');
           setBookingModalOpen(false);
-        } catch {
-          setToast('Please select valid type and time');
+        } catch (error) {
+          setToast(error.message);
+          setIsModalOpen(false);
+          setBookingModalOpen(false);
         }
       };
       booking();
@@ -341,10 +343,8 @@ export default function AddBooking() {
     }
 
     if (disableData && Array.isArray(disableData)) {
-      const matchingItems = disableData.filter((item) => moment(item.dateOfBooking).format('YYYY-MM-DD') == date);
-
-      if (matchingItems.length > 0) {
-        return matchingItems.some((item) => {
+      if (disableData.length > 0) {
+        return disableData.some((item) => {
           const value1 = DateUtils.formatMillisecondsToTime(item.startTime);
           const value2 = DateUtils.formatMillisecondsToTime(item.endTime);
           const time = DateUtils.convertTo24HourFormat(value1);
@@ -375,10 +375,8 @@ export default function AddBooking() {
     const minute = value.minute();
 
     if (disableData && Array.isArray(disableData)) {
-      const matchingItems = disableData.filter((item) => moment(item.dateOfBooking).format('YYYY-MM-DD') == date);
-
-      if (matchingItems.length > 0) {
-        return matchingItems.some((item) => {
+      if (disableData.length > 0) {
+        return disableData.some((item) => {
           const value1 = DateUtils.formatMillisecondsToTime(item.startTime);
           const value2 = DateUtils.formatMillisecondsToTime(item.endTime);
           const time = DateUtils.convertTo24HourFormat(value1);
@@ -413,29 +411,42 @@ export default function AddBooking() {
 
   return (
     <MainCard title="Add Bookings">
-      <form>
-        <Stack direction="row" spacing={2} alignItems="center">
-          <TypeDropdown label="Booking Type" type={bookingType} onChange={handleChange} error={bookingTypeError} />
-          <CustomDatePicker date={date} setDate={dateHandler} error={dateError} label={'Start Date'} disablePast={true} />
-          <CustomDatePicker
-            date={endDate}
-            setDate={handleEndDateChange}
-            error={enddateError}
-            label={'End Date'}
-            disablePast={false}
-            shouldDisableDate={shouldDisableDate}
-          />
-          <CustomTextField label="Start Time" value={initalTime} setValue={TextFieldChange} error={startError} />
-          <CustomTextField label="End Time" value={initalEnd} setValue={TextFieldEndChange} error={endError} />
-
-          <Button
-            variant="outlined"
-            sx={{ marginTop: '45px !important', padding: '8px 15px', width: '130px' }}
-            type="submit"
-            onClick={onSubmit}
-          >
-            Add booking
-          </Button>
+      <form style={{ height: '240px' }}>
+        <Stack direction="row" spacing={2}>
+          <Grid container spacing={3} alignItems="center">
+            <Grid item md={3}>
+              <TypeDropdown label="Booking Type" type={bookingType} onChange={handleChange} error={bookingTypeError} />
+            </Grid>
+            <Grid item md={3}>
+              <CustomDatePicker date={date} setDate={dateHandler} error={dateError} label={'Start Date'} disablePast={true} />
+            </Grid>
+            <Grid item md={3}>
+              <CustomDatePicker
+                date={endDate}
+                setDate={handleEndDateChange}
+                error={enddateError}
+                label={'End Date'}
+                disablePast={false}
+                shouldDisableDate={shouldDisableDate}
+              />
+            </Grid>
+            <Grid item md={3}>
+              <CustomTextField label="Start Time" value={initalTime} setValue={TextFieldChange} error={startError} />
+            </Grid>
+            <Grid item md={3}>
+              <CustomTextField label="End Time" value={initalEnd} setValue={TextFieldEndChange} error={endError} />
+            </Grid>
+            <Grid item md={3} mt={4.2}>
+              <Button
+                variant="outlined"
+                sx={{ padding: '7px 15px', width: '150px', fontWeight: 600, fontSize: '15px' }}
+                type="submit"
+                onClick={onSubmit}
+              >
+                Add booking
+              </Button>
+            </Grid>
+          </Grid>
           <TimeSlotModal
             isOpen={isModalOpen}
             onClose={handleCloseModal}

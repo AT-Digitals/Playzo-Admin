@@ -8,18 +8,8 @@ export default function StartTimeComponent({ onChange, shouldDisableTime, label 
   return (
     <LocalizationProvider dateAdapter={AdapterDayjs}>
       <Stack direction="column" spacing={2} sx={{ width: '120px' }}>
-        <Typography variant="h6" fontSize="20px">
-          {label}
-        </Typography>
-        <DigitalClock
-          onChange={onChange}
-          // slotProps={{
-          //   textField: {
-          //     helperText: error ? 'Please select time' : ''
-          //   }
-          // }}
-          shouldDisableTime={shouldDisableTime}
-        />
+        <Typography>{label}</Typography>
+        <DigitalClock onChange={onChange} shouldDisableTime={shouldDisableTime} />
       </Stack>
     </LocalizationProvider>
   );

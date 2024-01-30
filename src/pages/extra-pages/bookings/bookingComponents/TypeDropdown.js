@@ -9,7 +9,7 @@ import Select from '@mui/material/Select';
 
 export default function TypeDropdown({ type, onChange, label, error }) {
   return (
-    <Stack sx={{ minWidth: 200 }} spacing={3}>
+    <Stack sx={{ minWidth: 200 }} spacing={2}>
       <Typography>{label}</Typography>
       <FormControl fullWidth>
         <Select labelId="demo-simple-select-label" id="demo-simple-select" value={type} onChange={onChange}>

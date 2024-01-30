@@ -10,9 +10,7 @@ export default function BasicDatePicker({ date, setDate, error, label, disablePa
   return (
     <LocalizationProvider dateAdapter={AdapterDayjs}>
       <Stack direction="column" spacing={2}>
-        <Typography variant="h6" fontSize="20px">
-          {label}
-        </Typography>
+        <Typography>{label}</Typography>
         <DatePicker
           value={date}
           onChange={(newValue) => setDate(newValue)}
@@ -22,12 +20,18 @@ export default function BasicDatePicker({ date, setDate, error, label, disablePa
           //disablePast
           slotProps={{
             textField: {
-              helperText: error ? 'Please select a date' : ''
+              helperText: error ? 'Please select a valid date' : ''
             }
           }}
           sx={{
-            '.css-1phpx1i-MuiInputBase-root-MuiOutlinedInput-root.Mui-error .MuiOutlinedInput-notchedOutline': {
-              borderColor: '#d9d9d9'
+            '& .MuiOutlinedInput-notchedOutline': {
+              borderColor: '#d9d9d9 !important'
+            },
+            '&:hover .MuiOutlinedInput-notchedOutline': {
+              borderColor: '#69c0ff !important'
+            },
+            '& .MuiInputBase-root.MuiOutlinedInput-root.Mui-error.Mui-focused': {
+              boxShadow: `0 0 0 2px rgba(24, 144, 255, 0.2) !important`
             }
           }}
         />
