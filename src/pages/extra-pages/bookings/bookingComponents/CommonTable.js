@@ -9,8 +9,26 @@ import TableHead from '@mui/material/TableHead';
 import { TablePagination } from '@mui/material';
 import TableRow from '@mui/material/TableRow';
 import moment from 'moment';
+import UpdateIcon from '@mui/icons-material/Update';
+import IconButton from '@mui/material/IconButton';
+import UpdateModalComponent from '../UpdateModalComponent';
 
-const CommonTable = ({ columns, data, rowsPerPage, page, handleChangeRowsPerPage, handleChange, count }) => {
+const CommonTable = ({
+  columns,
+  data,
+  rowsPerPage,
+  page,
+  handleChangeRowsPerPage,
+  handleChange,
+  count,
+  onChange,
+  onClose,
+  payAmount,
+  updateModal,
+  handleModalChange,
+  UpdateChange,
+  error
+}) => {
   const renderCellContent = (column, rowData) => {
     const { id, label } = column;
 
@@ -49,7 +67,18 @@ const CommonTable = ({ columns, data, rowsPerPage, page, handleChangeRowsPerPage
             {data.map((rowData, index) => (
               <TableRow key={index} sx={{ '&:last-child td, &:last-child th': { border: 0 } }}>
                 {columns.map((column) => (
-                  <TableCell key={column.id}>{column.id === 'No' ? index + 1 : renderCellContent(column, rowData)}</TableCell>
+                  <TableCell key={column.id}>
+                    {column.id === 'action' ? (
+                      <IconButton aria-label="edit" color="primary" onClick={handleModalChange}>
+                        <UpdateIcon />
+                      </IconButton>
+                    ) : column.id === 'No' ? (
+                      index + 1
+                    ) : (
+                      renderCellContent(column, rowData)
+                    )}
+                    {/* {column.id === 'No' ? index + 1 : renderCellContent(column, rowData)} */}
+                  </TableCell>
                 ))}
               </TableRow>
             ))}
@@ -63,6 +92,15 @@ const CommonTable = ({ columns, data, rowsPerPage, page, handleChangeRowsPerPage
         page={page}
         onPageChange={handleChange}
         onRowsPerPageChange={handleChangeRowsPerPage}
+      />
+      <UpdateModalComponent
+        onChange={onChange}
+        value={payAmount}
+        isOpen={updateModal}
+        onClose={onClose}
+        label="Enter Payment Amount"
+        onSubmit={UpdateChange}
+        error={error}
       />
     </>
   );

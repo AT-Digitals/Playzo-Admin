@@ -14,6 +14,22 @@ import MenuItem from '@mui/material/MenuItem';
 import Select from '@mui/material/Select';
 import ToggleButtonComponent from './ToggleButtonComponent';
 import moment from 'moment';
+import DropDownComponent from '../DropDownComponent';
+
+const Data = [
+  {
+    value: 'previous',
+    label: 'Previous'
+  },
+  {
+    value: 'today',
+    label: 'Today'
+  },
+  {
+    value: 'future',
+    label: 'Future'
+  }
+];
 
 export default function BookingListPage() {
   const [bookingType, setBookingType] = useState('All');
@@ -34,6 +50,10 @@ export default function BookingListPage() {
 
   const [startDateError, setStartDateError] = useState(false);
   const [endDateError, setEndDateError] = useState(false);
+  const [selectData, setSelectData] = useState('');
+  const [updateModal, setUpdateModal] = useState(false);
+  const [payAmount, setPayAmount] = useState('');
+  const [payError, setPayError] = useState(false);
 
   const handleButtonClick = () => {
     setFilteredData(data);
@@ -43,6 +63,7 @@ export default function BookingListPage() {
     setStartDateValue('');
     setEndDateValue('');
     setPaymentType('');
+    setSelectData('');
     setButtonDisable(false);
     setBool(false);
     setStartDateError(false);
@@ -58,9 +79,26 @@ export default function BookingListPage() {
   const handleChange = (event) => {
     setBookingType(event.target.value);
   };
+  const handleDataChange = (event) => {
+    setSelectData(event.target.value);
+  };
+  console.log('select', selectData);
 
   const handlePaymentChange = (event) => {
     setPaymentType(event.target.value);
+  };
+
+  const handleModalChange = () => {
+    setUpdateModal(true);
+  };
+
+  const handleAmountChange = (event) => {
+    setPayAmount(event.target.value);
+    setPayError(false);
+  };
+
+  const handleClose = () => {
+    setUpdateModal(false);
   };
 
   const handleChangePage = (_event, newPage) => {
@@ -74,20 +112,16 @@ export default function BookingListPage() {
 
   const handleStartDateChange = (newValue) => {
     let startdatedata = newValue.$d;
-    console.log('startdate', startdatedata);
     const parsedDate = moment(startdatedata);
     const formattedDate = parsedDate.format('YYYY-MM-DD');
-    console.log('startdate', formattedDate);
     setStartDateValue(formattedDate);
     setStartDateError(false);
     setMonthType('');
   };
   const handleEndDateChange = (newValue) => {
     let enddatedata = newValue.$d;
-    console.log('enddate', enddatedata);
     const parsedDate = moment(enddatedata);
     const formattedDate = parsedDate.format('YYYY-MM-DD');
-    console.log('enddate', formattedDate);
     setEndDateValue(formattedDate);
     setEndDateError(false);
     setMonthType('');
@@ -139,13 +173,21 @@ export default function BookingListPage() {
       return;
     }
 
-    if (bookingType !== 'All' || startDateValue !== '' || endDateValue !== '' || paymentType !== '' || monthType !== '') {
+    if (
+      bookingType !== 'All' ||
+      startDateValue !== '' ||
+      endDateValue !== '' ||
+      paymentType !== '' ||
+      monthType !== '' ||
+      selectData !== ''
+    ) {
       const details = {
         type: bookingType,
         startDate: startDateValue,
         endDate: endDateValue,
         bookingtype: paymentType,
-        monthType: monthType
+        monthType: monthType,
+        day: selectData
       };
 
       let dateFilter = '';
@@ -223,23 +265,38 @@ export default function BookingListPage() {
   const columns = [
     { id: 'No', label: 'No' },
     // { id: 'id', label: 'Id' },
-    { id: 'type', label: 'Type' },
+
     // { id: 'dateOfBooking', label: 'Date Of Booking' },
     { id: 'user', label: 'User Name' },
+    { id: 'type', label: 'Type' },
     { id: 'startDate', label: 'Start Date' },
     { id: 'endDate', label: 'End Date' },
     { id: 'startTime', label: 'Start Time' },
     { id: 'endTime', label: 'End Time' },
     { id: 'bookingtype', label: 'Booking Type' },
-    {
-      id: 'bookingAmount',
-
-      label: 'Booking Amount'
-    },
     { id: 'userType', label: 'User Type' },
-    { id: 'userId', label: 'Email ID' },
-    { id: 'bookingId', label: 'PaymentId' }
+    { id: 'cashPayment', label: 'Cash Payment' },
+    { id: 'onlinePayment', label: 'Online Payment' },
+    { id: 'action', label: 'Action' }
   ];
+
+  const UpdateChange = (event) => {
+    event.preventDefault();
+    if (!payAmount) {
+      setPayError(true);
+    }
+
+    if (payAmount) {
+      setPayError(false);
+      setUpdateModal(false);
+      setPayAmount('');
+    }
+    const value = {
+      amount: payAmount
+    };
+
+    console.log('value', value);
+  };
 
   return (
     <>
@@ -307,8 +364,11 @@ export default function BookingListPage() {
                 </FormControl>
               </Stack>
             </Grid>
-            <Grid item md={4}>
+            <Grid item md={3}>
               <ToggleButtonComponent value={monthType} setValue={buttonhandleChange} disableprop={buttonDisable} />
+            </Grid>
+            <Grid item md={3}>
+              <DropDownComponent label="Select Day" value={selectData} onChange={handleDataChange} options={Data} />
             </Grid>
             {isApplyMode ? (
               <Grid item md={3}>
@@ -340,6 +400,13 @@ export default function BookingListPage() {
           page={page}
           handleChangeRowsPerPage={handleChangeRowsPerPage}
           handleChange={handleChangePage}
+          payAmount={payAmount}
+          onChange={handleAmountChange}
+          onClose={handleClose}
+          handleModalChange={handleModalChange}
+          updateModal={updateModal}
+          UpdateChange={UpdateChange}
+          error={payError}
         />
       </MainCard>
     </>

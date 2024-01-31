@@ -17,27 +17,6 @@ const mainpages = {
   type: 'group',
   children: [
     {
-      id: 'badminton',
-      title: 'Badminton',
-      type: 'item',
-      url: '/badminton',
-      icon: icons.ProfileOutlined
-    },
-    {
-      id: 'expense-management',
-      title: 'Expense Management',
-      type: 'item',
-      url: '/expense-management',
-      icon: icons.AssignmentTurnedInIcon
-    },
-    {
-      id: 'payments',
-      title: 'Payments',
-      type: 'item',
-      url: '/payments',
-      icon: icons.ProfileOutlined
-    },
-    {
       id: 'enquiries',
       title: 'Enquiries',
       type: 'item',

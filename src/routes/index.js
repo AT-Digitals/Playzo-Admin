@@ -1,9 +1,6 @@
-import BadmintonPage from 'pages/extra-pages/badminton/BadmintonPage';
-import ExpenseManagementPage from 'pages/extra-pages/expense-management/ExpenseManagementPage';
 import Loadable from 'components/Loadable';
 import MainLayout from 'layout/MainLayout';
 import MinimalLayout from 'layout/MinimalLayout';
-import PaymentPage from 'pages/extra-pages/payment/PaymentPage';
 import { lazy } from 'react';
 import { useRoutes } from 'react-router-dom';
 import BookingListPage from 'pages/extra-pages/bookings/BookingListPage';
@@ -70,18 +67,6 @@ export default function ThemeRoutes() {
         {
           path: 'icons/ant',
           element: <AntIcons />
-        },
-        {
-          path: 'badminton',
-          element: <BadmintonPage />
-        },
-        {
-          path: 'expense-management',
-          element: <ExpenseManagementPage />
-        },
-        {
-          path: 'payments',
-          element: <PaymentPage />
         },
         {
           path: 'bookingList',
