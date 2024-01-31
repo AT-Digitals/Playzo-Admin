@@ -16,6 +16,7 @@ import TimeSlotModal from './bookingComponents/TimeSlotModal';
 import TypeDropdown from './bookingComponents/TypeDropdown';
 import dayjs from 'dayjs';
 import moment from 'moment';
+import DropDownComponent from '../DropDownComponent';
 
 export default function AddBooking() {
   const [date, setDate] = useState('');
@@ -34,12 +35,15 @@ export default function AddBooking() {
   const [startError, setStartError] = useState('');
   const [endError, setEndError] = useState('');
   //const [error, setError] = useState('');
+  const [showTextField, setShowTextField] = useState(false);
 
   const [initalTime, setInitalTime] = useState('');
   const [initalEnd, setInitalEnd] = useState('');
   const [successtoast, setSuccesstoast] = useState('');
   const [paymentType, setPaymentType] = useState(PaymentType.Cash);
   const [bookingModalOpen, setBookingModalOpen] = useState(false);
+  const [selectedNumber, setSelectedNumber] = useState('');
+  const [amount, setAmount] = useState('');
   const user = localStorage.getItem('user');
   const userData = JSON.parse(user);
 
@@ -49,6 +53,40 @@ export default function AddBooking() {
 
   const handleClose = () => {
     setBookingModalOpen(false);
+  };
+
+  const handleNumberChange = (event) => {
+    setSelectedNumber(event.target.value);
+  };
+
+  const handleAmountChange = (event) => {
+    setAmount(event.target.value);
+  };
+
+  const handleChange = (event) => {
+    setBookingType(event.target.value);
+    setBookingTypeError(false);
+    setSelectedNumber('');
+  };
+
+  const getNumberOptions = () => {
+    if (bookingType === 'turf' || bookingType === 'playstation' || bookingType === 'badminton') {
+      return [
+        { value: '1', label: '1' },
+        { value: '2', label: '2' }
+      ];
+    } else if (bookingType === 'boardGame') {
+      return [
+        { value: '1', label: '1' },
+        { value: '2', label: '2' },
+        { value: '3', label: '3' },
+        { value: '4', label: '4' },
+        { value: '5', label: '5' }
+      ];
+    } else if (bookingType === 'cricketNet' || bookingType === 'ballMachine') {
+      return [{ value: '1', label: '1' }];
+    }
+    return [];
   };
 
   const dateHandler = (newValue) => {
@@ -104,7 +142,8 @@ export default function AddBooking() {
         date: date,
         startTime: startTime,
         endTime: endTime,
-        endDate: endDate
+        endDate: endDate,
+        court: selectedNumber
       };
 
       setBookingModalOpen(true);
@@ -157,11 +196,6 @@ export default function AddBooking() {
       await paymentMethod();
     }
     console.log(data);
-  };
-
-  const handleChange = (event) => {
-    setBookingType(event.target.value);
-    setBookingTypeError(false);
   };
 
   const paymentMethod = async () => {
@@ -318,6 +352,7 @@ export default function AddBooking() {
 
     if (date && endDate && bookingType && isDateComparisonValid()) {
       setBookingModalOpen(true);
+      isDurationGreaterThanOneMonth(date, endDate);
     }
   };
   const handleCloseModal = () => {
@@ -409,6 +444,20 @@ export default function AddBooking() {
     return dayjs(startDate).isBefore(dayjs(date), 'day');
   };
 
+  const isDurationGreaterThanOneMonth = (startDate, endDateV) => {
+    const startDateObject = new Date(startDate);
+    const endDateObject = new Date(endDateV);
+
+    const timeDifference = endDateObject - startDateObject;
+
+    const durationInDays = Math.floor(timeDifference / (1000 * 60 * 60 * 24));
+
+    setShowTextField(durationInDays > 31);
+
+    return durationInDays;
+  };
+
+
   return (
     <MainCard title="Add Bookings">
       <form style={{ height: '240px' }}>
@@ -436,6 +485,9 @@ export default function AddBooking() {
             <Grid item md={3}>
               <CustomTextField label="End Time" value={initalEnd} setValue={TextFieldEndChange} error={endError} />
             </Grid>
+            <Grid item md={3}>
+              <DropDownComponent value={selectedNumber} onChange={handleNumberChange} label="Court" options={getNumberOptions()} />
+            </Grid>
             <Grid item md={3} mt={4.2}>
               <Button
                 variant="outlined"
@@ -461,6 +513,10 @@ export default function AddBooking() {
             isOpen={bookingModalOpen}
             onClose={handleClose}
             onSubmit={paymentSubmit}
+            label="Enter Amount"
+            value1={amount}
+            setValue={handleAmountChange}
+            show={showTextField}
           />
         </Stack>
       </form>
