@@ -1,0 +1,87 @@
+import * as React from 'react';
+
+import { IconButton, Stack, Typography, Select, Grid } from '@mui/material';
+
+import Box from '@mui/material/Box';
+import Button from '@mui/material/Button';
+import CloseIcon from '@mui/icons-material/Close';
+import Modal from '@mui/material/Modal';
+import CustomTextField from '../extra-pages/bookings/bookingComponents/CustomTextField';
+import DropDownComponent from 'pages/extra-pages/DropDownComponent';
+import MenuItem from '@mui/material/MenuItem';
+
+import FormControl from '@mui/material/FormControl';
+
+const style = {
+  position: 'absolute',
+  top: '50%',
+  left: '50%',
+  transform: 'translate(-50%, -50%)',
+  width: 380,
+  bgcolor: 'background.paper',
+  boxShadow: 24,
+  p: 4
+};
+
+export default function UpdateAmountModal({
+  onSubmit,
+  onClose,
+  isOpen,
+  Type,
+  TypeChange,
+  value,
+  onChange,
+  Court,
+  CourtChange,
+  data,
+  error
+}) {
+  return (
+    <>
+      <Modal open={isOpen} onClose={onClose} aria-labelledby="modal-modal-title" aria-describedby="modal-modal-description">
+        <Box sx={style}>
+          <Stack direction="row" justifyContent="end">
+            <IconButton onClick={onClose}>
+              <CloseIcon />
+            </IconButton>
+          </Stack>
+          <Stack direction="column" spacing={3}>
+            <Grid container columnGap={3}>
+              <Grid item md={12}>
+                <Stack spacing={2}>
+                  <Typography>Select Booking Type</Typography>
+                  <FormControl fullWidth>
+                    <Select labelId="demo-simple-select-label" id="demo-simple-select" disabled value={Type || ''} onChange={TypeChange}>
+                      <MenuItem value="All">All</MenuItem>
+                      <MenuItem value="turf">Turf</MenuItem>
+                      <MenuItem value="boardGame">Board Game</MenuItem>
+                      <MenuItem value="playstation">Play Station</MenuItem>
+                      <MenuItem value="cricketNet">Cricket Net</MenuItem>
+                      <MenuItem value="ballMachine">Ball Machine</MenuItem>
+                      <MenuItem value="badminton">Badminton</MenuItem>
+                    </Select>
+                  </FormControl>
+                </Stack>
+              </Grid>
+              <Grid item md={12}>
+                <CustomTextField label="Enter Amount" value={value} setValue={onChange} error={error} type="number" />
+              </Grid>
+              <Grid item md={12}>
+                <DropDownComponent label="Select Court" value={Court || ''} onChange={CourtChange} options={data} />
+              </Grid>
+            </Grid>
+
+            <Stack direction="row" spacing={2}>
+              <Button variant="outlined" onClick={onSubmit} sx={{ width: '100%' }}>
+                Update
+              </Button>
+              <Button variant="outlined" onClick={onClose} sx={{ width: '100%' }}>
+                Cancel
+              </Button>
+            </Stack>
+          </Stack>
+        </Box>
+      </Modal>
+    </>
+  );
+}
