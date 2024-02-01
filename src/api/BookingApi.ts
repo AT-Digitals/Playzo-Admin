@@ -12,6 +12,15 @@ export default class BookingApi {
     }
   }
 
+  static async updateAmount(bookingId: string, request: any) {
+    try {
+      const amount = await axiosInstance.put<any>(`/bookingAmount/${bookingId}`, request);
+      return amount.data;
+    } catch (e) {
+      throw handleApiError(e, 'Failed to update amount');
+    }
+  }
+
   public static filter = async (filter: any) => {
     try {
       const datails = await axiosInstance.get<any[]>(`/bookingFilter/filterBookings` + FilterUtils.getQueryString(filter));
@@ -62,6 +71,15 @@ export default class BookingApi {
       return datails.data;
     } catch (e) {
       throw handleApiError(e, 'Failed to create booking');
+    }
+  }
+
+  public static async getBookingById(bookingId: string) {
+    try {
+      const detail = await axiosInstance.get<any>(`/bookings/${bookingId}`);
+      return detail.data;
+    } catch (e) {
+      throw handleApiError(e, 'Failed to get booking');
     }
   }
 }

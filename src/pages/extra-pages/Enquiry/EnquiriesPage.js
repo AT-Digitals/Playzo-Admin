@@ -3,10 +3,11 @@ import { useCallback, useEffect, useState } from 'react';
 
 import CommonTable from '../bookings/bookingComponents/CommonTable';
 import CustomDatePicker from '../bookings/bookingComponents/CustomDatePicker';
+import DateUtils from 'utils/DateUtils';
 import EnquiryApi from 'api/EnquiryApi';
 import MainCard from 'components/MainCard';
-import moment from 'moment';
 import dayjs from 'dayjs';
+import moment from 'moment';
 
 const columns = [
   { id: 'No', label: 'No' },
@@ -67,10 +68,8 @@ export default function EnquiriesPage() {
   };
 
   const fetchInfo = useCallback(async () => {
-    console.log('filterData', filterData, bool);
     try {
       if (bool && filterData) {
-        console.log('filterData1', filterData);
         const res = await EnquiryApi.filterEnquiry(filterData).then((data) => {
           setCount(data.length);
           setData(data);
@@ -79,7 +78,7 @@ export default function EnquiriesPage() {
         a.page = page + 1;
         a.limit = rowsPerPage;
         const res1 = await EnquiryApi.filterDateEnquiry(a).then((data) => {
-          setFilterData(data);
+          setFilteredData(data);
         });
       } else {
         const res = await EnquiryApi.getAll({}).then((data) => {
@@ -87,7 +86,7 @@ export default function EnquiriesPage() {
           setData(data);
         });
         const res1 = await EnquiryApi.getAllPaging({ page: page + 1, limit: rowsPerPage }).then((data) => {
-          setFilterData(data);
+          setFilteredData(data);
         });
       }
     } catch {
@@ -118,10 +117,20 @@ export default function EnquiriesPage() {
   const ApplyFilter = useCallback(
     async (event) => {
       event.preventDefault();
+      if (startDate && endDate === '') {
+        setEndDateError(true);
+        return;
+      }
+
+      if (endDate && startDate === '') {
+        setStartDateError(true);
+        return;
+      }
+
       if (startDate !== '' || endDate !== '') {
         const filter = {
-          startdate: startDate,
-          enddate: endDate
+          startDate: startDate,
+          endDate: endDate
         };
         if (filter.startDate && filter.endDate) {
           const a = DateUtils.add(new Date(filter.endDate), 1, 'day');

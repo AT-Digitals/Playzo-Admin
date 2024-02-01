@@ -31,6 +31,7 @@ export default class AmountApi {
 
   static async updateAmount(amountId: string, request: any) {
     try {
+      console.log('api');
       const amount = await axiosInstance.put<any>(`/amount/${amountId}`, request);
       return amount.data;
     } catch (e) {

@@ -1,4 +1,5 @@
 import DateUtils from 'utils/DateUtils';
+import IconButton from '@mui/material/IconButton';
 import Paper from '@mui/material/Paper';
 import React from 'react';
 import Table from '@mui/material/Table';
@@ -8,11 +9,9 @@ import TableContainer from '@mui/material/TableContainer';
 import TableHead from '@mui/material/TableHead';
 import { TablePagination } from '@mui/material';
 import TableRow from '@mui/material/TableRow';
-import moment from 'moment';
 import UpdateIcon from '@mui/icons-material/Update';
-import IconButton from '@mui/material/IconButton';
 import UpdateModalComponent from '../UpdateModalComponent';
-import CustomTextField from './CustomTextField';
+import moment from 'moment';
 
 const CommonTable = ({
   columns,
@@ -52,6 +51,15 @@ const CommonTable = ({
       return data;
     } else if (id === 'bookingAmount' && label === 'Booking Amount') {
       const data = rowData[id].total;
+      return data;
+    } else if (id === 'cashPayment' && label === 'Cash Payment') {
+      const data = rowData['bookingAmount'].cash;
+      return data;
+    } else if (id === 'onlinePayment' && label === 'Online Payment') {
+      const data = rowData['bookingAmount'].online;
+      return data;
+    } else if (id === 'total' && label === 'Total Amount') {
+      const data = rowData['bookingAmount'].total;
       return data;
     } else {
       return rowData[id];
