@@ -1,20 +1,20 @@
 import * as XLSX from 'xlsx';
-import dayjs from 'dayjs';
 
-import { Box, Button, Stack, Typography, Grid } from '@mui/material';
+import { Box, Button, Grid, Stack, Typography } from '@mui/material';
 import { useCallback, useEffect, useState } from 'react';
 
 import BookingApi from 'api/BookingApi';
 import CommonTable from './bookingComponents/CommonTable';
 import CustomDatePicker from './bookingComponents/CustomDatePicker';
 import DateUtils from 'utils/DateUtils';
+import DropDownComponent from '../DropDownComponent';
 import FormControl from '@mui/material/FormControl';
 import MainCard from 'components/MainCard';
 import MenuItem from '@mui/material/MenuItem';
 import Select from '@mui/material/Select';
 import ToggleButtonComponent from './ToggleButtonComponent';
+import dayjs from 'dayjs';
 import moment from 'moment';
-import DropDownComponent from '../DropDownComponent';
 
 const Data = [
   {
@@ -293,7 +293,13 @@ export default function BookingListPage() {
       amount: payAmount,
       id: idToUpdate
     };
-
+    BookingApi.updateAmount(value.id, {
+      bookingAmount: {
+        online: 0,
+        cash: value.amount,
+        total: value.amount
+      }
+    });
     console.log('value', value);
   };
 
