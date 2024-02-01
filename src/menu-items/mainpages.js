@@ -22,6 +22,13 @@ const mainpages = {
       type: 'item',
       url: '/enquiries',
       icon: icons.ProfileOutlined
+    },
+    {
+      id: 'amount',
+      title: 'Add Amount',
+      type: 'item',
+      url: '/amount',
+      icon: icons.ProfileOutlined
     }
   ]
 };

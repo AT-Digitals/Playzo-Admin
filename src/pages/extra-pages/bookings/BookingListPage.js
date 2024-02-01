@@ -54,6 +54,7 @@ export default function BookingListPage() {
   const [updateModal, setUpdateModal] = useState(false);
   const [payAmount, setPayAmount] = useState('');
   const [payError, setPayError] = useState(false);
+  const [editableRowIndex, setEditableRowIndex] = useState(null);
 
   const handleButtonClick = () => {
     setFilteredData(data);
@@ -82,13 +83,13 @@ export default function BookingListPage() {
   const handleDataChange = (event) => {
     setSelectData(event.target.value);
   };
-  console.log('select', selectData);
 
   const handlePaymentChange = (event) => {
     setPaymentType(event.target.value);
   };
 
-  const handleModalChange = () => {
+  const handleModalChange = (index) => {
+    setEditableRowIndex(index);
     setUpdateModal(true);
   };
 
@@ -227,7 +228,6 @@ export default function BookingListPage() {
 
   const handleDownload = () => {
     const wb = XLSX.utils.book_new();
-    console.log(data, 'filter');
 
     const ModifiedData = data.map((item) => ({
       ...item,
@@ -239,8 +239,6 @@ export default function BookingListPage() {
       userType: JSON.parse(item.user).userType,
       email: JSON.parse(item.user).email
     }));
-
-    console.log('modified', ModifiedData);
 
     const ws = XLSX.utils.json_to_sheet(ModifiedData);
     XLSX.utils.book_append_sheet(wb, ws, 'Sheet1');
@@ -264,9 +262,7 @@ export default function BookingListPage() {
 
   const columns = [
     { id: 'No', label: 'No' },
-    // { id: 'id', label: 'Id' },
-
-    // { id: 'dateOfBooking', label: 'Date Of Booking' },
+    //{ id: 'id', label: 'Id' },
     { id: 'user', label: 'User Name' },
     { id: 'type', label: 'Type' },
     { id: 'startDate', label: 'Start Date' },
@@ -289,10 +285,13 @@ export default function BookingListPage() {
     if (payAmount) {
       setPayError(false);
       setUpdateModal(false);
+      setEditableRowIndex(null);
       setPayAmount('');
     }
+    const idToUpdate = filteredData[editableRowIndex].id;
     const value = {
-      amount: payAmount
+      amount: payAmount,
+      id: idToUpdate
     };
 
     console.log('value', value);
@@ -407,6 +406,7 @@ export default function BookingListPage() {
           updateModal={updateModal}
           UpdateChange={UpdateChange}
           error={payError}
+          editableRowIndex={editableRowIndex}
         />
       </MainCard>
     </>

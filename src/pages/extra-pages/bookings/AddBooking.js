@@ -457,7 +457,6 @@ export default function AddBooking() {
     return durationInDays;
   };
 
-
   return (
     <MainCard title="Add Bookings">
       <form style={{ height: '240px' }}>
@@ -486,7 +485,7 @@ export default function AddBooking() {
               <CustomTextField label="End Time" value={initalEnd} setValue={TextFieldEndChange} error={endError} />
             </Grid>
             <Grid item md={3}>
-              <DropDownComponent value={selectedNumber} onChange={handleNumberChange} label="Court" options={getNumberOptions()} />
+              <DropDownComponent value={selectedNumber || ''} onChange={handleNumberChange} label="Court" options={getNumberOptions()} />
             </Grid>
             <Grid item md={3} mt={4.2}>
               <Button

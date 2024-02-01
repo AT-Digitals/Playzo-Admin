@@ -7,6 +7,7 @@ import BookingListPage from 'pages/extra-pages/bookings/BookingListPage';
 import CalendarBooking from 'pages/extra-pages/bookings/CalendarBooking';
 import AddBooking from 'pages/extra-pages/bookings/AddBooking';
 import EnquiriesPage from 'pages/extra-pages/Enquiry/EnquiriesPage';
+import AmountPage from 'pages/payment/AmountPage';
 
 // project import
 
@@ -83,6 +84,10 @@ export default function ThemeRoutes() {
         {
           path: 'enquiries',
           element: <EnquiriesPage />
+        },
+        {
+          path: 'amount',
+          element: <AmountPage />
         }
       ]
     }

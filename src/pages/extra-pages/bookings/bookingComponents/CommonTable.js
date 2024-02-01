@@ -12,6 +12,7 @@ import moment from 'moment';
 import UpdateIcon from '@mui/icons-material/Update';
 import IconButton from '@mui/material/IconButton';
 import UpdateModalComponent from '../UpdateModalComponent';
+import CustomTextField from './CustomTextField';
 
 const CommonTable = ({
   columns,
@@ -27,11 +28,15 @@ const CommonTable = ({
   updateModal,
   handleModalChange,
   UpdateChange,
+  editableRowIndex,
   error
 }) => {
-  const renderCellContent = (column, rowData) => {
+  const renderCellContent = (column, rowData, rowIndex) => {
     const { id, label } = column;
 
+    if (editableRowIndex === rowIndex) {
+      const currentvalue = rowData['id'];
+    }
     if (id === 'startDate' || id === 'endDate') {
       return moment(rowData[id]).format('YYYY-MM-DD');
     } else if (id === 'startTime' || id === 'endTime') {
@@ -69,15 +74,14 @@ const CommonTable = ({
                 {columns.map((column) => (
                   <TableCell key={column.id}>
                     {column.id === 'action' ? (
-                      <IconButton aria-label="edit" color="primary" onClick={handleModalChange}>
+                      <IconButton aria-label="edit" color="primary" onClick={() => handleModalChange(index)}>
                         <UpdateIcon />
                       </IconButton>
                     ) : column.id === 'No' ? (
                       index + 1
                     ) : (
-                      renderCellContent(column, rowData)
+                      renderCellContent(column, rowData, index)
                     )}
-                    {/* {column.id === 'No' ? index + 1 : renderCellContent(column, rowData)} */}
                   </TableCell>
                 ))}
               </TableRow>
