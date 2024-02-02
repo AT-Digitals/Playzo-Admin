@@ -4,12 +4,27 @@ import TableBody from '@mui/material/TableBody';
 import TableCell from '@mui/material/TableCell';
 import TableContainer from '@mui/material/TableContainer';
 import TableHead from '@mui/material/TableHead';
-//import { TablePagination } from '@mui/material';
+import { TablePagination } from '@mui/material';
 import TableRow from '@mui/material/TableRow';
 import UpdateIcon from '@mui/icons-material/Update';
 import IconButton from '@mui/material/IconButton';
+import UpdateAmountModal from './UpdateAmountModal';
 
-export default function AmountTable({ columns, data, handleClick }) {
+export default function AmountTable({
+  columns,
+  data,
+  handleClick,
+  editedData,
+  setEditedData,
+  details,
+  onSubmit,
+  onClose,
+  isOpen,
+  rowsPerPage,
+  page,
+  handleChangePage,
+  handleChangeRowsPerPage
+}) {
   return (
     <>
       <TableContainer component={Paper}>
@@ -22,12 +37,12 @@ export default function AmountTable({ columns, data, handleClick }) {
             </TableRow>
           </TableHead>
           <TableBody>
-            {data.map((rowData, index) => (
+            {data.slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage).map((rowData, index) => (
               <TableRow key={index} sx={{ '&:last-child td, &:last-child th': { border: 0 } }}>
                 {columns.map((column) => (
                   <TableCell key={column.id}>
                     {column.id === 'action' ? (
-                      <IconButton aria-label="edit" color="primary" onClick={() => handleClick(index)}>
+                      <IconButton aria-label="edit" color="primary" onClick={() => handleClick(rowData)}>
                         <UpdateIcon />
                       </IconButton>
                     ) : column.id === 'No' ? (
@@ -42,14 +57,23 @@ export default function AmountTable({ columns, data, handleClick }) {
           </TableBody>
         </Table>
       </TableContainer>
-      {/* <TablePagination
+      <TablePagination
+        rowsPerPageOptions={[10, 15, 20]}
         component="div"
-        count={10}
-        // rowsPerPage={rowsPerPage}
-        // page={page}
-        // onPageChange={handleChange}
-        // onRowsPerPageChange={handleChangeRowsPerPage} 
-      />*/}
+        count={data.length}
+        rowsPerPage={rowsPerPage}
+        page={page}
+        onPageChange={handleChangePage}
+        onRowsPerPageChange={handleChangeRowsPerPage}
+      />
+      <UpdateAmountModal
+        editedData={editedData}
+        setEditedData={setEditedData}
+        data={details}
+        onSubmit={onSubmit}
+        onClose={onClose}
+        isOpen={isOpen}
+      />
     </>
   );
 }

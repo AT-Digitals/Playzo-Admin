@@ -1,15 +1,13 @@
 import DropDownComponent from 'pages/extra-pages/DropDownComponent';
 import CustomTextField from 'pages/extra-pages/bookings/bookingComponents/CustomTextField';
-import { useState, useEffect } from 'react';
+import { useState, useEffect, useCallback } from 'react';
 import AmountApi from 'api/AmountApi';
 
-import { Button, Stack, Typography, Grid, Select } from '@mui/material';
-
-import FormControl from '@mui/material/FormControl';
+import { Button, Stack, Grid } from '@mui/material';
 import MainCard from 'components/MainCard';
-import MenuItem from '@mui/material/MenuItem';
+import TypeDropdown from 'pages/extra-pages/bookings/bookingComponents/TypeDropdown';
 import AmountTable from './AmountTable';
-import UpdateAmountModal from './UpdateAmountModal';
+import NotificationSuccessToast from 'pages/components-overview/NotificationSuccessToast';
 
 const Data = [
   { value: 1, label: 1 },
@@ -25,61 +23,109 @@ export default function AmountPage() {
   const [selectCourt, setSelectCourt] = useState('');
   const [amountData, setAmountData] = useState([]);
   const [updateModal, setUpdateModal] = useState(false);
+  const [typeError, setTypeError] = useState(false);
+  const [amountError, setAmountError] = useState(false);
+  const [courtError, setCourtError] = useState(false);
+  const [successtoast, setSuccesstoast] = useState('');
+  const [updateSuccesstoast, setUpdateSuccesstoast] = useState('');
+  const [page, setPage] = useState(0);
+  const [rowsPerPage, setRowsPerPage] = useState(10);
+
+  const handleChangePage = (event, newPage) => {
+    setPage(newPage);
+  };
+
+  const handleChangeRowsPerPage = (event) => {
+    setRowsPerPage(parseInt(event.target.value, 10));
+    setPage(0);
+  };
+
+  const [editedData, setEditedData] = useState([]);
+  const [editableRowIndex, setEditableRowIndex] = useState(null);
+  // const [editedData, setEditedData] = useState({ type: '', amount: '', count: '' });
 
   const handleChange = (event) => {
     setBookingType(event.target.value);
+    setTypeError(false);
   };
   const handleAmountChange = (event) => {
     setAmount(event.target.value);
+    setAmountError(false);
   };
   const handleCourtChange = (event) => {
     setSelectCourt(event.target.value);
+    setCourtError(false);
   };
 
   const handleClose = () => {
     setUpdateModal(false);
     setEditableRowIndex(null);
-    setEditedData({ type: '', amount: '', count: '' });
   };
 
   const addAmount = () => {
-    const details = {
-      bookingtype: bookingType,
-      bookingAmount: amount,
-      court: selectCourt
-    };
-    console.log(details, ' amountdata');
-    // if (bookingType && amount && selectCourt) {
-    //   setData([...data, details]);
-    // }
-    const booking = async () => {
-      try {
-        const response = await AmountApi.createAmount(details);
-        alert('success');
-        //setAmountData(response);
-      } catch (error) {
-        console.log('please provide valid data', error);
-      }
-    };
-    booking();
+    if (!bookingType) {
+      setTypeError(true);
+    }
+    if (!amount) {
+      setAmountError(true);
+    }
+    if (!selectCourt) {
+      setCourtError(true);
+    }
 
-    setAmount('');
-    setSelectCourt();
-    setBookingType();
+    if (bookingType && amount && selectCourt) {
+      const details = {
+        bookingtype: bookingType,
+        bookingAmount: amount,
+        court: selectCourt
+      };
+
+      console.log(details, ' amountdata');
+      const booking = async () => {
+        try {
+          const response = await AmountApi.createAmount(details);
+          setSuccesstoast('Your Amount is added.');
+        } catch (error) {
+          console.log('please provide valid data', error);
+        }
+      };
+      booking();
+      setAmount('');
+      setSelectCourt();
+      setBookingType();
+      setSuccesstoast('');
+    }
   };
-  //   const handleClick = () => {
-  //     setUpdateModal(true);
-  //   };
 
-  const updateModalChange = () => {
-    // setUpdateModal(true);
+  const handleEditClick = (index) => {
+    setEditableRowIndex(index);
+    setUpdateModal(true);
+    setEditedData(index);
+  };
+  console.log('edit', editedData);
+
+  const updateModalChange = async () => {
+    const idToUpdate = amountData[editableRowIndex].id;
     const details = {
-      bookingType: bookingType,
-      amount: amount,
-      court: selectCourt
+      bookingtype: editedData.bookingType,
+      bookingAmount: editedData.bookingAmount,
+      court: editedData.court,
+      id: idToUpdate
     };
-    console.log(details, ' amountdata');
-    handleModalClose();
+    try {
+      const res = await AmountApi.updateAmount(details.id, {
+        bookingtype: details.bookingtype,
+        bookingAmount: details.bookingAmount,
+        court: details.court
+      });
+      setUpdateSuccesstoast('Your Amount is updated successfully!');
+    } catch (error) {
+      console.log('please provide valid data', error);
+    }
+    console.log('value', details);
+
+    fetchInfo();
+    handleClose();
   };
 
   const columns = [
@@ -90,45 +136,15 @@ export default function AmountPage() {
     { id: 'action', label: 'Action' }
   ];
 
-  const details = [
-    {
-      type: 'turf',
-      amount: 400,
-      court: 2
-    },
-    {
-      type: 'turf',
-      amount: 400,
-      court: 2
-    },
-    {
-      type: 'turf',
-      amount: 400,
-      court: 2
-    }
-  ];
-
-  const [editableRowIndex, setEditableRowIndex] = useState(null);
-  //const [modalOpen, setModalOpen] = useState(false);
-  const [editedData, setEditedData] = useState({ type: '', amount: '', count: '' });
-
-  const handleEditClick = (index) => {
-    setEditableRowIndex(index);
-    // Clone the data of the clicked row to prevent directly modifying the state
-    setEditedData({ ...data[index] });
-    setUpdateModal(true);
-  };
-
-  const fetchInfo = async () => {
+  const fetchInfo = useCallback(async () => {
     try {
       const res = await AmountApi.getAll({}).then((data) => {
-        //setCount(data.length);
         setAmountData(data);
       });
     } catch {
       console.log('Error fetching data');
     }
-  };
+  }, []);
 
   useEffect(() => {
     fetchInfo();
@@ -140,26 +156,19 @@ export default function AmountPage() {
         <Stack direction="column" spacing={4} width="100%" maxWidth={1120}>
           <Grid container spacing={3}>
             <Grid item md={3}>
-              <Stack spacing={2}>
-                <Typography>Select Booking Type</Typography>
-                <FormControl fullWidth>
-                  <Select labelId="demo-simple-select-label" id="demo-simple-select" value={bookingType || ''} onChange={handleChange}>
-                    <MenuItem value="All">All</MenuItem>
-                    <MenuItem value="turf">Turf</MenuItem>
-                    <MenuItem value="boardGame">Board Game</MenuItem>
-                    <MenuItem value="playstation">Play Station</MenuItem>
-                    <MenuItem value="cricketNet">Cricket Net</MenuItem>
-                    <MenuItem value="ballMachine">Ball Machine</MenuItem>
-                    <MenuItem value="badminton">Badminton</MenuItem>
-                  </Select>
-                </FormControl>
-              </Stack>
+              <TypeDropdown label="Select Booking Type" type={bookingType} onChange={handleChange} error={typeError} />
             </Grid>
             <Grid item md={3}>
-              <CustomTextField label="Enter Amount" value={amount} setValue={handleAmountChange} />
+              <CustomTextField label="Enter Amount" value={amount} setValue={handleAmountChange} error={amountError} />
             </Grid>
             <Grid item md={3}>
-              <DropDownComponent label="Select Court" value={selectCourt || ''} onChange={handleCourtChange} options={Data} />
+              <DropDownComponent
+                label="Select Court"
+                value={selectCourt || ''}
+                onChange={handleCourtChange}
+                options={Data}
+                error={courtError}
+              />
             </Grid>
             <Grid item md={3}>
               <Button variant="outlined" onClick={addAmount}>
@@ -168,20 +177,25 @@ export default function AmountPage() {
             </Grid>
           </Grid>
         </Stack>
+        {successtoast !== '' ? <NotificationSuccessToast success={successtoast} /> : <></>}
       </MainCard>
-      <AmountTable columns={columns} data={amountData} handleClick={handleEditClick} />
-      <UpdateAmountModal
+      <AmountTable
+        columns={columns}
+        data={amountData}
+        handleClick={handleEditClick}
         Type={bookingType}
-        TypeChange={handleChange}
-        value={amount}
-        onChange={handleAmountChange}
-        Court={selectCourt}
-        CourtChange={handleCourtChange}
-        data={Data}
+        editedData={editedData}
+        setEditedData={setEditedData}
+        details={Data}
         onSubmit={updateModalChange}
         onClose={handleClose}
         isOpen={updateModal}
+        rowsPerPage={rowsPerPage}
+        page={page}
+        handleChangePage={handleChangePage}
+        handleChangeRowsPerPage={handleChangeRowsPerPage}
       />
+      {updateSuccesstoast !== '' ? <NotificationSuccessToast success={updateSuccesstoast} /> : <></>}
     </>
   );
 }

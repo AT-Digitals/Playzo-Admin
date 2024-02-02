@@ -3,8 +3,9 @@ import MenuItem from '@mui/material/MenuItem';
 import FormControl from '@mui/material/FormControl';
 import Select from '@mui/material/Select';
 import { Typography, Stack } from '@mui/material';
+import FormHelperText from '@mui/material/FormHelperText';
 
-export default function DropDownComponent({ label, options, value, onChange }) {
+export default function DropDownComponent({ label, options, value, onChange, error }) {
   return (
     <Stack direction="column" spacing={2}>
       <Typography>{label}</Typography>
@@ -16,6 +17,7 @@ export default function DropDownComponent({ label, options, value, onChange }) {
             </MenuItem>
           ))}
         </Select>
+        {error ? <FormHelperText error>Please select a Court value</FormHelperText> : <></>}
       </FormControl>
     </Stack>
   );

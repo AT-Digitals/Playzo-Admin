@@ -23,19 +23,7 @@ const style = {
   p: 4
 };
 
-export default function UpdateAmountModal({
-  onSubmit,
-  onClose,
-  isOpen,
-  Type,
-  TypeChange,
-  value,
-  onChange,
-  Court,
-  CourtChange,
-  data,
-  error
-}) {
+export default function UpdateAmountModal({ onSubmit, onClose, isOpen, editedData, setEditedData, data, error }) {
   return (
     <>
       <Modal open={isOpen} onClose={onClose} aria-labelledby="modal-modal-title" aria-describedby="modal-modal-description">
@@ -51,7 +39,13 @@ export default function UpdateAmountModal({
                 <Stack spacing={2}>
                   <Typography>Select Booking Type</Typography>
                   <FormControl fullWidth>
-                    <Select labelId="demo-simple-select-label" id="demo-simple-select" disabled value={Type || ''} onChange={TypeChange}>
+                    <Select
+                      labelId="demo-simple-select-label"
+                      id="demo-simple-select"
+                      disabled
+                      value={editedData.bookingType || ''}
+                      onChange={(e) => setEditedData({ ...editedData, bookingType: e.target.value })}
+                    >
                       <MenuItem value="All">All</MenuItem>
                       <MenuItem value="turf">Turf</MenuItem>
                       <MenuItem value="boardGame">Board Game</MenuItem>
@@ -64,10 +58,21 @@ export default function UpdateAmountModal({
                 </Stack>
               </Grid>
               <Grid item md={12}>
-                <CustomTextField label="Enter Amount" value={value} setValue={onChange} error={error} type="number" />
+                <CustomTextField
+                  label="Enter Amount"
+                  value={editedData.bookingAmount}
+                  setValue={(e) => setEditedData({ ...editedData, bookingAmount: e.target.value })}
+                  error={error}
+                  type="number"
+                />
               </Grid>
               <Grid item md={12}>
-                <DropDownComponent label="Select Court" value={Court || ''} onChange={CourtChange} options={data} />
+                <DropDownComponent
+                  label="Select Court"
+                  value={editedData.court || ''}
+                  onChange={(e) => setEditedData({ ...editedData, court: e.target.value })}
+                  options={data}
+                />
               </Grid>
             </Grid>
 

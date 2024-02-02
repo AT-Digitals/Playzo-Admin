@@ -15,6 +15,7 @@ import Select from '@mui/material/Select';
 import ToggleButtonComponent from './ToggleButtonComponent';
 import dayjs from 'dayjs';
 import moment from 'moment';
+import NotificationSuccessToast from 'pages/components-overview/NotificationSuccessToast';
 
 const Data = [
   {
@@ -55,6 +56,7 @@ export default function BookingListPage() {
   const [payAmount, setPayAmount] = useState('');
   const [payError, setPayError] = useState(false);
   const [editableRowIndex, setEditableRowIndex] = useState(null);
+  const [updateToast, setUpdateToast] = useState('');
 
   const handleButtonClick = async () => {
     setFilteredData(data);
@@ -304,7 +306,7 @@ export default function BookingListPage() {
     { id: 'action', label: 'Action' }
   ];
 
-  const UpdateChange = (event) => {
+  const UpdateChange = async (event) => {
     event.preventDefault();
     if (!payAmount) {
       setPayError(true);
@@ -321,14 +323,21 @@ export default function BookingListPage() {
       amount: payAmount,
       id: idToUpdate
     };
-    BookingApi.updateAmount(value.id, {
-      bookingAmount: {
-        online: 0,
-        cash: value.amount,
-        total: value.amount
-      }
-    });
+    try {
+      const res = await BookingApi.updateAmount(value.id, {
+        bookingAmount: {
+          online: 0,
+          cash: value.amount,
+          total: value.amount
+        }
+      });
+      setUpdateToast('Your Amount is updated successfully!');
+    } catch (error) {
+      console.log('please provide valid amount', error);
+    }
     console.log('value', value);
+
+    fetchInfo();
   };
 
   return (
@@ -424,6 +433,7 @@ export default function BookingListPage() {
           </Grid>
         </Stack>
       </MainCard>
+      {updateToast !== '' ? <NotificationSuccessToast success={updateToast} /> : <></>}
       <MainCard sx={{ marginTop: '30px' }}>
         <CommonTable
           columns={columns}
