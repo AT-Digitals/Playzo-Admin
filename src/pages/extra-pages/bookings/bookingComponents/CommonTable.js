@@ -37,7 +37,7 @@ const CommonTable = ({
       const currentvalue = rowData['id'];
     }
     if (id === 'startDate' || id === 'endDate') {
-      return moment(rowData[id]).format('YYYY-MM-DD');
+      return moment(rowData[id]).format('DD-MM-yyyy');
     } else if (id === 'startTime' || id === 'endTime') {
       return DateUtils.formatMillisecondsToTime(rowData[id]);
     } else if (id === 'userType' && label === 'User Type') {

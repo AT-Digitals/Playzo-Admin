@@ -56,7 +56,7 @@ export default function BookingListPage() {
   const [payError, setPayError] = useState(false);
   const [editableRowIndex, setEditableRowIndex] = useState(null);
 
-  const handleButtonClick = () => {
+  const handleButtonClick = async () => {
     setFilteredData(data);
     setBookingType('All');
     setMonthType('');
@@ -69,6 +69,14 @@ export default function BookingListPage() {
     setBool(false);
     setStartDateError(false);
     setEndDateError(false);
+    const res = await BookingApi.getAll({}).then((data) => {
+      setCount(data.length);
+      setData(data);
+    });
+    const res1 = await BookingApi.getAllPaging({ page: page + 1, limit: rowsPerPage }).then((data) => {
+      setFilteredData(data);
+    });
+    setPage(0);
   };
 
   const buttonhandleChange = (event, newValue) => {
@@ -134,7 +142,6 @@ export default function BookingListPage() {
         if (filterData.type === 'All') {
           filterData.type = '';
         }
-
         const res = await BookingApi.filterBook(filterData).then((data) => {
           setCount(data.length);
           setData(data);
@@ -186,11 +193,10 @@ export default function BookingListPage() {
         type: bookingType,
         startDate: startDateValue,
         endDate: endDateValue,
-        bookingtype: paymentType,
-        monthType: monthType,
-        day: selectData
+        bookingtype: paymentType
+        // monthType: monthType,
+        // day: selectData
       };
-
       let dateFilter = '';
       if (monthType === 'oneMonth') {
         dateFilter = DateUtils.subtract(new Date(), 1, 'month', 'yyyy-MM-DD');
@@ -202,17 +208,39 @@ export default function BookingListPage() {
         dateFilter = DateUtils.subtract(new Date(), 1, 'year', 'yyyy-MM-DD');
       }
 
+      let dayFilter = '';
+      if (selectData === 'previous') {
+        dayFilter = DateUtils.subtract(new Date(), 1, 'day', 'yyyy-MM-DD');
+        details.endDate = DateUtils.formatDate(new Date(dayFilter), 'yyyy-MM-DD');
+      } else if (selectData === 'today') {
+        dayFilter = DateUtils.formatDate(new Date(), 'yyyy-MM-DD');
+        // const currentDateValue = DateUtils.add(new Date(), 1, 'day');
+        details.endDate = DateUtils.formatDate(new Date(dayFilter), 'yyyy-MM-DD');
+        details.startDate = DateUtils.formatDate(new Date(dayFilter), 'yyyy-MM-DD');
+      } else if (selectData === 'future') {
+        dayFilter = DateUtils.formatDate(DateUtils.add(new Date(), 1, 'day'), 'yyyy-MM-DD');
+        details.startDate = DateUtils.formatDate(new Date(dayFilter), 'yyyy-MM-DD');
+      }
+      console.log('dayFilter', dayFilter);
+
       console.log('dateFilter', dateFilter);
-      if (details.startDateValue && details.endDateValue && dateFilter === '') {
-        const a = DateUtils.add(new Date(details.endDateValue), 1, 'day');
-        details.endDateValue = DateUtils.formatDate(new Date(a), 'yyyy-MM-DD');
+      if (details.startDate && details.endDate && dateFilter === '' && dayFilter === '') {
+        const a = DateUtils.add(new Date(details.endDate), 1, 'day');
+        details.endDate = DateUtils.formatDate(new Date(a), 'yyyy-MM-DD');
       }
 
       if (dateFilter !== '') {
         const currentDateValue = DateUtils.add(new Date(), 1, 'day');
-        details.endDateValue = DateUtils.formatDate(new Date(currentDateValue), 'yyyy-MM-DD');
-        details.startDateValue = DateUtils.formatDate(new Date(dateFilter), 'yyyy-MM-DD');
+        details.endDate = DateUtils.formatDate(new Date(currentDateValue), 'yyyy-MM-DD');
+        details.startDate = DateUtils.formatDate(new Date(dateFilter), 'yyyy-MM-DD');
       }
+
+      // if(dayFilter!== ''){
+      //   const currentDateValue = DateUtils.add(new Date(), 1, 'day');
+      //   details.endDate = DateUtils.formatDate(new Date(currentDateValue), 'yyyy-MM-DD');
+      //   details.startDate = DateUtils.formatDate(new Date(dateFilter), 'yyyy-MM-DD');
+      // }
+
       console.log('dateFilter', dateFilter);
       setFilterData(details);
       console.log('details', details);
@@ -222,9 +250,9 @@ export default function BookingListPage() {
     }
 
     setIsApplyMode(false);
-    //setPage(0);
+    setPage(0);
     setButtonDisable(true);
-  }, [bookingType, endDateValue, monthType, paymentType, startDateValue]);
+  }, [bookingType, endDateValue, monthType, paymentType, selectData, startDateValue]);
 
   const handleDownload = () => {
     const wb = XLSX.utils.book_new();
