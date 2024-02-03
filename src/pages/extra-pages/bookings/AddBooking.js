@@ -190,7 +190,8 @@ export default function AddBooking() {
         endTime: parseInt(endTime),
         user: userData.id,
         startDate: date,
-        endDate: endDate
+        endDate: endDate,
+        court: selectedNumber
       });
     } else {
       await paymentMethod();
@@ -226,7 +227,8 @@ export default function AddBooking() {
             user: userData.id,
             startDate: date,
             endDate: endDate,
-            bookingId: response.razorpay_payment_id
+            bookingId: response.razorpay_payment_id,
+            court: selectedNumber
           });
         },
         prefill: {
