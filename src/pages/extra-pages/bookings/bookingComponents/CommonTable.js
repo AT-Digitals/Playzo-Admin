@@ -9,9 +9,9 @@ import TableContainer from '@mui/material/TableContainer';
 import TableHead from '@mui/material/TableHead';
 import { TablePagination } from '@mui/material';
 import TableRow from '@mui/material/TableRow';
-import UpdateIcon from '@mui/icons-material/Update';
 import UpdateModalComponent from '../UpdateModalComponent';
 import moment from 'moment';
+import EditIcon from '@mui/icons-material/Edit';
 
 const CommonTable = ({
   columns,
@@ -83,7 +83,7 @@ const CommonTable = ({
                   <TableCell key={column.id}>
                     {column.id === 'action' ? (
                       <IconButton aria-label="edit" color="primary" onClick={() => handleModalChange(index)}>
-                        <UpdateIcon />
+                        <EditIcon />
                       </IconButton>
                     ) : column.id === 'No' ? (
                       index + 1

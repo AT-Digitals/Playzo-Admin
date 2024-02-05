@@ -9,7 +9,7 @@ export default function StartTimeComponent({ onChange, shouldDisableTime, label 
     <LocalizationProvider dateAdapter={AdapterDayjs}>
       <Stack direction="column" spacing={2} sx={{ width: '120px' }}>
         <Typography>{label}</Typography>
-        <DigitalClock onChange={onChange} shouldDisableTime={shouldDisableTime} />
+        <DigitalClock onChange={onChange} shouldDisableTime={shouldDisableTime} timeStep={60} />
       </Stack>
     </LocalizationProvider>
   );

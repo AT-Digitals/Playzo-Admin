@@ -25,7 +25,7 @@ const mainpages = {
     },
     {
       id: 'amount',
-      title: 'Add Amount',
+      title: 'Amount List',
       type: 'item',
       url: '/amount',
       icon: icons.ProfileOutlined

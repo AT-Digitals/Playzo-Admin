@@ -6,9 +6,9 @@ import TableContainer from '@mui/material/TableContainer';
 import TableHead from '@mui/material/TableHead';
 import { TablePagination } from '@mui/material';
 import TableRow from '@mui/material/TableRow';
-import UpdateIcon from '@mui/icons-material/Update';
 import IconButton from '@mui/material/IconButton';
 import UpdateAmountModal from './UpdateAmountModal';
+import EditIcon from '@mui/icons-material/Edit';
 
 export default function AmountTable({
   columns,
@@ -43,7 +43,7 @@ export default function AmountTable({
                   <TableCell key={column.id}>
                     {column.id === 'action' ? (
                       <IconButton aria-label="edit" color="primary" onClick={() => handleClick(rowData)}>
-                        <UpdateIcon />
+                        <EditIcon />
                       </IconButton>
                     ) : column.id === 'No' ? (
                       index + 1

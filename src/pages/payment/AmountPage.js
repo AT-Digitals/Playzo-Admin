@@ -152,7 +152,7 @@ export default function AmountPage() {
 
   return (
     <>
-      <MainCard title="Add Amount">
+      <MainCard title="Amount List">
         <Stack direction="column" spacing={4} width="100%" maxWidth={1120}>
           <Grid container spacing={3}>
             <Grid item md={3}>

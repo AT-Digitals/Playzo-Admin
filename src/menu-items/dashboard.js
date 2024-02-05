@@ -1,10 +1,10 @@
 // assets
-import { DashboardOutlined } from '@ant-design/icons'
+import { DashboardOutlined } from '@ant-design/icons';
 
 // icons
 const icons = {
-  DashboardOutlined,
-}
+  DashboardOutlined
+};
 
 // ==============================|| MENU ITEMS - DASHBOARD ||============================== //
 
@@ -19,9 +19,25 @@ const dashboard = {
       type: 'item',
       url: '/dashboard/default',
       icon: icons.DashboardOutlined,
-      breadcrumbs: false,
+      breadcrumbs: false
     },
-  ],
-}
+    // {
+    //   id: 'dashboard',
+    //   title: 'Dashboard',
+    //   type: 'item',
+    //   url: '/dashboard/default',
+    //   icon: icons.DashboardOutlined,
+    //   breadcrumbs: false
+    // },
+    {
+      id: 'register',
+      title: 'Register',
+      type: 'item',
+      url: '/register',
+      icon: icons.DashboardOutlined,
+      breadcrumbs: false
+    }
+  ]
+};
 
-export default dashboard
+export default dashboard;
