@@ -21,7 +21,7 @@ import DropDownComponent from '../DropDownComponent';
 import { BookingLength } from './BookingLength';
 
 export default function AddBooking() {
-  const [startDate, setStartDate] = useState('');
+  const [date, setDate] = useState('');
   const [endDate, setEndDate] = useState('');
   const [startTime, setStartTime] = useState('');
   const [endTime, setEndTime] = useState('');
@@ -85,7 +85,7 @@ export default function AddBooking() {
     let datedata = newValue.$d;
     const parsedDate = moment(datedata);
     const formattedDate = parsedDate.format('YYYY-MM-DD');
-    setStartDate(formattedDate);
+    setDate(formattedDate);
     setDateError(false);
   };
   const handleEndDateChange = (newValue) => {
@@ -96,7 +96,7 @@ export default function AddBooking() {
     const ApiCall = async () => {
       try {
         const response = await BookingApi.filter({
-          startDate: startDate,
+          startDate: date,
           type: bookingType,
           endDate: formattedDate
         });
@@ -130,7 +130,7 @@ export default function AddBooking() {
   };
 
   const bookingApiCall = (bookingData) => {
-    if (startDate && startTime && endTime && endDate) {
+    if (date && startTime && endTime && endDate) {
       setBookingModalOpen(true);
       const booking = async () => {
         try {
@@ -151,7 +151,7 @@ export default function AddBooking() {
         }
       };
       booking();
-      setStartDate('');
+      setDate('');
       setStartTime('');
       setEndTime('');
       setBookingType('');
@@ -175,7 +175,7 @@ export default function AddBooking() {
         startTime: parseInt(startTime),
         endTime: parseInt(endTime),
         user: userData.id,
-        startDate: startDate,
+        startDate: date,
         endDate: endDate,
         court: selectedNumber
       });
@@ -211,7 +211,7 @@ export default function AddBooking() {
             startTime: parseInt(startTime),
             endTime: parseInt(endTime),
             user: userData.id,
-            startDate: startDate,
+            startDate: date,
             endDate: endDate,
             bookingId: response.razorpay_payment_id,
             court: selectedNumber
@@ -295,10 +295,10 @@ export default function AddBooking() {
       localStorage.removeItem('bookingData');
     };
 
-    if (location.pathname !== '/addBookings') {
+    if (location.path !== '/addBookings') {
       clearLocalStorage();
     }
-  }, [startTime, endTime, location.pathname]);
+  }, [startTime, endTime, location.path]);
 
   const TextFieldEndChange = (event) => {
     const editedTimeString = event.target.value;
@@ -320,10 +320,10 @@ export default function AddBooking() {
 
   const isDateComparisonValid = () => {
     const currentDate = new Date();
-    const startDate = new Date(currentDate.toDateString() + ' ' + initalTime);
+    const date = new Date(currentDate.toDateString() + ' ' + initalTime);
     const endDate = new Date(currentDate.toDateString() + ' ' + initalEnd);
 
-    if (startDate >= endDate || endDate <= startDate) {
+    if (date >= endDate || endDate <= date) {
       setStartError('Start time must be less than the end time');
       setEndError('End time must be greater than the start time');
       return false;
@@ -336,7 +336,7 @@ export default function AddBooking() {
 
   const onSubmit = (event) => {
     event.preventDefault();
-    if (!startDate) {
+    if (!date) {
       setDateError(true);
     }
     if (!endDate) {
@@ -346,9 +346,9 @@ export default function AddBooking() {
       setBookingTypeError(true);
     }
 
-    if (startDate && endDate && bookingType && isDateComparisonValid()) {
+    if (date && endDate && bookingType && isDateComparisonValid()) {
       setBookingModalOpen(true);
-      isDurationGreaterThanOneMonth(startDate, endDate);
+      isDurationGreaterThanOneMonth(date, endDate);
     }
   };
   const handleCloseModal = () => {
@@ -434,10 +434,10 @@ export default function AddBooking() {
   };
 
   const shouldDisableDate = (startDateData) => {
-    if (!startDate) {
+    if (!date) {
       return false;
     }
-    return dayjs(startDateData).isBefore(dayjs(startDate), 'day');
+    return dayjs(startDateData).isBefore(dayjs(date), 'day');
   };
 
   const isDurationGreaterThanOneMonth = (startDate, endDateV) => {
@@ -462,7 +462,7 @@ export default function AddBooking() {
               <TypeDropdown label="Booking Type" type={bookingType} onChange={handleChange} error={bookingTypeError} />
             </Grid>
             <Grid item md={3}>
-              <CustomDatePicker date={startDate} setDate={dateHandler} error={dateError} label={'Start Date'} disablePast={false} />
+              <CustomDatePicker date={date} setDate={dateHandler} error={dateError} label={'Start Date'} disablePast={false} />
             </Grid>
             <Grid item md={3}>
               <CustomDatePicker
