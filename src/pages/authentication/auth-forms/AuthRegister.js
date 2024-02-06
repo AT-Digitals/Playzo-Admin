@@ -1,26 +1,28 @@
+import * as Yup from 'yup';
+
+import { Button, FormHelperText, Grid, IconButton, InputAdornment, InputLabel, OutlinedInput, Stack } from '@mui/material';
+import { EyeInvisibleOutlined, EyeOutlined } from '@ant-design/icons';
 import { useEffect, useState } from 'react';
 
-// material-ui
-import { Button, FormHelperText, Grid, IconButton, InputAdornment, InputLabel, OutlinedInput, Stack } from '@mui/material';
-
-// third party
-import * as Yup from 'yup';
+import { AccessType } from './AccessType';
+import AnimateButton from 'components/@extended/AnimateButton';
+import DropDownComponent from 'pages/extra-pages/DropDownComponent';
+import FormControl from '@mui/material/FormControl';
+import FormControlLabel from '@mui/material/FormControlLabel';
+import FormLabel from '@mui/material/FormLabel';
 import { Formik } from 'formik';
-
 import Radio from '@mui/material/Radio';
 import RadioGroup from '@mui/material/RadioGroup';
-import FormControlLabel from '@mui/material/FormControlLabel';
-import FormControl from '@mui/material/FormControl';
-import FormLabel from '@mui/material/FormLabel';
-
-// project import
-import AnimateButton from 'components/@extended/AnimateButton';
+import RegisterApi from 'api/RegisterApi';
 import { strengthIndicator } from 'utils/password-strength';
 
+// material-ui
+
+// third party
+
+// project import
+
 // assets
-import { EyeOutlined, EyeInvisibleOutlined } from '@ant-design/icons';
-import DropDownComponent from 'pages/extra-pages/DropDownComponent';
-import { AccessType } from './AccessType';
 
 const userType = [
   { value: 'admin', label: 'Admin' },
@@ -71,6 +73,17 @@ const AuthRegister = () => {
         onSubmit={async (values, { setErrors, setStatus, setSubmitting }) => {
           try {
             console.log('values', values);
+            RegisterApi.createAdmin({
+              email: values.email,
+
+              password: values.password,
+              name: values.name,
+
+              phone: values.phoneNumber,
+
+              accessType: values.access ?? ''
+            });
+
             setStatus({ success: false });
             setSubmitting(false);
           } catch (err) {
