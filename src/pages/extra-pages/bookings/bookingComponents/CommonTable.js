@@ -1,4 +1,5 @@
 import DateUtils from 'utils/DateUtils';
+import EditIcon from '@mui/icons-material/Edit';
 import IconButton from '@mui/material/IconButton';
 import Paper from '@mui/material/Paper';
 import React from 'react';
@@ -11,7 +12,6 @@ import { TablePagination } from '@mui/material';
 import TableRow from '@mui/material/TableRow';
 import UpdateModalComponent from '../UpdateModalComponent';
 import moment from 'moment';
-import EditIcon from '@mui/icons-material/Edit';
 
 const CommonTable = ({
   columns,
@@ -32,6 +32,7 @@ const CommonTable = ({
 }) => {
   const renderCellContent = (column, rowData, rowIndex) => {
     const { id, label } = column;
+    console.log('rowData', rowData);
 
     if (editableRowIndex === rowIndex) {
       const currentvalue = rowData['id'];
@@ -47,7 +48,7 @@ const CommonTable = ({
       const data = JSON.parse(rowData['user']).email;
       return data;
     } else if (id === 'user' && label === 'User Name') {
-      const data = JSON.parse(rowData[id]).name;
+      const data = JSON.parse(rowData[id]).email;
       return data;
     } else if (id === 'bookingAmount' && label === 'Booking Amount') {
       const data = rowData[id].total;

@@ -3,6 +3,7 @@ import * as XLSX from 'xlsx';
 import { Box, Button, Grid, Stack, Typography } from '@mui/material';
 import { useCallback, useEffect, useState } from 'react';
 
+import { AccessType } from 'pages/authentication/auth-forms/AccessType';
 import BookingApi from 'api/BookingApi';
 import CommonTable from './bookingComponents/CommonTable';
 import CustomDatePicker from './bookingComponents/CustomDatePicker';
@@ -11,11 +12,11 @@ import DropDownComponent from '../DropDownComponent';
 import FormControl from '@mui/material/FormControl';
 import MainCard from 'components/MainCard';
 import MenuItem from '@mui/material/MenuItem';
+import NotificationSuccessToast from 'pages/components-overview/NotificationSuccessToast';
 import Select from '@mui/material/Select';
 import ToggleButtonComponent from './ToggleButtonComponent';
 import dayjs from 'dayjs';
 import moment from 'moment';
-import NotificationSuccessToast from 'pages/components-overview/NotificationSuccessToast';
 
 const Data = [
   {
@@ -289,7 +290,8 @@ export default function BookingListPage() {
     }
     return dayjs(date).isAfter(dayjs(endDateValue), 'day');
   };
-
+  const user = localStorage.getItem('user');
+  const userData = JSON.parse(user);
   const columns = [
     { id: 'No', label: 'No' },
     //{ id: 'id', label: 'Id' },
@@ -302,10 +304,14 @@ export default function BookingListPage() {
     { id: 'bookingtype', label: 'Booking Type' },
     { id: 'userType', label: 'User Type' },
     { id: 'cashPayment', label: 'Cash Payment' },
-    { id: 'onlinePayment', label: 'Online Payment' },
-    { id: 'action', label: 'Action' }
+    { id: 'onlinePayment', label: 'Online Payment' }
   ];
-
+  if (userData.accessType !== AccessType.READ) {
+    columns.push({
+      id: 'action',
+      label: 'Action'
+    });
+  }
   const UpdateChange = async (event) => {
     event.preventDefault();
     if (!payAmount) {
