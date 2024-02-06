@@ -15,6 +15,7 @@ import Radio from '@mui/material/Radio';
 import RadioGroup from '@mui/material/RadioGroup';
 import RegisterApi from 'api/RegisterApi';
 import { strengthIndicator } from 'utils/password-strength';
+import { useNavigate } from 'react-router-dom';
 
 // material-ui
 
@@ -50,6 +51,7 @@ const AuthRegister = () => {
   useEffect(() => {
     changePassword('');
   }, []);
+  const navigate = useNavigate();
 
   return (
     <>
@@ -74,7 +76,7 @@ const AuthRegister = () => {
           try {
             console.log('values', values);
             if (values.user === 'admin') {
-              RegisterApi.createAdmin({
+              const response = await RegisterApi.createAdmin({
                 email: values.email,
 
                 password: values.password,
@@ -84,8 +86,15 @@ const AuthRegister = () => {
 
                 accessType: values.access ?? ''
               });
+              if (response) {
+                navigate('/dashboard/default');
+                setStatus({ success: true });
+                setSubmitting(true);
+              } else {
+                console.log('Admin create account Failed');
+              }
             } else {
-              RegisterApi.createUser({
+              const data = await RegisterApi.createUser({
                 email: values.email,
 
                 password: values.password,
@@ -93,8 +102,14 @@ const AuthRegister = () => {
 
                 phone: values.phoneNumber
               });
+              if (data) {
+                navigate('/dashboard/default');
+                setStatus({ success: true });
+                setSubmitting(true);
+              } else {
+                console.log('User create account Failed');
+              }
             }
-
             setStatus({ success: false });
             setSubmitting(false);
           } catch (err) {
