@@ -10,4 +10,12 @@ export default class RegisterApi {
       throw handleApiError(e, 'Failed to create details');
     }
   }
+  public static async createUser(details?: any) {
+    try {
+      const user = await axiosInstance.post('/user/newUsers', details);
+      return user.data;
+    } catch (e) {
+      throw handleApiError(e, 'Failed to create details');
+    }
+  }
 }

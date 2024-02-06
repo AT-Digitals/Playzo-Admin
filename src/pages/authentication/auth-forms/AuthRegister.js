@@ -73,16 +73,27 @@ const AuthRegister = () => {
         onSubmit={async (values, { setErrors, setStatus, setSubmitting }) => {
           try {
             console.log('values', values);
-            RegisterApi.createAdmin({
-              email: values.email,
+            if (values.user === 'admin') {
+              RegisterApi.createAdmin({
+                email: values.email,
 
-              password: values.password,
-              name: values.name,
+                password: values.password,
+                name: values.name,
 
-              phone: values.phoneNumber,
+                phone: values.phoneNumber,
 
-              accessType: values.access ?? ''
-            });
+                accessType: values.access ?? ''
+              });
+            } else {
+              RegisterApi.createUser({
+                email: values.email,
+
+                password: values.password,
+                name: values.name,
+
+                phone: values.phoneNumber
+              });
+            }
 
             setStatus({ success: false });
             setSubmitting(false);
