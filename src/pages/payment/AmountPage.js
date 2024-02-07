@@ -159,7 +159,13 @@ export default function AmountPage() {
               <TypeDropdown label="Select Booking Type" type={bookingType} onChange={handleChange} error={typeError} />
             </Grid>
             <Grid item md={3}>
-              <CustomTextField label="Enter Amount" value={amount} setValue={handleAmountChange} error={amountError} />
+              <CustomTextField
+                label="Enter Amount"
+                value={amount}
+                setValue={handleAmountChange}
+                error={amountError}
+                errorText="please Enter a valid Amount"
+              />
             </Grid>
             <Grid item md={3}>
               <DropDownComponent

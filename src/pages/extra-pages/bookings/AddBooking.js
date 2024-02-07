@@ -23,7 +23,7 @@ import { BookingLength } from './BookingLength';
 
 export default function AddBooking() {
   const [date, setDate] = useState('');
-  const [endDate, setEndDate] = useState('');
+  const [endDateValue, setEndDateValue] = useState('');
   const [startTime, setStartTime] = useState('');
   const [endTime, setEndTime] = useState('');
   const [dateError, setDateError] = useState(false);
@@ -35,8 +35,8 @@ export default function AddBooking() {
   const [bookingType, setBookingType] = useState('');
   const [toast, setToast] = useState('');
   const [bookingTypeError, setBookingTypeError] = useState(false);
-  const [startError, setStartError] = useState('');
-  const [endError, setEndError] = useState('');
+  const [startError, setStartError] = useState(false);
+  const [endError, setEndError] = useState(false);
   const [showTextField, setShowTextField] = useState(false);
 
   const [successtoast, setSuccesstoast] = useState('');
@@ -87,27 +87,31 @@ export default function AddBooking() {
     setDate(formattedDate);
     setDateError(false);
 
-    if (endDate && new Date(endDate) < new Date(formattedDate)) {
+    if (endDateValue && new Date(endDateValue) < new Date(formattedDate)) {
       setIsModalOpen(false);
-      setEndDate('');
+      setEndDateValue('');
     }
   };
   const handleEndDateChange = (newValue) => {
     let enddatedata = newValue.$d;
     const parsedDate = moment(enddatedata);
     const formattedDate = parsedDate.format('YYYY-MM-DD');
-    setEndDate(formattedDate);
 
-    ApiCall();
+    setEndDateValue(formattedDate);
+    if (formattedDate) {
+      ApiCall();
+    }
     setEndDateError(false);
   };
+  console.log('enddatedata', endDateValue);
 
   const ApiCall = async () => {
     try {
+      console.log('enddatevalue', endDateValue, 'date', date, 'type', bookingType);
       const response = await BookingApi.filter({
         startDate: date,
         type: bookingType,
-        endDate: endDate
+        endDate: endDateValue
       });
       console.log('response', response);
 
@@ -133,7 +137,7 @@ export default function AddBooking() {
   };
 
   const bookingApiCall = (bookingData) => {
-    if (date && startTime && endTime && endDate) {
+    if (date && startTime && endTime && endDateValue) {
       setBookingModalOpen(true);
       const booking = async () => {
         try {
@@ -164,7 +168,9 @@ export default function AddBooking() {
       setIsModalOpen(false);
       setSuccesstoast('');
       setToast('');
-      setEndDate('');
+      setEndDateValue('');
+      setEndError(false);
+      setStartError(false);
     }
   };
 
@@ -180,9 +186,9 @@ export default function AddBooking() {
         endTime: parseInt(endTime),
         user: userData.id,
         startDate: date,
-        endDate: endDate,
-        court: selectedNumber
-        // amount: bulkAmount property amount should not be exist
+        endDate: endDateValue,
+        court: selectedNumber,
+        amount: bulkAmount
       });
     } else {
       await paymentMethod();
@@ -217,10 +223,10 @@ export default function AddBooking() {
             endTime: parseInt(endTime),
             user: userData.id,
             startDate: date,
-            endDate: endDate,
+            endDate: endDateValue,
             bookingId: response.razorpay_payment_id,
-            court: selectedNumber
-            // amount: bulkAmount
+            court: selectedNumber,
+            amount: bulkAmount
           });
         },
         prefill: {
@@ -260,7 +266,7 @@ export default function AddBooking() {
 
   const handleDialogEndTimeChange = (newValue) => {
     const end = newValue.$d;
-    const joinDateandTime = DateUtils.joinDate(new Date(endDate), new Date(end));
+    const joinDateandTime = DateUtils.joinDate(new Date(endDateValue), new Date(end));
     const milliseconds = joinDateandTime.valueOf();
     setEndTime(milliseconds || 0);
   };
@@ -270,7 +276,6 @@ export default function AddBooking() {
     const formattedTime = date.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit', hour12: true });
     return formattedTime;
   };
-  console.log('date', endDate);
 
   useEffect(() => {
     const clearLocalStorage = () => {
@@ -287,16 +292,23 @@ export default function AddBooking() {
     if (!date) {
       setDateError(true);
     }
-    if (!endDate) {
+    if (!endDateValue) {
       setEndDateError(true);
     }
     if (!bookingType) {
       setBookingTypeError(true);
     }
+    if (!startTime) {
+      setStartError(true);
+    }
 
-    if (date && endDate && bookingType) {
+    if (!endTime) {
+      setEndError(true);
+    }
+
+    if (date && endDateValue && bookingType && startTime && endTime) {
       setBookingModalOpen(true);
-      isDurationGreaterThanOneMonth(date, endDate);
+      isDurationGreaterThanOneMonth(date, endDateValue);
     }
   };
   const handleCloseModal = () => {
@@ -419,7 +431,7 @@ export default function AddBooking() {
             </Grid>
             <Grid item md={3}>
               <CustomDatePicker
-                date={endDate}
+                date={endDateValue}
                 setDate={handleEndDateChange}
                 error={enddateError}
                 label={'End Date'}
@@ -432,6 +444,8 @@ export default function AddBooking() {
                 label="Start Time"
                 value={!startTime ? '' : DateUtils.formatMillisecondsToTimeConvert(startTime)}
                 onClick={handleTimeModal}
+                error={!startTime ? startError : false}
+                errorText="Please Enter a valid start time"
               />
             </Grid>
             <Grid item md={3}>
@@ -439,6 +453,8 @@ export default function AddBooking() {
                 label="End Time"
                 value={!endTime ? '' : DateUtils.formatMillisecondsToTimeConvert(endTime)}
                 onClick={handleTimeModal}
+                error={!endTime ? endError : false}
+                errorText="Please Enter a valid end time"
               />
             </Grid>
             <TimeSlotModal

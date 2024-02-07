@@ -33,7 +33,14 @@ export default function BookingModal({ onChange, value, isOpen, onClose, onSubmi
             </IconButton>
           </Stack>
           <Stack direction="column" spacing={3}>
-            <CustomTextField label={label} value={value} setValue={onChange} error={error} type="number" />
+            <CustomTextField
+              label={label}
+              value={value}
+              setValue={onChange}
+              error={error}
+              type="number"
+              errorText="please Enter a valid Amount"
+            />
             <FormGroup>
               <FormControlLabel control={<Checkbox checked={refund} onChange={handleRefundChange} />} label="Is refund" />
             </FormGroup>

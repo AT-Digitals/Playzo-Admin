@@ -63,6 +63,7 @@ export default function UpdateAmountModal({ onSubmit, onClose, isOpen, editedDat
                   setValue={(e) => setEditedData({ ...editedData, bookingAmount: e.target.value })}
                   error={error}
                   type="number"
+                  errorText="please Enter a valid Amount"
                 />
               </Grid>
               <Grid item md={12}>
