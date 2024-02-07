@@ -149,10 +149,10 @@ export default function BookingListPage() {
           setCount(data.length);
           setData(data);
         });
-        let a = filterData;
-        a.page = page + 1;
-        a.limit = rowsPerPage;
-        const res1 = await BookingApi.filterPage(a).then((data) => {
+        const filter = { ...filterData };
+        filter.page = page + 1;
+        filter.limit = rowsPerPage;
+        const res1 = await BookingApi.filterPage(filter).then((data) => {
           setFilteredData(data);
         });
       } else {

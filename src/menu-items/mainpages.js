@@ -44,7 +44,8 @@ const mainpages = {
   id: 'pages',
   title: 'Pages',
   type: 'group',
-  children: userData.accessType === AccessType.READ ? mainRead : mainAll
+  // children: userData.accessType === AccessType.READ ? mainRead : mainAll
+  children: mainAll
 };
 
 export default mainpages;

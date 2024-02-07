@@ -58,7 +58,8 @@ const bookingpages = {
   id: 'bookings',
   title: 'Bookings',
   type: 'group',
-  children: userData.accessType === AccessType.READ ? bookingRead : bookingAll
+  // children: userData.accessType === AccessType.READ ? bookingRead : bookingAll
+  children: bookingAll
 };
 
 export default bookingpages;

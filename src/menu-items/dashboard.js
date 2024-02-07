@@ -43,7 +43,8 @@ const dashboard = {
   id: 'group-dashboard',
   title: 'Navigation',
   type: 'group',
-  children: userData.accessType === AccessType.ALL ? dashboardAll : dashboardRead
+  // children: userData.accessType === AccessType.ALL ? dashboardAll : dashboardRead
+  children: dashboardAll
 };
 
 export default dashboard;
