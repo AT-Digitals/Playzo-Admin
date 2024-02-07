@@ -16,14 +16,23 @@ const style = {
   p: 4
 };
 
-export default function TimeSlotModal({ onChange, onSelect, isOpen, onClose, shouldDisableTime, shouldDisableEndTime }) {
+export default function TimeSlotModal({
+  startValue,
+  endValue,
+  onChange,
+  onSelect,
+  isOpen,
+  onClose,
+  shouldDisableTime,
+  shouldDisableEndTime
+}) {
   return (
     <div>
       <Modal open={isOpen} onClose={onClose} aria-labelledby="modal-modal-title" aria-describedby="modal-modal-description">
         <Box sx={style}>
           <Stack direction="row" spacing={2}>
-            <StartTimeComponent onChange={onChange} shouldDisableTime={shouldDisableTime} label="Start Time" />
-            <StartTimeComponent onChange={onSelect} shouldDisableTime={shouldDisableEndTime} label="End Time" />
+            <StartTimeComponent data={startValue} onChange={onChange} shouldDisableTime={shouldDisableTime} label="Start Time" />
+            <StartTimeComponent data={endValue} onChange={onSelect} shouldDisableTime={shouldDisableEndTime} label="End Time" />
           </Stack>
           <Button variant="outlined" onClick={onClose} sx={{ width: '100%', marginTop: '30px' }}>
             Book Slots

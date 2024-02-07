@@ -58,6 +58,11 @@ export default function BookingListPage() {
   const [payError, setPayError] = useState(false);
   const [editableRowIndex, setEditableRowIndex] = useState(null);
   const [updateToast, setUpdateToast] = useState('');
+  const [refundCheck, setRefundCheck] = useState(false);
+
+  const handleRefundChange = (event) => {
+    setRefundCheck(event.target.checked);
+  };
 
   const handleButtonClick = async () => {
     setFilteredData(data);
@@ -296,7 +301,8 @@ export default function BookingListPage() {
     { id: 'No', label: 'No' },
     //{ id: 'id', label: 'Id' },
     { id: 'user', label: 'User Name' },
-    { id: 'type', label: 'Type' },
+    { id: 'type', label: 'Services' },
+    { id: 'court', label: 'Service Type' },
     { id: 'startDate', label: 'Start Date' },
     { id: 'endDate', label: 'End Date' },
     { id: 'startTime', label: 'Start Time' },
@@ -327,7 +333,8 @@ export default function BookingListPage() {
     const idToUpdate = filteredData[editableRowIndex].id;
     const value = {
       amount: payAmount,
-      id: idToUpdate
+      id: idToUpdate,
+      refund: refundCheck
     };
     try {
       const res = await BookingApi.updateAmount(value.id, {
@@ -336,6 +343,7 @@ export default function BookingListPage() {
           cash: value.amount,
           total: value.amount
         }
+        // isRefund: value.refund
       });
       setUpdateToast('Your Amount is updated successfully!');
     } catch (error) {
@@ -418,23 +426,35 @@ export default function BookingListPage() {
             <Grid item md={3}>
               <DropDownComponent label="Select Day" value={selectData} onChange={handleDataChange} options={Data} />
             </Grid>
-            {isApplyMode ? (
-              <Grid item md={3}>
-                <Button variant="outlined" onClick={applyFilters}>
-                  Apply
+
+            <Grid item md={5}>
+              <Stack direction="row" spacing={2} mt={4.5}>
+                {isApplyMode ? (
+                  <Button
+                    variant="outlined"
+                    onClick={applyFilters}
+                    sx={{ padding: '7px 15px', width: '150px', fontWeight: 600, fontSize: '15px' }}
+                  >
+                    Apply
+                  </Button>
+                ) : (
+                  <Button
+                    variant="outlined"
+                    onClick={handleButtonClick}
+                    sx={{ padding: '7px 15px', width: '150px', fontWeight: 600, fontSize: '15px' }}
+                  >
+                    Clear
+                  </Button>
+                )}
+
+                <Button
+                  variant="outlined"
+                  onClick={handleDownload}
+                  sx={{ padding: '7px 15px', width: '150px', fontWeight: 600, fontSize: '15px' }}
+                >
+                  Download
                 </Button>
-              </Grid>
-            ) : (
-              <Grid item md={3}>
-                <Button variant="outlined" onClick={handleButtonClick}>
-                  Clear
-                </Button>
-              </Grid>
-            )}
-            <Grid item md={3}>
-              <Button variant="outlined" onClick={handleDownload}>
-                Download
-              </Button>
+              </Stack>
             </Grid>
           </Grid>
         </Stack>
@@ -457,6 +477,8 @@ export default function BookingListPage() {
           UpdateChange={UpdateChange}
           error={payError}
           editableRowIndex={editableRowIndex}
+          handleRefundChange={handleRefundChange}
+          refund={refundCheck}
         />
       </MainCard>
     </>

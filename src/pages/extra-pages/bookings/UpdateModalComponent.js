@@ -7,6 +7,9 @@ import Button from '@mui/material/Button';
 import CloseIcon from '@mui/icons-material/Close';
 import Modal from '@mui/material/Modal';
 import CustomTextField from './bookingComponents/CustomTextField';
+import FormGroup from '@mui/material/FormGroup';
+import FormControlLabel from '@mui/material/FormControlLabel';
+import Checkbox from '@mui/material/Checkbox';
 
 const style = {
   position: 'absolute',
@@ -19,7 +22,7 @@ const style = {
   p: 4
 };
 
-export default function BookingModal({ onChange, value, isOpen, onClose, onSubmit, label, error }) {
+export default function BookingModal({ onChange, value, isOpen, onClose, onSubmit, label, error, refund, handleRefundChange }) {
   return (
     <div>
       <Modal open={isOpen} onClose={onClose} aria-labelledby="modal-modal-title" aria-describedby="modal-modal-description">
@@ -31,6 +34,9 @@ export default function BookingModal({ onChange, value, isOpen, onClose, onSubmi
           </Stack>
           <Stack direction="column" spacing={3}>
             <CustomTextField label={label} value={value} setValue={onChange} error={error} type="number" />
+            <FormGroup>
+              <FormControlLabel control={<Checkbox checked={refund} onChange={handleRefundChange} />} label="Is refund" />
+            </FormGroup>
             <Stack direction="row" spacing={2}>
               <Button variant="outlined" onClick={onSubmit} sx={{ width: '100%' }}>
                 Update

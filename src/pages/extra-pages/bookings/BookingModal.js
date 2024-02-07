@@ -46,7 +46,7 @@ export default function BookingModal({ onChange, value, isOpen, onClose, onSubmi
                 </RadioGroup>
               </FormControl>
             </Stack>
-            {show && <CustomTextField label={label} value={value1} onChange={setValue} error={error} />}
+            {show && <CustomTextField label={label} value={value1} setValue={setValue} error={error} />}
             <Button variant="outlined" onClick={onSubmit} sx={{ width: '100%' }}>
               Next
             </Button>
