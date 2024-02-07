@@ -340,10 +340,11 @@ export default function BookingListPage() {
       const res = await BookingApi.updateAmount(value.id, {
         bookingAmount: {
           online: 0,
-          cash: value.amount,
-          total: value.amount
-        }
-        // isRefund: value.refund
+          cash: value.refund ? 0 : value.amount,
+          total: value.refund ? 0 : value.amount,
+          refund: value.refund ? value.amount : 0
+        },
+        isRefund: value.refund
       });
       setUpdateToast('Your Amount is updated successfully!');
     } catch (error) {
