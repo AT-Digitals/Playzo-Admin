@@ -33,6 +33,18 @@ export default class DateUtils {
     return formattedTime;
   };
 
+  static formatMillisecondsToTimeConvert = (ms: moment.MomentInput) => {
+    if (ms === null) {
+      return '';
+    }
+    const formattedTime = moment(ms).format('hh:mm A');
+    return formattedTime;
+  };
+
+  static joinDate(date: Date, time: Date) {
+    return new Date(date.getFullYear(), date.getMonth(), date.getDate(), time.getHours(), time.getMinutes(), 0);
+  }
+
   static convertTo24HourFormat = (time12h: moment.MomentInput) => {
     const time24h = moment(time12h, 'hh:mm:ss a').format('HH:mm');
 

@@ -1,4 +1,4 @@
-import { Button, Stack, Grid } from '@mui/material';
+import { Button, Stack, Grid, TextField, Typography } from '@mui/material';
 import { useEffect, useState } from 'react';
 import { useLocation } from 'react-router-dom';
 
@@ -38,13 +38,11 @@ export default function AddBooking() {
   const [endError, setEndError] = useState('');
   const [showTextField, setShowTextField] = useState(false);
 
-  const [initalTime, setInitalTime] = useState('');
-  const [initalEnd, setInitalEnd] = useState('');
   const [successtoast, setSuccesstoast] = useState('');
   const [paymentType, setPaymentType] = useState(PaymentType.Cash);
   const [bookingModalOpen, setBookingModalOpen] = useState(false);
   const [selectedNumber, setSelectedNumber] = useState('');
-  const [amount, setAmount] = useState('');
+  const [bulkAmount, setBulkAmount] = useState(0);
   const user = localStorage.getItem('user');
   const userData = JSON.parse(user);
   const bookingObject = localStorage.getItem('bookingData');
@@ -64,7 +62,7 @@ export default function AddBooking() {
   };
 
   const handleAmountChange = (event) => {
-    setAmount(event.target.value);
+    setBulkAmount(event.target.value);
   };
 
   const handleChange = (event) => {
@@ -87,46 +85,50 @@ export default function AddBooking() {
     const formattedDate = parsedDate.format('YYYY-MM-DD');
     setDate(formattedDate);
     setDateError(false);
+
+    if (endDate && new Date(endDate) < new Date(formattedDate)) {
+      setIsModalOpen(false);
+      setEndDate('');
+    }
   };
   const handleEndDateChange = (newValue) => {
     let enddatedata = newValue.$d;
     const parsedDate = moment(enddatedata);
     const formattedDate = parsedDate.format('YYYY-MM-DD');
     setEndDate(formattedDate);
-    const ApiCall = async () => {
-      try {
-        const response = await BookingApi.filter({
-          startDate: date,
-          type: bookingType,
-          endDate: formattedDate
-        });
-        console.log('response', response);
 
-        const newArray = bookingDetails ? [...response, ...bookingDetails] : response;
-        console.log('new', newArray);
-
-        setDisableData(newArray);
-        setIsModalOpen(true);
-      } catch (error) {
-        console.error('Error:', error.message);
-      }
-    };
     ApiCall();
     setEndDateError(false);
   };
 
-  const LocalStorageSaveHandler = (bookingData) => {
-    const bookingFilterArray = getStoredBookingData();
-    if (bookingData) {
-      bookingFilterArray.push(bookingData);
+  const ApiCall = async () => {
+    try {
+      const response = await BookingApi.filter({
+        startDate: date,
+        type: bookingType,
+        endDate: endDate
+      });
+      console.log('response', response);
+
+      const newArray = bookingDetails ? [...response, ...bookingDetails] : response;
+      console.log('new', newArray);
+
+      setDisableData(newArray);
+      setIsModalOpen(true);
+    } catch (error) {
+      console.error('Error:', error.message);
     }
-    localStorage.setItem('bookingData', JSON.stringify(bookingFilterArray));
-    setDisableData(bookingFilterArray);
   };
 
-  const getStoredBookingData = () => {
-    const storedData = JSON.parse(localStorage.getItem('bookingData') || '[]');
-    return storedData;
+  const LocalStorageSaveHandler = (bookingData) => {
+    let bookingFilterArray = [];
+    bookingFilterArray = JSON.parse(localStorage.getItem('bookingData') || '[]');
+    // if (bookingData) {
+    bookingFilterArray.push(bookingData);
+    // }
+    console.log('booking filter', bookingFilterArray);
+    localStorage.setItem('bookingData', JSON.stringify(bookingFilterArray));
+    setDisableData(bookingFilterArray);
   };
 
   const bookingApiCall = (bookingData) => {
@@ -142,10 +144,13 @@ export default function AddBooking() {
           setSuccesstoast('Your Booking is added.');
           setBookingModalOpen(false);
         } catch (error) {
-          if (error.message) {
+          if (error.message === 'Please choose another date and slot') {
             LocalStorageSaveHandler(bookingData);
             setToast(error.message);
+          } else {
+            setToast(error.message);
           }
+
           setIsModalOpen(false);
           setBookingModalOpen(false);
         }
@@ -158,8 +163,6 @@ export default function AddBooking() {
       setIsModalOpen(false);
       setSuccesstoast('');
       setToast('');
-      setInitalTime('');
-      setInitalEnd('');
       setEndDate('');
     }
   };
@@ -178,6 +181,7 @@ export default function AddBooking() {
         startDate: date,
         endDate: endDate,
         court: selectedNumber
+        // amount: bulkAmount property amount should not be exist
       });
     } else {
       await paymentMethod();
@@ -215,6 +219,7 @@ export default function AddBooking() {
             endDate: endDate,
             bookingId: response.razorpay_payment_id,
             court: selectedNumber
+            // amount: bulkAmount
           });
         },
         prefill: {
@@ -247,36 +252,16 @@ export default function AddBooking() {
 
   const handleDialogTimeChange = (newValue) => {
     const start = newValue.$d;
-    const startwithTime = moment(start);
-    const milliseconds = startwithTime.valueOf();
+    const joinDateandTime = DateUtils.joinDate(new Date(date), new Date(start));
+    const milliseconds = joinDateandTime.valueOf();
     setStartTime(milliseconds || 0);
-    setInitalTime(formatTime(startwithTime));
   };
 
   const handleDialogEndTimeChange = (newValue) => {
     const end = newValue.$d;
-    const EndwithTime = moment(end);
-    const milliseconds = EndwithTime.valueOf();
+    const joinDateandTime = DateUtils.joinDate(new Date(endDate), new Date(end));
+    const milliseconds = joinDateandTime.valueOf();
     setEndTime(milliseconds || 0);
-    setInitalEnd(formatTime(EndwithTime));
-  };
-
-  const TextFieldChange = (event) => {
-    const editedTimeString = event.target.value;
-    setInitalTime(editedTimeString);
-    const currentDate = new Date();
-    const [hours, minutes, ampm] = editedTimeString.split(/:|\s/);
-    const editedDate = new Date(
-      currentDate.getFullYear(),
-      currentDate.getMonth(),
-      currentDate.getDate(),
-      ampm === 'AM' ? parseInt(hours, 10) : parseInt(hours, 10) + 12,
-      parseInt(minutes, 10)
-    );
-    const editedMilliseconds = editedDate.getTime();
-    setStartTime(editedMilliseconds || 0);
-    isDateComparisonValid();
-    setStartError('');
   };
 
   const formatTime = (milliseconds) => {
@@ -284,13 +269,9 @@ export default function AddBooking() {
     const formattedTime = date.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit', hour12: true });
     return formattedTime;
   };
+  console.log('date', endDate);
 
   useEffect(() => {
-    if (startTime && endTime) {
-      setInitalTime(formatTime(startTime));
-      setInitalEnd(formatTime(endTime));
-    }
-
     const clearLocalStorage = () => {
       localStorage.removeItem('bookingData');
     };
@@ -299,40 +280,6 @@ export default function AddBooking() {
       clearLocalStorage();
     }
   }, [startTime, endTime, location.path]);
-
-  const TextFieldEndChange = (event) => {
-    const editedTimeString = event.target.value;
-    setInitalEnd(editedTimeString);
-    const currentDate = new Date();
-    const [hours, minutes, ampm] = editedTimeString.split(/:|\s/);
-    const editedDate = new Date(
-      currentDate.getFullYear(),
-      currentDate.getMonth(),
-      currentDate.getDate(),
-      ampm === 'AM' ? parseInt(hours, 10) : parseInt(hours, 10) + 12,
-      parseInt(minutes, 10)
-    );
-    const editedMilliseconds = editedDate.getTime();
-    setEndTime(editedMilliseconds || 0);
-    isDateComparisonValid();
-    setEndError('');
-  };
-
-  const isDateComparisonValid = () => {
-    const currentDate = new Date();
-    const date = new Date(currentDate.toDateString() + ' ' + initalTime);
-    const endDate = new Date(currentDate.toDateString() + ' ' + initalEnd);
-
-    if (date >= endDate || endDate <= date) {
-      setStartError('Start time must be less than the end time');
-      setEndError('End time must be greater than the start time');
-      return false;
-    }
-
-    setStartError('');
-    setEndError('');
-    return true;
-  };
 
   const onSubmit = (event) => {
     event.preventDefault();
@@ -346,7 +293,7 @@ export default function AddBooking() {
       setBookingTypeError(true);
     }
 
-    if (date && endDate && bookingType && isDateComparisonValid()) {
+    if (date && endDate && bookingType) {
       setBookingModalOpen(true);
       isDurationGreaterThanOneMonth(date, endDate);
     }
@@ -453,6 +400,11 @@ export default function AddBooking() {
     return durationInDays;
   };
 
+  const handleTimeModal = () => {
+    setIsModalOpen(true);
+    ApiCall();
+  };
+
   return (
     <MainCard title="Add Bookings">
       <form style={{ height: '240px' }}>
@@ -462,7 +414,7 @@ export default function AddBooking() {
               <TypeDropdown label="Booking Type" type={bookingType} onChange={handleChange} error={bookingTypeError} />
             </Grid>
             <Grid item md={3}>
-              <CustomDatePicker date={date} setDate={dateHandler} error={dateError} label={'Start Date'} disablePast={false} />
+              <CustomDatePicker date={date} setDate={dateHandler} error={dateError} label={'Start Date'} disablePast={true} />
             </Grid>
             <Grid item md={3}>
               <CustomDatePicker
@@ -475,11 +427,29 @@ export default function AddBooking() {
               />
             </Grid>
             <Grid item md={3}>
-              <CustomTextField label="Start Time" value={initalTime} setValue={TextFieldChange} error={startError} />
+              <CustomTextField
+                label="Start Time"
+                value={!startTime ? '' : DateUtils.formatMillisecondsToTimeConvert(startTime)}
+                onClick={handleTimeModal}
+              />
             </Grid>
             <Grid item md={3}>
-              <CustomTextField label="End Time" value={initalEnd} setValue={TextFieldEndChange} error={endError} />
+              <CustomTextField
+                label="End Time"
+                value={!endTime ? '' : DateUtils.formatMillisecondsToTimeConvert(endTime)}
+                onClick={handleTimeModal}
+              />
             </Grid>
+            <TimeSlotModal
+              isOpen={isModalOpen}
+              onClose={handleCloseModal}
+              onChange={handleDialogTimeChange}
+              onSelect={handleDialogEndTimeChange}
+              shouldDisableTime={shouldDisableStartTime}
+              shouldDisableEndTime={shouldDisableTime}
+              startValue={startTime}
+              endValue={endTime}
+            />
             <Grid item md={3}>
               <DropDownComponent
                 value={selectedNumber || ''}
@@ -506,6 +476,8 @@ export default function AddBooking() {
             onSelect={handleDialogEndTimeChange}
             shouldDisableTime={shouldDisableStartTime}
             shouldDisableEndTime={shouldDisableTime}
+            startValue={startTime}
+            endValue={endTime}
           />
           <BookingModal
             onChange={handleModalChange}
@@ -514,7 +486,7 @@ export default function AddBooking() {
             onClose={handleClose}
             onSubmit={paymentSubmit}
             label="Enter Amount"
-            value1={amount}
+            value1={bulkAmount}
             setValue={handleAmountChange}
             show={showTextField}
           />

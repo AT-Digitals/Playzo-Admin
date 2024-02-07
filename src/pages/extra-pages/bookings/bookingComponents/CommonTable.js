@@ -28,7 +28,9 @@ const CommonTable = ({
   handleModalChange,
   UpdateChange,
   editableRowIndex,
-  error
+  error,
+  handleRefundChange,
+  refund
 }) => {
   const renderCellContent = (column, rowData, rowIndex) => {
     const { id, label } = column;
@@ -113,6 +115,8 @@ const CommonTable = ({
         label="Enter Payment Amount"
         onSubmit={UpdateChange}
         error={error}
+        handleRefundChange={handleRefundChange}
+        refund={refund}
       />
     </>
   );

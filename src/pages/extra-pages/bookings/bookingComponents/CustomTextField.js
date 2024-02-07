@@ -1,7 +1,7 @@
 import { TextField } from '@mui/material';
 import { Stack, Typography } from '@mui/material';
 
-export default function CustomTextField({ label, value, setValue, error, type }) {
+export default function CustomTextField({ label, value, setValue, error, type, onClick }) {
   return (
     <Stack direction="column" spacing={2}>
       <Typography>{label}</Typography>
@@ -11,6 +11,7 @@ export default function CustomTextField({ label, value, setValue, error, type })
         error={!!error}
         type={type}
         helperText={error === true ? 'Please Enter a valid Amount' : error}
+        onClick={onClick}
       />
     </Stack>
   );
