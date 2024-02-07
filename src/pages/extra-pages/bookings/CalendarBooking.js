@@ -1,14 +1,15 @@
 import 'react-big-calendar/lib/css/react-big-calendar.css';
+
+import { Box, Button, Stack, Typography } from '@mui/material';
 import React, { useEffect, useState } from 'react';
 
 import BookingApi from 'api/BookingApi';
-import DateUtils from 'utils/DateUtils';
 import CalendarComponent from './CalendarComponent';
-import { Box, Button, Stack, Typography } from '@mui/material';
+import DateUtils from 'utils/DateUtils';
 import FormControl from '@mui/material/FormControl';
+import MainCard from 'components/MainCard';
 import MenuItem from '@mui/material/MenuItem';
 import Select from '@mui/material/Select';
-import MainCard from 'components/MainCard';
 
 const CalendarBooking = () => {
   const [data, setData] = useState([]);
@@ -147,7 +148,7 @@ const CalendarBooking = () => {
                 <MenuItem value="boardGame">Board Game</MenuItem>
                 <MenuItem value="playstation">Play Station</MenuItem>
                 <MenuItem value="cricketNet">Cricket Net</MenuItem>
-                <MenuItem value="ballMachine">Ball Machine</MenuItem>
+                <MenuItem value="bowlingMachine">Bowling Machine</MenuItem>
                 <MenuItem value="badminton">Badminton</MenuItem>
               </Select>
             </FormControl>

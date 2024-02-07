@@ -3,6 +3,6 @@ export enum BookingType {
   BoardGame = 'boardGame',
   Playstaion = 'playstation',
   CricketNet = 'cricketNet',
-  BallMachine = 'ballMachine',
+  BowlingMachine = 'bowlingMachine',
   Badminton = 'badminton'
 }

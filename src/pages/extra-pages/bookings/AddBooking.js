@@ -1,13 +1,15 @@
-import { Button, Stack, Grid } from '@mui/material';
+import { Badminton, BoardGame, BookingLength, BowlingMachine, CricketNet, Playstaion, Turf } from './BookingLength';
+import { Button, Grid, Stack } from '@mui/material';
 import { useEffect, useState } from 'react';
-import { useLocation } from 'react-router-dom';
 
 import BookingApi from 'api/BookingApi';
 import BookingModal from './BookingModal';
+import { BookingSubTypes } from './BookingSubTypes';
 import CalendarComponent from './CalendarComponent';
 import CustomDatePicker from './bookingComponents/CustomDatePicker';
 import CustomTextField from './bookingComponents/CustomTextField';
 import DateUtils from 'utils/DateUtils';
+import DropDownComponent from '../DropDownComponent';
 import MainCard from 'components/MainCard';
 import NotificationSuccessToast from 'pages/components-overview/NotificationSuccessToast';
 import NotificationToast from '../../components-overview/NotificationToast';
@@ -17,8 +19,7 @@ import TimeSlotModal from './bookingComponents/TimeSlotModal';
 import TypeDropdown from './bookingComponents/TypeDropdown';
 import dayjs from 'dayjs';
 import moment from 'moment';
-import DropDownComponent from '../DropDownComponent';
-import { BookingLength } from './BookingLength';
+import { useLocation } from 'react-router-dom';
 
 export default function AddBooking() {
   const [date, setDate] = useState('');
@@ -77,7 +78,7 @@ export default function AddBooking() {
     const length = BookingLength[Type] || 0;
     return Array.from({ length }, (_, index) => ({
       value: (index + 1).toString(),
-      label: (index + 1).toString()
+      label: BookingSubTypes[Type][index + 1]
     }));
   };
 

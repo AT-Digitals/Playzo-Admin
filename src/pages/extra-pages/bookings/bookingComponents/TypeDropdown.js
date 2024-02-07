@@ -17,7 +17,7 @@ export default function TypeDropdown({ type, onChange, label, error }) {
           <MenuItem value="boardGame">Board Game</MenuItem>
           <MenuItem value="playstation">Play Station</MenuItem>
           <MenuItem value="cricketNet">Cricket Net</MenuItem>
-          <MenuItem value="ballMachine">Ball Machine</MenuItem>
+          <MenuItem value="bowlingMachine">Bowling Machine</MenuItem>
           <MenuItem value="badminton">Badminton</MenuItem>
         </Select>
         {error ? <FormHelperText error>Please select a type</FormHelperText> : <></>}

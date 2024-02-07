@@ -1,16 +1,15 @@
 import * as React from 'react';
 
-import { IconButton, Stack, Typography, Select, Grid } from '@mui/material';
+import { Grid, IconButton, Select, Stack, Typography } from '@mui/material';
 
 import Box from '@mui/material/Box';
 import Button from '@mui/material/Button';
 import CloseIcon from '@mui/icons-material/Close';
-import Modal from '@mui/material/Modal';
 import CustomTextField from '../extra-pages/bookings/bookingComponents/CustomTextField';
 import DropDownComponent from 'pages/extra-pages/DropDownComponent';
-import MenuItem from '@mui/material/MenuItem';
-
 import FormControl from '@mui/material/FormControl';
+import MenuItem from '@mui/material/MenuItem';
+import Modal from '@mui/material/Modal';
 
 const style = {
   position: 'absolute',
@@ -51,7 +50,7 @@ export default function UpdateAmountModal({ onSubmit, onClose, isOpen, editedDat
                       <MenuItem value="boardGame">Board Game</MenuItem>
                       <MenuItem value="playstation">Play Station</MenuItem>
                       <MenuItem value="cricketNet">Cricket Net</MenuItem>
-                      <MenuItem value="ballMachine">Ball Machine</MenuItem>
+                      <MenuItem value="bowlingMachine">Bowling Machine</MenuItem>
                       <MenuItem value="badminton">Badminton</MenuItem>
                     </Select>
                   </FormControl>
