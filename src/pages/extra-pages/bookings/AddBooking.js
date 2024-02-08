@@ -4,7 +4,6 @@ import { useEffect, useState } from 'react';
 import BookingApi from 'api/BookingApi';
 import BookingModal from './BookingModal';
 import { BookingSubTypes } from './BookingSubTypes';
-import CalendarComponent from './CalendarComponent';
 import CustomDatePicker from './bookingComponents/CustomDatePicker';
 import CustomTextField from './bookingComponents/CustomTextField';
 import DateUtils from 'utils/DateUtils';
@@ -18,7 +17,6 @@ import TimeSlotModal from './bookingComponents/TimeSlotModal';
 import TypeDropdown from './bookingComponents/TypeDropdown';
 import dayjs from 'dayjs';
 import moment from 'moment';
-import { useLocation } from 'react-router-dom';
 import { BookingLength } from './BookingLength';
 
 export default function AddBooking() {
@@ -48,7 +46,6 @@ export default function AddBooking() {
   const userData = JSON.parse(user);
   const bookingObject = localStorage.getItem('bookingData');
   const bookingDetails = JSON.parse(bookingObject);
-  const location = useLocation();
 
   const handleModalChange = (event) => {
     setPaymentType(event.target.value);
@@ -281,7 +278,7 @@ export default function AddBooking() {
     return () => {
       clearLocalStorage()
     };
-  }, [startTime, endTime, location.path]);
+  }, [startTime, endTime]);
 
   const onSubmit = (event) => {
     event.preventDefault();
