@@ -95,21 +95,23 @@ export default function AddBooking() {
     const formattedDate = parsedDate.format('YYYY-MM-DD');
 
     setEndDateValue(formattedDate);
-    if (formattedDate) {
-      ApiCall();
-    }
+    ApiCall(formattedDate);
     setEndDateError(false);
   };
 
-  const ApiCall = async () => {
+  const ApiCall = async (endData) => {
     try {
       const response = await BookingApi.filter({
         startDate: date,
         type: bookingType,
-        endDate: endDateValue
+        endDate: endData
       });
-      const newArray = bookingDetails ? [...response, ...bookingDetails] : response;
-      setDisableData(newArray);
+      // console.log('response', response);
+      // console.log('bookingdetails123', bookingDetails);
+      // const newArray = bookingDetails ? [...response, ...bookingDetails] : response;
+      // console.log('newarray', newArray, 'response');
+      // setDisableData(newArray);
+      setDisableData(response);
       setIsModalOpen(true);
     } catch (error) {
       console.error('Error:', error.message);
@@ -117,12 +119,15 @@ export default function AddBooking() {
   };
 
   const LocalStorageSaveHandler = (bookingData) => {
-    let bookingFilterArray = [];
-    bookingFilterArray = JSON.parse(localStorage.getItem('bookingData') || '[]');
-    bookingFilterArray.push(bookingData);
-    console.log('booking filter', bookingFilterArray);
-    localStorage.setItem('bookingData', JSON.stringify(bookingFilterArray));
-    setDisableData(bookingFilterArray);
+    let bookData = JSON.parse(localStorage.getItem('bookingData') || '[]');
+
+    if (bookData.length === 0) {
+      bookData.push(bookingData);
+    } else {
+      bookData = [...bookData, bookingData];
+    }
+    localStorage.setItem('bookingData', JSON.stringify(bookData));
+    //setDisableData(bookData);
   };
 
   const bookingApiCall = (bookingData) => {
@@ -137,10 +142,27 @@ export default function AddBooking() {
           setIsModalOpen(false);
           setSuccesstoast('Your Booking is added.');
           setBookingModalOpen(false);
+          setDate('');
+          setStartTime('');
+          setEndTime('');
+          setBookingType('');
+          setToast('');
+          setEndDateValue('');
+          setEndError(false);
+          setStartError(false);
         } catch (error) {
           if (error.message === 'Please choose another date and slot') {
             LocalStorageSaveHandler(bookingData);
             setToast(error.message);
+            setDate('');
+            setStartTime('');
+            setEndTime('');
+            setBookingType('');
+            setIsModalOpen(false);
+            setSuccesstoast('');
+            setEndDateValue('');
+            setEndError(false);
+            setStartError(false);
           } else {
             setToast(error.message);
           }
@@ -150,16 +172,8 @@ export default function AddBooking() {
         }
       };
       booking();
-      setDate('');
-      setStartTime('');
-      setEndTime('');
-      setBookingType('');
-      setIsModalOpen(false);
       setSuccesstoast('');
       setToast('');
-      setEndDateValue('');
-      setEndError(false);
-      setStartError(false);
     }
   };
 
@@ -276,9 +290,9 @@ export default function AddBooking() {
     };
 
     return () => {
-      clearLocalStorage()
+      clearLocalStorage();
     };
-  }, [startTime, endTime]);
+  }, []);
 
   const onSubmit = (event) => {
     event.preventDefault();
@@ -408,7 +422,7 @@ export default function AddBooking() {
 
   const handleTimeModal = () => {
     setIsModalOpen(true);
-    ApiCall();
+    ApiCall(endDateValue);
   };
 
   return (

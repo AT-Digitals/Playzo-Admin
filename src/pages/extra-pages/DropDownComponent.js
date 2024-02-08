@@ -5,12 +5,19 @@ import Select from '@mui/material/Select';
 import { Typography, Stack } from '@mui/material';
 import FormHelperText from '@mui/material/FormHelperText';
 
-export default function DropDownComponent({ label, options, value, onChange, error, name }) {
+export default function DropDownComponent({ label, options, value, onChange, error, name, disabled }) {
   return (
     <Stack direction="column" spacing={2}>
       <Typography>{label}</Typography>
       <FormControl fullWidth>
-        <Select labelId="demo-simple-select-label" id="demo-simple-select" value={value} onChange={onChange} name={name}>
+        <Select
+          labelId="demo-simple-select-label"
+          id="demo-simple-select"
+          value={value}
+          onChange={onChange}
+          name={name}
+          disabled={disabled}
+        >
           {options.map((item) => (
             <MenuItem key={item.value} value={item.value}>
               {item.label}
