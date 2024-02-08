@@ -30,7 +30,7 @@ export default function AddBooking() {
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [disableData, setDisableData] = useState([]);
 
-  const [enddateError, setendDateError] = useState(false);
+  const [endDateError, setEndDateError] = useState(false);
 
   const [bookingType, setBookingType] = useState('');
   const [toast, setToast] = useState('');
@@ -101,7 +101,7 @@ export default function AddBooking() {
     if (formattedDate) {
       ApiCall();
     }
-    setendDateError(false);
+    setEndDateError(false);
   };
 
   const ApiCall = async () => {
@@ -289,7 +289,7 @@ export default function AddBooking() {
       setDateError(true);
     }
     if (!endDateValue) {
-      setendDateError(true);
+      setEndDateError(true);
     }
     if (!bookingType) {
       setBookingTypeError(true);
@@ -429,7 +429,7 @@ export default function AddBooking() {
               <CustomDatePicker
                 date={endDateValue}
                 setDate={handleEndDateChange}
-                error={enddateError}
+                error={endDateError}
                 label={'End Date'}
                 disablePast={false}
                 shouldDisableDate={shouldDisableDate}
