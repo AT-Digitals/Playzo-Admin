@@ -6,6 +6,7 @@ import CustomDatePicker from '../bookings/bookingComponents/CustomDatePicker';
 import DateUtils from 'utils/DateUtils';
 import EnquiryApi from 'api/EnquiryApi';
 import MainCard from 'components/MainCard';
+import TableList from 'pages/common/TableList';
 import dayjs from 'dayjs';
 import moment from 'moment';
 
@@ -33,13 +34,23 @@ export default function EnquiriesPage() {
 
   const [startDateError, setStartDateError] = useState('');
   const [endDateError, setEndDateError] = useState(false);
+  const [filteredData, setFilteredData] = useState([]);
 
-  const handleButtonClick = () => {
+  const handleButtonClick = async () => {
+    setFilteredData(data);
     setIsApplyMode(true);
     setStartDate('');
     setEndDate('');
     setButtonDisable(false);
     setBool(false);
+    const res = await EnquiryApi.getAll({}).then((data) => {
+      setCount(data.length);
+      setData(data);
+    });
+    const res1 = await EnquiryApi.getAllPaging({ page: page + 1, limit: rowsPerPage }).then((data) => {
+      setFilteredData(data);
+    });
+    setPage(0);
   };
 
   const handleChangePage = (_event, newPage) => {
@@ -74,10 +85,10 @@ export default function EnquiriesPage() {
           setCount(data.length);
           setData(data);
         });
-        let a = filterData;
-        a.page = page + 1;
-        a.limit = rowsPerPage;
-        const res1 = await EnquiryApi.filterDateEnquiry(a).then((data) => {
+        let filter = filterData;
+        filter.page = page + 1;
+        filter.limit = rowsPerPage;
+        const res1 = await EnquiryApi.filterDateEnquiry(filter).then((data) => {
           setFilteredData(data);
         });
       } else {
@@ -215,15 +226,16 @@ export default function EnquiriesPage() {
             </Button>
           )}
         </Stack>
-        <CommonTable
-          columns={columns}
+
+        <TableList
           count={count}
-          data={data}
+          columns={columns}
+          data={filteredData}
           rowsPerPage={rowsPerPage}
           page={page}
+          handleChangePage={handleChangePage}
           handleChangeRowsPerPage={handleChangeRowsPerPage}
-          handleChange={handleChangePage}
-        />
+        ></TableList>
       </Stack>
     </MainCard>
   );
