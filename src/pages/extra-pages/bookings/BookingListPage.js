@@ -1,6 +1,6 @@
 import * as XLSX from 'xlsx';
 
-import { Box, Button, Grid, Stack, Typography } from '@mui/material';
+import { Button, Grid, Stack, Typography } from '@mui/material';
 import { useCallback, useEffect, useState } from 'react';
 
 import { AccessType } from 'pages/authentication/auth-forms/AccessType';
@@ -17,6 +17,7 @@ import Select from '@mui/material/Select';
 import ToggleButtonComponent from './ToggleButtonComponent';
 import dayjs from 'dayjs';
 import moment from 'moment';
+import { BookingSubTypes } from './BookingSubTypes';
 
 const Data = [
   {
@@ -77,11 +78,11 @@ export default function BookingListPage() {
     setBool(false);
     setStartDateError(false);
     setEndDateError(false);
-    const res = await BookingApi.getAll({}).then((data) => {
+    await BookingApi.getAll({}).then((data) => {
       setCount(data.length);
       setData(data);
     });
-    const res1 = await BookingApi.getAllPaging({ page: page + 1, limit: rowsPerPage }).then((data) => {
+    await BookingApi.getAllPaging({ page: page + 1, limit: rowsPerPage }).then((data) => {
       setFilteredData(data);
     });
     setPage(0);
@@ -150,22 +151,22 @@ export default function BookingListPage() {
         if (filterData.type === 'All') {
           filterData.type = '';
         }
-        const res = await BookingApi.filterBook(filterData).then((data) => {
+        await BookingApi.filterBook(filterData).then((data) => {
           setCount(data.length);
           setData(data);
         });
         const filter = { ...filterData };
         filter.page = page + 1;
         filter.limit = rowsPerPage;
-        const res1 = await BookingApi.filterPage(filter).then((data) => {
+        await BookingApi.filterPage(filter).then((data) => {
           setFilteredData(data);
         });
       } else {
-        const res = await BookingApi.getAll({}).then((data) => {
+        await BookingApi.getAll({}).then((data) => {
           setCount(data.length);
           setData(data);
         });
-        const res1 = await BookingApi.getAllPaging({ page: page + 1, limit: rowsPerPage }).then((data) => {
+          await BookingApi.getAllPaging({ page: page + 1, limit: rowsPerPage }).then((data) => {
           setFilteredData(data);
         });
       }
@@ -229,9 +230,7 @@ export default function BookingListPage() {
         dayFilter = DateUtils.formatDate(DateUtils.add(new Date(), 1, 'day'), 'yyyy-MM-DD');
         details.startDate = DateUtils.formatDate(new Date(dayFilter), 'yyyy-MM-DD');
       }
-      console.log('dayFilter', dayFilter);
 
-      console.log('dateFilter', dateFilter);
       if (details.startDate && details.endDate && dateFilter === '' && dayFilter === '') {
         const a = DateUtils.add(new Date(details.endDate), 1, 'day');
         details.endDate = DateUtils.formatDate(new Date(a), 'yyyy-MM-DD');
@@ -243,15 +242,7 @@ export default function BookingListPage() {
         details.startDate = DateUtils.formatDate(new Date(dateFilter), 'yyyy-MM-DD');
       }
 
-      // if(dayFilter!== ''){
-      //   const currentDateValue = DateUtils.add(new Date(), 1, 'day');
-      //   details.endDate = DateUtils.formatDate(new Date(currentDateValue), 'yyyy-MM-DD');
-      //   details.startDate = DateUtils.formatDate(new Date(dateFilter), 'yyyy-MM-DD');
-      // }
-
-      console.log('dateFilter', dateFilter);
       setFilterData(details);
-      console.log('details', details);
       setBool(true);
     } else {
       setBool(false);
@@ -266,14 +257,20 @@ export default function BookingListPage() {
     const wb = XLSX.utils.book_new();
 
     const ModifiedData = data.map((item) => ({
-      ...item,
+      // ...item,
       startTime: DateUtils.formatMillisecondsToTime(item.startTime),
       endTime: DateUtils.formatMillisecondsToTime(item.endTime),
-      startDate: moment(item.startDate).format('YYYY-MM-DD'),
-      endDate: moment(item.endDate).format('YYYY-MM-DD'),
+      startDate: moment(item.startDate).format('DD-MM-YYYY'),
+      endDate: moment(item.endDate).format('DD-MM-YYYY'),
       user: JSON.parse(item.user).name,
       userType: JSON.parse(item.user).userType,
-      email: JSON.parse(item.user).email
+      email: JSON.parse(item.user).email,
+      serviceType: BookingSubTypes[item.type][item.court],
+      dateOfBooking: moment(item.dateOfBooking).format("DD-MM-YYYY"),
+      type: item.type,
+      duration: item.duration,
+      bookingAmount: item.bookingAmount || 0,
+      bookingType: item.bookingtype
     }));
 
     const ws = XLSX.utils.json_to_sheet(ModifiedData);
@@ -337,7 +334,7 @@ export default function BookingListPage() {
       refund: refundCheck
     };
     try {
-      const res = await BookingApi.updateAmount(value.id, {
+      await BookingApi.updateAmount(value.id, {
         bookingAmount: {
           online: 0,
           cash: value.refund ? 0 : value.amount,

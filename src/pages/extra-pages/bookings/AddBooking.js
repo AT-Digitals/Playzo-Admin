@@ -30,7 +30,7 @@ export default function AddBooking() {
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [disableData, setDisableData] = useState([]);
 
-  const [enddateError, setEndDateError] = useState(false);
+  const [enddateError, setendDateError] = useState(false);
 
   const [bookingType, setBookingType] = useState('');
   const [toast, setToast] = useState('');
@@ -101,23 +101,17 @@ export default function AddBooking() {
     if (formattedDate) {
       ApiCall();
     }
-    setEndDateError(false);
+    setendDateError(false);
   };
-  console.log('enddatedata', endDateValue);
 
   const ApiCall = async () => {
     try {
-      console.log('enddatevalue', endDateValue, 'date', date, 'type', bookingType);
       const response = await BookingApi.filter({
         startDate: date,
         type: bookingType,
         endDate: endDateValue
       });
-      console.log('response', response);
-
       const newArray = bookingDetails ? [...response, ...bookingDetails] : response;
-      console.log('new', newArray);
-
       setDisableData(newArray);
       setIsModalOpen(true);
     } catch (error) {
@@ -128,9 +122,7 @@ export default function AddBooking() {
   const LocalStorageSaveHandler = (bookingData) => {
     let bookingFilterArray = [];
     bookingFilterArray = JSON.parse(localStorage.getItem('bookingData') || '[]');
-    // if (bookingData) {
     bookingFilterArray.push(bookingData);
-    // }
     console.log('booking filter', bookingFilterArray);
     localStorage.setItem('bookingData', JSON.stringify(bookingFilterArray));
     setDisableData(bookingFilterArray);
@@ -188,7 +180,9 @@ export default function AddBooking() {
         startDate: date,
         endDate: endDateValue,
         court: selectedNumber,
-        amount: bulkAmount
+        bookingAmount: {
+          cash: bulkAmount
+        }
       });
     } else {
       await paymentMethod();
@@ -226,7 +220,9 @@ export default function AddBooking() {
             endDate: endDateValue,
             bookingId: response.razorpay_payment_id,
             court: selectedNumber,
-            amount: bulkAmount
+            bookingAmount: {
+              cash: bulkAmount
+            }
           });
         },
         prefill: {
@@ -282,9 +278,9 @@ export default function AddBooking() {
       localStorage.removeItem('bookingData');
     };
 
-    if (location.path !== '/addBookings') {
-      clearLocalStorage();
-    }
+    return () => {
+      clearLocalStorage()
+    };
   }, [startTime, endTime, location.path]);
 
   const onSubmit = (event) => {
@@ -293,7 +289,7 @@ export default function AddBooking() {
       setDateError(true);
     }
     if (!endDateValue) {
-      setEndDateError(true);
+      setendDateError(true);
     }
     if (!bookingType) {
       setBookingTypeError(true);

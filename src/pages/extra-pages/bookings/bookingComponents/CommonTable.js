@@ -12,6 +12,7 @@ import { TablePagination } from '@mui/material';
 import TableRow from '@mui/material/TableRow';
 import UpdateModalComponent from '../UpdateModalComponent';
 import moment from 'moment';
+import { BookingSubTypes } from "../BookingSubTypes"
 
 const CommonTable = ({
   columns,
@@ -34,7 +35,6 @@ const CommonTable = ({
 }) => {
   const renderCellContent = (column, rowData, rowIndex) => {
     const { id, label } = column;
-    console.log('rowData', rowData);
 
     if (editableRowIndex === rowIndex) {
       const currentvalue = rowData['id'];
@@ -50,7 +50,7 @@ const CommonTable = ({
       const data = JSON.parse(rowData['user']).email;
       return data;
     } else if (id === 'user' && label === 'User Name') {
-      const data = JSON.parse(rowData[id]).email;
+      const data = JSON.parse(rowData[id]).name;
       return data;
     } else if (id === 'bookingAmount' && label === 'Booking Amount') {
       const data = rowData[id].total;
@@ -64,6 +64,9 @@ const CommonTable = ({
     } else if (id === 'total' && label === 'Total Amount') {
       const data = rowData['bookingAmount'].total;
       return data;
+    } else if(id === "court" && label === "Service Type"){
+      const data = BookingSubTypes[rowData["type"]][rowData["court"]]
+      return data
     } else {
       return rowData[id];
     }
