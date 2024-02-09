@@ -92,6 +92,7 @@ export default function BookingListPage() {
     setMonthType(newValue);
     setStartDateValue('');
     setEndDateValue('');
+    setSelectData('');
   };
 
   const handleChange = (event) => {
@@ -99,6 +100,9 @@ export default function BookingListPage() {
   };
   const handleDataChange = (event) => {
     setSelectData(event.target.value);
+    setMonthType('');
+    setStartDateValue('');
+    setEndDateValue('');
   };
 
   const handlePaymentChange = (event) => {
@@ -135,6 +139,10 @@ export default function BookingListPage() {
     setStartDateValue(formattedDate);
     setStartDateError(false);
     setMonthType('');
+    setSelectData('');
+    if (endDateValue && new Date(endDateValue) < new Date(formattedDate)) {
+      setEndDateValue('');
+    }
   };
   const handleEndDateChange = (newValue) => {
     let enddatedata = newValue.$d;
@@ -143,6 +151,7 @@ export default function BookingListPage() {
     setEndDateValue(formattedDate);
     setEndDateError(false);
     setMonthType('');
+    setSelectData('');
   };
 
   const fetchInfo = useCallback(async () => {
@@ -166,7 +175,7 @@ export default function BookingListPage() {
           setCount(data.length);
           setData(data);
         });
-          await BookingApi.getAllPaging({ page: page + 1, limit: rowsPerPage }).then((data) => {
+        await BookingApi.getAllPaging({ page: page + 1, limit: rowsPerPage }).then((data) => {
           setFilteredData(data);
         });
       }
@@ -256,21 +265,24 @@ export default function BookingListPage() {
   const handleDownload = () => {
     const wb = XLSX.utils.book_new();
 
-    const ModifiedData = data.map((item) => ({
+    const ModifiedData = data.map((item, index) => ({
       // ...item,
-      startTime: DateUtils.formatMillisecondsToTime(item.startTime),
-      endTime: DateUtils.formatMillisecondsToTime(item.endTime),
+      No: index + 1,
+      userName: JSON.parse(item.user).name,
+      service: item.type,
+      serviceType: BookingSubTypes[item.type][item.court],
       startDate: moment(item.startDate).format('DD-MM-YYYY'),
       endDate: moment(item.endDate).format('DD-MM-YYYY'),
-      user: JSON.parse(item.user).name,
+      startTime: DateUtils.formatMillisecondsToTime(item.startTime),
+      endTime: DateUtils.formatMillisecondsToTime(item.endTime),
+      cashPayment: item.cashPayment,
+      onlinePayment: item.onlinePayment,
+      bookingType: item.bookingtype,
       userType: JSON.parse(item.user).userType,
       email: JSON.parse(item.user).email,
-      serviceType: BookingSubTypes[item.type][item.court],
-      dateOfBooking: moment(item.dateOfBooking).format("DD-MM-YYYY"),
-      type: item.type,
+      dateOfBooking: moment(item.dateOfBooking).format('DD-MM-YYYY'),
       duration: item.duration,
-      bookingAmount: item.bookingAmount || 0,
-      bookingType: item.bookingtype
+      bookingAmount: item.bookingAmount || 0
     }));
 
     const ws = XLSX.utils.json_to_sheet(ModifiedData);
@@ -286,12 +298,6 @@ export default function BookingListPage() {
     return dayjs(date).isBefore(dayjs(startDateValue), 'day');
   };
 
-  const shouldDisableStartDate = (date) => {
-    if (!endDateValue) {
-      return false;
-    }
-    return dayjs(date).isAfter(dayjs(endDateValue), 'day');
-  };
   const user = localStorage.getItem('user');
   const userData = JSON.parse(user);
   const columns = [
@@ -350,6 +356,7 @@ export default function BookingListPage() {
     console.log('value', value);
 
     fetchInfo();
+    setRefundCheck('');
   };
 
   return (
@@ -386,7 +393,6 @@ export default function BookingListPage() {
                 setDate={handleStartDateChange}
                 disablePast={false}
                 disableprop={buttonDisable}
-                shouldDisableDate={shouldDisableStartDate}
                 error={startDateError}
               />
             </Grid>
@@ -422,7 +428,13 @@ export default function BookingListPage() {
               <ToggleButtonComponent value={monthType} setValue={buttonhandleChange} disableprop={buttonDisable} />
             </Grid>
             <Grid item md={3}>
-              <DropDownComponent label="Select Day" value={selectData} onChange={handleDataChange} options={Data} />
+              <DropDownComponent
+                label="Select Day"
+                value={selectData}
+                onChange={handleDataChange}
+                options={Data}
+                disabled={(startDateValue && endDateValue) || monthType ? true : buttonDisable}
+              />
             </Grid>
 
             <Grid item md={5}>

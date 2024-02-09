@@ -130,42 +130,46 @@ const CalendarBooking = () => {
   }, []);
 
   return (
-    <MainCard title="Calendar Booking">
-      <Stack direction="row" spacing={2} alignItems="center" justifyContent="space-between" pb={5}>
-        <Box sx={{ width: '150px' }}>
-          <Stack sx={{ minWidth: 200 }} spacing={3}>
-            <Typography>Select Booking Type</Typography>
-            <FormControl fullWidth>
-              <Select
-                labelId="demo-simple-select-label"
-                id="demo-simple-select"
-                value={bookingType}
-                onChange={handleChange}
-                disabled={buttonDisable}
-              >
-                <MenuItem value="All">All</MenuItem>
-                <MenuItem value="turf">Turf</MenuItem>
-                <MenuItem value="boardGame">Board Game</MenuItem>
-                <MenuItem value="playstation">Play Station</MenuItem>
-                <MenuItem value="cricketNet">Cricket Net</MenuItem>
-                <MenuItem value="bowlingMachine">Bowling Machine</MenuItem>
-                <MenuItem value="badminton">Badminton</MenuItem>
-              </Select>
-            </FormControl>
-          </Stack>
-        </Box>
-        {isApplyMode ? (
-          <Button variant="outlined" onClick={applyFilters}>
-            Apply
-          </Button>
-        ) : (
-          <Button variant="outlined" onClick={handleButtonClick}>
-            Clear
-          </Button>
-        )}
-      </Stack>
-      <CalendarComponent data={data} />
-    </MainCard>
+    <Stack direction="column" spacing={3}>
+      <MainCard title="Calendar Booking">
+        <Stack direction="row" spacing={2} alignItems="center" justifyContent="space-between" pb={5}>
+          <Box sx={{ width: '150px' }}>
+            <Stack sx={{ minWidth: 200 }} spacing={3}>
+              <Typography>Select Booking Type</Typography>
+              <FormControl fullWidth>
+                <Select
+                  labelId="demo-simple-select-label"
+                  id="demo-simple-select"
+                  value={bookingType}
+                  onChange={handleChange}
+                  disabled={buttonDisable}
+                >
+                  <MenuItem value="All">All</MenuItem>
+                  <MenuItem value="turf">Turf</MenuItem>
+                  <MenuItem value="boardGame">Board Game</MenuItem>
+                  <MenuItem value="playstation">Play Station</MenuItem>
+                  <MenuItem value="cricketNet">Cricket Net</MenuItem>
+                  <MenuItem value="bowlingMachine">Bowling Machine</MenuItem>
+                  <MenuItem value="badminton">Badminton</MenuItem>
+                </Select>
+              </FormControl>
+            </Stack>
+          </Box>
+          {isApplyMode ? (
+            <Button variant="outlined" onClick={applyFilters}>
+              Apply
+            </Button>
+          ) : (
+            <Button variant="outlined" onClick={handleButtonClick}>
+              Clear
+            </Button>
+          )}
+        </Stack>
+      </MainCard>
+      <MainCard>
+        <CalendarComponent data={data} />
+      </MainCard>
+    </Stack>
   );
 };
 
