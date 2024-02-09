@@ -61,10 +61,7 @@ const AuthLogin = () => {
               password: values.password
             });
             if (response) {
-              await localStorage.setItem('user', JSON.stringify(response));
-              // const user = localStorage.getItem('user');
-              // console.log(user);
-              // const userData = JSON.parse(user);
+              localStorage.setItem('user', JSON.stringify(response));
               navigate('/dashboard/default');
               setStatus({ success: true });
               setSubmitting(true);

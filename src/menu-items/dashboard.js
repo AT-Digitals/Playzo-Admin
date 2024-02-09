@@ -2,8 +2,6 @@
 
 import { DashboardOutlined, UserOutlined, UsergroupAddOutlined } from '@ant-design/icons';
 
-import { AccessType } from 'pages/authentication/auth-forms/AccessType';
-
 // icons
 const icons = {
   DashboardOutlined,
@@ -13,59 +11,91 @@ const icons = {
 
 // ==============================|| MENU ITEMS - DASHBOARD ||============================== //
 
-const user = localStorage.getItem('user');
-console.log(user);
-const userData = JSON.parse(user);
-const dashboardAll = [
-  {
-    id: 'dashboard',
-    title: 'Dashboard',
-    type: 'item',
-    url: '/dashboard/default',
-    icon: icons.DashboardOutlined,
-    breadcrumbs: false
-  },
-  {
-    id: 'register',
-    title: 'Register',
-    type: 'item',
-    url: '/register',
-    icon: icons.UsergroupAddOutlined,
-    breadcrumbs: false
-  },
-  {
-    id: 'adminusers',
-    title: 'Admin Users',
-    type: 'item',
-    url: '/admin-users',
-    icon: icons.UserOutlined,
-    breadcrumbs: false
-  },
-  {
-    id: 'users',
-    title: 'Users',
-    type: 'item',
-    url: '/users',
-    icon: icons.UserOutlined,
-    breadcrumbs: false
-  }
-];
-const dashboardRead = [
-  {
-    id: 'dashboard',
-    title: 'Dashboard',
-    type: 'item',
-    url: '/dashboard/default',
-    icon: icons.DashboardOutlined,
-    breadcrumbs: false
-  }
-];
-const dashboard = {
+export const dashboardAll = {
   id: 'group-dashboard',
   title: 'Navigation',
   type: 'group',
-  children: userData && userData.accessType === AccessType.ALL ? dashboardAll : dashboardRead
-  // children: dashboardAll
+  children: [
+    {
+      id: 'dashboard',
+      title: 'Dashboard',
+      type: 'item',
+      url: '/dashboard/default',
+      icon: icons.DashboardOutlined,
+      breadcrumbs: false
+    },
+    {
+      id: 'register',
+      title: 'Register',
+      type: 'item',
+      url: '/register',
+      icon: icons.UsergroupAddOutlined,
+      breadcrumbs: false
+    },
+    {
+      id: 'adminusers',
+      title: 'Admin Users',
+      type: 'item',
+      url: '/admin-users',
+      icon: icons.UserOutlined,
+      breadcrumbs: false
+    },
+    {
+      id: 'users',
+      title: 'Users',
+      type: 'item',
+      url: '/users',
+      icon: icons.UserOutlined,
+      breadcrumbs: false
+    }
+  ]
 };
 
-export default dashboard;
+export const dashboardWrite = {
+  id: 'group-dashboard',
+  title: 'Navigation',
+  type: 'group',
+  children: [
+    {
+      id: 'dashboard',
+      title: 'Dashboard',
+      type: 'item',
+      url: '/dashboard/default',
+      icon: icons.DashboardOutlined,
+      breadcrumbs: false
+    },
+
+    {
+      id: 'adminusers',
+      title: 'Admin Users',
+      type: 'item',
+      url: '/admin-users',
+      icon: icons.UserOutlined,
+      breadcrumbs: false
+    },
+    {
+      id: 'users',
+      title: 'Users',
+      type: 'item',
+      url: '/users',
+      icon: icons.UserOutlined,
+      breadcrumbs: false
+    }
+  ]
+};
+
+export const dashboardRead = {
+  id: 'group-dashboard',
+  title: 'Navigation',
+  type: 'group',
+  children: [
+    {
+      id: 'dashboard',
+      title: 'Dashboard',
+      type: 'item',
+      url: '/dashboard/default',
+      icon: icons.DashboardOutlined,
+      breadcrumbs: false
+    }
+  ]
+};

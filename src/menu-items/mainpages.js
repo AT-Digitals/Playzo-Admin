@@ -14,39 +14,40 @@ const icons = {
 };
 
 // ==============================|| MENU ITEMS - EXTRA PAGES ||============================== //
-const user = localStorage.getItem('user');
-const userData = JSON.parse(user);
-const mainAll = [
-  {
-    id: 'enquiries',
-    title: 'Enquiries',
-    type: 'item',
-    url: '/enquiries',
-    icon: icons.ProfileOutlined
-  },
-  {
-    id: 'amount',
-    title: 'Amount List',
-    type: 'item',
-    url: '/amount',
-    icon: icons.WalletOutlined
-  }
-];
-const mainRead = [
-  {
-    id: 'enquiries',
-    title: 'Enquiries',
-    type: 'item',
-    url: '/enquiries',
-    icon: icons.ProfileOutlined
-  }
-];
-const mainpages = {
+
+export const mainAll = {
   id: 'pages',
   title: 'Pages',
   type: 'group',
-  children: userData && userData.accessType === AccessType.READ ? mainRead : mainAll
-  // children: mainAll
+  children: [
+    {
+      id: 'enquiries',
+      title: 'Enquiries',
+      type: 'item',
+      url: '/enquiries',
+      icon: icons.ProfileOutlined
+    },
+    {
+      id: 'amount',
+      title: 'Amount List',
+      type: 'item',
+      url: '/amount',
+      icon: icons.WalletOutlined
+    }
+  ]
 };
 
-export default mainpages;
+export const mainRead = {
+  id: 'pages',
+  title: 'Pages',
+  type: 'group',
+  children: [
+    {
+      id: 'enquiries',
+      title: 'Enquiries',
+      type: 'item',
+      url: '/enquiries',
+      icon: icons.ProfileOutlined
+    }
+  ]
+};
