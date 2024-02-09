@@ -1,22 +1,30 @@
-import DropDownComponent from 'pages/extra-pages/DropDownComponent';
-import CustomTextField from 'pages/extra-pages/bookings/bookingComponents/CustomTextField';
-import { useState, useEffect, useCallback } from 'react';
+import { Button, Grid, Stack } from '@mui/material';
+import { useCallback, useEffect, useState } from 'react';
+
 import AmountApi from 'api/AmountApi';
-
-import { Button, Stack, Grid } from '@mui/material';
-import MainCard from 'components/MainCard';
-import TypeDropdown from 'pages/extra-pages/bookings/bookingComponents/TypeDropdown';
 import AmountTable from './AmountTable';
+import { BookingLength } from 'pages/extra-pages/bookings/BookingLength';
+import { BookingSubTypes } from 'pages/extra-pages/bookings/BookingSubTypes';
+import CustomTextField from 'pages/extra-pages/bookings/bookingComponents/CustomTextField';
+import DropDownComponent from 'pages/extra-pages/DropDownComponent';
+import MainCard from 'components/MainCard';
 import NotificationSuccessToast from 'pages/components-overview/NotificationSuccessToast';
+import TypeDropdown from 'pages/extra-pages/bookings/bookingComponents/TypeDropdown';
 
-const Data = [
-  { value: 1, label: 1 },
-  { value: 2, label: 2 },
-  { value: 3, label: 3 },
-  { value: 4, label: 4 },
-  { value: 5, label: 5 }
-];
-
+// const Data = [
+//   { value: 1, label: 1 },
+//   { value: 2, label: 2 },
+//   { value: 3, label: 3 },
+//   { value: 4, label: 4 },
+//   { value: 5, label: 5 }
+// ];
+const getNumberOptions1 = (Type) => {
+  const length = BookingLength[Type] || 0;
+  return Array.from({ length }, (_, index) => ({
+    value: (index + 1).toString(),
+    label: BookingSubTypes[Type][index + 1]
+  }));
+};
 export default function AmountPage() {
   const [bookingType, setBookingType] = useState('');
   const [amount, setAmount] = useState('');
@@ -105,7 +113,7 @@ export default function AmountPage() {
   console.log('edit', editedData);
 
   const updateModalChange = async () => {
-    const idToUpdate = amountData[editableRowIndex].id;
+    const idToUpdate = editedData.id;
     const details = {
       bookingtype: editedData.bookingType,
       bookingAmount: editedData.bookingAmount,
@@ -172,12 +180,16 @@ export default function AmountPage() {
                 label="Select Court"
                 value={selectCourt || ''}
                 onChange={handleCourtChange}
-                options={Data}
+                options={getNumberOptions1(editedData.bookingType)}
                 error={courtError}
               />
             </Grid>
             <Grid item md={3}>
-              <Button variant="outlined" onClick={addAmount}>
+              <Button
+                variant="outlined"
+                sx={{ padding: '7px 15px', width: '150px', fontWeight: 600, fontSize: '15px', marginTop: '35px' }}
+                onClick={addAmount}
+              >
                 Add
               </Button>
             </Grid>
@@ -192,7 +204,7 @@ export default function AmountPage() {
         Type={bookingType}
         editedData={editedData}
         setEditedData={setEditedData}
-        details={Data}
+        details={getNumberOptions1(editedData.bookingType)}
         onSubmit={updateModalChange}
         onClose={handleClose}
         isOpen={updateModal}

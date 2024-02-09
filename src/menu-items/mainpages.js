@@ -1,6 +1,6 @@
 // assets
 
-import { LoginOutlined, ProfileOutlined } from '@ant-design/icons';
+import { LoginOutlined, ProfileOutlined, WalletOutlined } from '@ant-design/icons';
 
 import { AccessType } from 'pages/authentication/auth-forms/AccessType';
 import AssignmentTurnedInIcon from '@mui/icons-material/AssignmentTurnedIn';
@@ -9,7 +9,8 @@ import AssignmentTurnedInIcon from '@mui/icons-material/AssignmentTurnedIn';
 const icons = {
   LoginOutlined,
   ProfileOutlined,
-  AssignmentTurnedInIcon
+  AssignmentTurnedInIcon,
+  WalletOutlined
 };
 
 // ==============================|| MENU ITEMS - EXTRA PAGES ||============================== //
@@ -28,7 +29,7 @@ const mainAll = [
     title: 'Amount List',
     type: 'item',
     url: '/amount',
-    icon: icons.ProfileOutlined
+    icon: icons.WalletOutlined
   }
 ];
 const mainRead = [

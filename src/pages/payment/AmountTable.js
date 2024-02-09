@@ -1,3 +1,6 @@
+import { BookingSubTypes } from 'pages/extra-pages/bookings/BookingSubTypes';
+import EditIcon from '@mui/icons-material/Edit';
+import IconButton from '@mui/material/IconButton';
 import Paper from '@mui/material/Paper';
 import Table from '@mui/material/Table';
 import TableBody from '@mui/material/TableBody';
@@ -6,9 +9,7 @@ import TableContainer from '@mui/material/TableContainer';
 import TableHead from '@mui/material/TableHead';
 import { TablePagination } from '@mui/material';
 import TableRow from '@mui/material/TableRow';
-import IconButton from '@mui/material/IconButton';
 import UpdateAmountModal from './UpdateAmountModal';
-import EditIcon from '@mui/icons-material/Edit';
 
 export default function AmountTable({
   columns,
@@ -47,6 +48,8 @@ export default function AmountTable({
                       </IconButton>
                     ) : column.id === 'No' ? (
                       index + 1
+                    ) : column.id === 'court' ? (
+                      BookingSubTypes[rowData['bookingType']][rowData[column.id]]
                     ) : (
                       rowData[column.id]
                     )}

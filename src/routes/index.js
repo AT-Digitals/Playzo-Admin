@@ -1,4 +1,5 @@
 import AddBooking from 'pages/extra-pages/bookings/AddBooking';
+import AdminUserList from 'pages/extra-pages/user/AdminUserList';
 import AmountPage from 'pages/payment/AmountPage';
 import BookingListPage from 'pages/extra-pages/bookings/BookingListPage';
 import CalendarBooking from 'pages/extra-pages/bookings/CalendarBooking';
@@ -6,6 +7,7 @@ import EnquiriesPage from 'pages/extra-pages/Enquiry/EnquiriesPage';
 import Loadable from 'components/Loadable';
 import MainLayout from 'layout/MainLayout';
 import MinimalLayout from 'layout/MinimalLayout';
+import UserList from 'pages/extra-pages/user/UserList';
 import { lazy } from 'react';
 import { useRoutes } from 'react-router-dom';
 
@@ -88,6 +90,14 @@ export default function ThemeRoutes() {
         {
           path: 'amount',
           element: <AmountPage />
+        },
+        {
+          path: 'admin-users',
+          element: <AdminUserList />
+        },
+        {
+          path: 'users',
+          element: <UserList />
         }
       ]
     }

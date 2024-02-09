@@ -1,15 +1,20 @@
 // assets
 
+import { DashboardOutlined, UserOutlined, UsergroupAddOutlined } from '@ant-design/icons';
+
 import { AccessType } from 'pages/authentication/auth-forms/AccessType';
-import { DashboardOutlined } from '@ant-design/icons';
 
 // icons
 const icons = {
-  DashboardOutlined
+  DashboardOutlined,
+  UserOutlined,
+  UsergroupAddOutlined
 };
 
 // ==============================|| MENU ITEMS - DASHBOARD ||============================== //
+
 const user = localStorage.getItem('user');
+console.log(user);
 const userData = JSON.parse(user);
 const dashboardAll = [
   {
@@ -25,7 +30,23 @@ const dashboardAll = [
     title: 'Register',
     type: 'item',
     url: '/register',
-    icon: icons.DashboardOutlined,
+    icon: icons.UsergroupAddOutlined,
+    breadcrumbs: false
+  },
+  {
+    id: 'adminusers',
+    title: 'Admin Users',
+    type: 'item',
+    url: '/admin-users',
+    icon: icons.UserOutlined,
+    breadcrumbs: false
+  },
+  {
+    id: 'users',
+    title: 'Users',
+    type: 'item',
+    url: '/users',
+    icon: icons.UserOutlined,
     breadcrumbs: false
   }
 ];

@@ -1,7 +1,8 @@
 // project import
+
+import bookingpages from './bookingpages';
 import dashboard from './dashboard';
 import mainpages from './mainpages';
-import bookingpages from './bookingpages';
 
 // ==============================|| MENU ITEMS ||============================== //
 
