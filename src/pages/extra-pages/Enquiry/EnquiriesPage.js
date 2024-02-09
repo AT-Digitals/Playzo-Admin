@@ -1,4 +1,4 @@
-import { Button, Stack } from '@mui/material';
+import { Button, Stack, Grid } from '@mui/material';
 import { useCallback, useEffect, useState } from 'react';
 
 import CommonTable from '../bookings/bookingComponents/CommonTable';
@@ -68,6 +68,9 @@ export default function EnquiriesPage() {
     const formattedDate = parsedDate.format('YYYY-MM-DD');
     setStartDate(formattedDate);
     setStartDateError(false);
+    if (endDate && new Date(endDate) < new Date(formattedDate)) {
+      setEndDate('');
+    }
   };
 
   const handleEndDateChange = (newValue) => {
@@ -128,15 +131,23 @@ export default function EnquiriesPage() {
   const ApplyFilter = useCallback(
     async (event) => {
       event.preventDefault();
-      if (startDate && endDate === '') {
-        setEndDateError(true);
-        return;
-      }
-
-      if (endDate && startDate === '') {
+      if (!startDate) {
         setStartDateError(true);
         return;
       }
+      if (!endDate) {
+        setEndDateError(true);
+        return;
+      }
+      // if (startDate && endDate === '') {
+      //   setEndDateError(true);
+      //   return;
+      // }
+
+      // if (endDate && startDate === '') {
+      //   setStartDateError(true);
+      //   return;
+      // }
 
       if (startDate !== '' || endDate !== '') {
         const filter = {
@@ -159,25 +170,6 @@ export default function EnquiriesPage() {
     },
     [endDate, startDate]
   );
-  //   if (startDate && endDate === '') {
-  //     setEndDateError(true);
-  //   }
-
-  //   if (endDate && startDate === '') {
-  //     setStartDateError(true);
-  //   }
-
-  //   if (startDate && endDate) {
-  //     setIsApplyMode(false);
-  //     setButtonDisable(true);
-  //   }
-
-  //   const filterdata = {
-  //     startdate: startDate,
-  //     enddate: endDate
-  //   };
-  //   console.log('filter', filterdata);
-  // };
 
   const shouldDisableEndDate = (date) => {
     if (!startDate) {
@@ -185,48 +177,56 @@ export default function EnquiriesPage() {
     }
     return dayjs(date).isBefore(dayjs(startDate), 'day');
   };
-  const shouldDisableStartDate = (date) => {
-    if (!endDate) {
-      return false;
-    }
-    return dayjs(date).isAfter(dayjs(endDate), 'day');
-  };
 
   return (
-    <MainCard title="Enquiries">
-      <Stack direction="column" spacing={4}>
-        <Stack direction="row" spacing={2} alignItems="center" justifyContent="space-between">
-          <Stack direction="row" spacing={2}>
-            <CustomDatePicker
-              label="Start Date"
-              date={startDate}
-              setDate={handleStartDateChange}
-              disablePast={false}
-              disableprop={buttonDisable}
-              error={startDateError}
-              shouldDisableDate={shouldDisableStartDate}
-            />
-            <CustomDatePicker
-              label="End Date"
-              date={endDate}
-              setDate={handleEndDateChange}
-              disablePast={false}
-              disableprop={buttonDisable}
-              shouldDisableDate={shouldDisableEndDate}
-              error={endDateError}
-            />
-          </Stack>
-          {isApplyMode ? (
-            <Button variant="outlined" onClick={ApplyFilter} sx={{ width: '150px', height: '50px' }}>
-              Apply
-            </Button>
-          ) : (
-            <Button variant="outlined" onClick={handleButtonClick} sx={{ width: '150px', height: '50px' }}>
-              Clear
-            </Button>
-          )}
+    <Stack direction="column" spacing={3}>
+      <MainCard title="Enquiries">
+        <Stack direction="row" height={100}>
+          <Grid container spacing={3}>
+            <Grid item md={3}>
+              <CustomDatePicker
+                label="Start Date"
+                date={startDate}
+                setDate={handleStartDateChange}
+                disablePast={false}
+                disableprop={buttonDisable}
+                error={startDateError}
+              />
+            </Grid>
+            <Grid item md={3}>
+              <CustomDatePicker
+                label="End Date"
+                date={endDate}
+                setDate={handleEndDateChange}
+                disablePast={false}
+                disableprop={buttonDisable}
+                shouldDisableDate={shouldDisableEndDate}
+                error={endDateError}
+              />
+            </Grid>
+            <Grid item md={3}>
+              {isApplyMode ? (
+                <Button
+                  variant="outlined"
+                  onClick={ApplyFilter}
+                  sx={{ padding: '7px 15px', width: '150px', fontWeight: 600, fontSize: '15px', marginTop: '35px' }}
+                >
+                  Apply
+                </Button>
+              ) : (
+                <Button
+                  variant="outlined"
+                  onClick={handleButtonClick}
+                  sx={{ padding: '7px 15px', width: '150px', fontWeight: 600, fontSize: '15px', marginTop: '35px' }}
+                >
+                  Clear
+                </Button>
+              )}
+            </Grid>
+          </Grid>
         </Stack>
-
+      </MainCard>
+      <MainCard>
         <TableList
           count={count}
           columns={columns}
@@ -236,7 +236,7 @@ export default function EnquiriesPage() {
           handleChangePage={handleChangePage}
           handleChangeRowsPerPage={handleChangeRowsPerPage}
         ></TableList>
-      </Stack>
-    </MainCard>
+      </MainCard>
+    </Stack>
   );
 }
