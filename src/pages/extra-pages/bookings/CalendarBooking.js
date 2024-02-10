@@ -1,6 +1,6 @@
 import 'react-big-calendar/lib/css/react-big-calendar.css';
 
-import { Box, Button, Stack, Typography } from '@mui/material';
+import { Grid, Button, Stack, Typography } from '@mui/material';
 import React, { useEffect, useState } from 'react';
 
 import BookingApi from 'api/BookingApi';
@@ -34,6 +34,7 @@ const CalendarBooking = () => {
     const listDate = [];
     try {
       await BookingApi.getAll().then((dataList) => {
+        console.log('datalist', dataList);
         dataList.map((list) => {
           const dateObject = new Date(list.startDate);
 
@@ -59,11 +60,18 @@ const CalendarBooking = () => {
           const startMinute = parseInt(startTime24.split(':')[1], 10);
           const endHour = parseInt(endTime24.split(':')[0], 10);
           const endMinute = parseInt(endTime24.split(':')[1], 10);
+          // const name = JSON.parse(list.user).name;
+          // const emailaddress = JSON.parse(list.user).email;
+          // const userTypeDetails = JSON.parse(item.user).userType;
 
           const calendarDataList = {
             title: list.type,
             start: new Date(year, month, day, startHour, startMinute, 0, 0),
             end: new Date(endyear, endmonth, endday, endHour, endMinute, 0, 0)
+            // court: list.court
+            // userName: name
+            // email: emailaddress,
+            // userType: userTypeDetails
           };
           listDate.push(calendarDataList);
         });
@@ -132,38 +140,50 @@ const CalendarBooking = () => {
   return (
     <Stack direction="column" spacing={3}>
       <MainCard title="Calendar Booking">
-        <Stack direction="row" spacing={2} alignItems="center" justifyContent="space-between" pb={5}>
-          <Box sx={{ width: '150px' }}>
-            <Stack sx={{ minWidth: 200 }} spacing={3}>
-              <Typography>Select Booking Type</Typography>
-              <FormControl fullWidth>
-                <Select
-                  labelId="demo-simple-select-label"
-                  id="demo-simple-select"
-                  value={bookingType}
-                  onChange={handleChange}
-                  disabled={buttonDisable}
+        <Stack direction="row" spacing={2} pb={5}>
+          <Grid container spacing={3}>
+            <Grid item md={3}>
+              <Stack direction="column" spacing={2}>
+                <Typography>Select Booking Type</Typography>
+                <FormControl fullWidth>
+                  <Select
+                    labelId="demo-simple-select-label"
+                    id="demo-simple-select"
+                    value={bookingType}
+                    onChange={handleChange}
+                    disabled={buttonDisable}
+                  >
+                    <MenuItem value="All">All</MenuItem>
+                    <MenuItem value="turf">Turf</MenuItem>
+                    <MenuItem value="boardGame">Board Game</MenuItem>
+                    <MenuItem value="playstation">Play Station</MenuItem>
+                    <MenuItem value="cricketNet">Cricket Net</MenuItem>
+                    <MenuItem value="bowlingMachine">Bowling Machine</MenuItem>
+                    <MenuItem value="badminton">Badminton</MenuItem>
+                  </Select>
+                </FormControl>
+              </Stack>
+            </Grid>
+            <Grid item md={3}>
+              {isApplyMode ? (
+                <Button
+                  variant="outlined"
+                  onClick={applyFilters}
+                  sx={{ padding: '7px 15px', width: '150px', fontWeight: 600, fontSize: '15px', marginTop: '38px' }}
                 >
-                  <MenuItem value="All">All</MenuItem>
-                  <MenuItem value="turf">Turf</MenuItem>
-                  <MenuItem value="boardGame">Board Game</MenuItem>
-                  <MenuItem value="playstation">Play Station</MenuItem>
-                  <MenuItem value="cricketNet">Cricket Net</MenuItem>
-                  <MenuItem value="bowlingMachine">Bowling Machine</MenuItem>
-                  <MenuItem value="badminton">Badminton</MenuItem>
-                </Select>
-              </FormControl>
-            </Stack>
-          </Box>
-          {isApplyMode ? (
-            <Button variant="outlined" onClick={applyFilters}>
-              Apply
-            </Button>
-          ) : (
-            <Button variant="outlined" onClick={handleButtonClick}>
-              Clear
-            </Button>
-          )}
+                  Apply
+                </Button>
+              ) : (
+                <Button
+                  variant="outlined"
+                  onClick={handleButtonClick}
+                  sx={{ padding: '7px 15px', width: '150px', fontWeight: 600, fontSize: '15px', marginTop: '38px' }}
+                >
+                  Clear
+                </Button>
+              )}
+            </Grid>
+          </Grid>
         </Stack>
       </MainCard>
       <MainCard>

@@ -4,18 +4,25 @@ import { Calendar, momentLocalizer } from 'react-big-calendar';
 import React, { useState } from 'react';
 
 import moment from 'moment';
+import CalendarModalComponent from './CalendarModalComponent';
 
 const localizer = momentLocalizer(moment);
 const CalendarComponent = ({ data }) => {
   const [selectedEvent, setSelectedEvent] = useState(null);
   const [selectedDate, setSelectedDate] = useState(moment().toDate());
+  const [eventModal, setEventModal] = useState(false);
 
   const handleSelectEvent = (event) => {
+    console.log('event', event);
     setSelectedEvent(event);
+    setEventModal(true);
   };
 
   const handleNavigate = (date) => {
     setSelectedDate(date);
+  };
+  const handleClose = () => {
+    setEventModal(false);
   };
 
   console.log('data', selectedEvent, selectedDate);
@@ -28,12 +35,13 @@ const CalendarComponent = ({ data }) => {
         events={data}
         startAccessor="start"
         endAccessor="end"
-        onSelectEvent={handleSelectEvent}
+        onSelectEvent={(e) => handleSelectEvent(e)}
         onNavigate={handleNavigate}
         defaultDate={moment().toDate()}
         toolbar
         timeslots={3}
       />
+      <CalendarModalComponent isOpen={eventModal} onClose={handleClose} data={selectedEvent} />
     </div>
   );
 };

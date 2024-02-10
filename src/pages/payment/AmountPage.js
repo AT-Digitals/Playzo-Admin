@@ -93,6 +93,11 @@ export default function AmountPage() {
         try {
           const response = await AmountApi.createAmount(details);
           setSuccesstoast('Your Amount is added.');
+          if (response) {
+            setAmountData([...amountData, response]);
+          } else {
+            console.error('Failed to add data:', response);
+          }
         } catch (error) {
           console.log('please provide valid data', error);
         }
@@ -156,12 +161,12 @@ export default function AmountPage() {
 
   useEffect(() => {
     fetchInfo();
-  }, [fetchInfo]);
+  }, []);
 
   return (
-    <>
+    <Stack direction="column" spacing={3}>
       <MainCard title="Amount List">
-        <Stack direction="column" spacing={4} width="100%" maxWidth={1120}>
+        <Stack direction="column" spacing={4} width="100%" maxWidth={1120} height={130}>
           <Grid container spacing={3}>
             <Grid item md={3}>
               <TypeDropdown label="Select Booking Type" type={bookingType} onChange={handleChange} error={typeError} />
@@ -180,7 +185,7 @@ export default function AmountPage() {
                 label="Select Court"
                 value={selectCourt || ''}
                 onChange={handleCourtChange}
-                options={getNumberOptions1(editedData.bookingType)}
+                options={getNumberOptions1(bookingType)}
                 error={courtError}
               />
             </Grid>
@@ -197,23 +202,25 @@ export default function AmountPage() {
         </Stack>
         {successtoast !== '' ? <NotificationSuccessToast success={successtoast} /> : <></>}
       </MainCard>
-      <AmountTable
-        columns={columns}
-        data={amountData}
-        handleClick={handleEditClick}
-        Type={bookingType}
-        editedData={editedData}
-        setEditedData={setEditedData}
-        details={getNumberOptions1(editedData.bookingType)}
-        onSubmit={updateModalChange}
-        onClose={handleClose}
-        isOpen={updateModal}
-        rowsPerPage={rowsPerPage}
-        page={page}
-        handleChangePage={handleChangePage}
-        handleChangeRowsPerPage={handleChangeRowsPerPage}
-      />
-      {updateSuccesstoast !== '' ? <NotificationSuccessToast success={updateSuccesstoast} /> : <></>}
-    </>
+      <MainCard>
+        <AmountTable
+          columns={columns}
+          data={amountData}
+          handleClick={handleEditClick}
+          Type={bookingType}
+          editedData={editedData}
+          setEditedData={setEditedData}
+          details={getNumberOptions1(editedData.bookingType)}
+          onSubmit={updateModalChange}
+          onClose={handleClose}
+          isOpen={updateModal}
+          rowsPerPage={rowsPerPage}
+          page={page}
+          handleChangePage={handleChangePage}
+          handleChangeRowsPerPage={handleChangeRowsPerPage}
+        />
+        {updateSuccesstoast !== '' ? <NotificationSuccessToast success={updateSuccesstoast} /> : <></>}
+      </MainCard>
+    </Stack>
   );
 }
