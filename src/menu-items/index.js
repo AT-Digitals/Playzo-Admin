@@ -2,7 +2,7 @@
 
 import { bookingAll, bookingRead } from './bookingpages';
 import { dashboardAll, dashboardRead, dashboardWrite } from './dashboard';
-import mainpages, { mainAll, mainRead } from './mainpages';
+import { mainAll, mainRead } from './mainpages';
 
 // ==============================|| MENU ITEMS ||============================== //
 
