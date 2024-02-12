@@ -121,6 +121,8 @@ export default function BookingListPage() {
 
   const handleClose = () => {
     setUpdateModal(false);
+    setPayError(false);
+    setRefundCheck('');
   };
 
   const handleChangePage = (_event, newPage) => {
@@ -241,13 +243,13 @@ export default function BookingListPage() {
       }
 
       if (details.startDate && details.endDate && dateFilter === '' && dayFilter === '') {
-        const a = DateUtils.add(new Date(details.endDate), 1, 'day');
-        details.endDate = DateUtils.formatDate(new Date(a), 'yyyy-MM-DD');
+        // const a = DateUtils.add(new Date(details.endDate), 1, 'day');
+        details.endDate = DateUtils.formatDate(new Date(), 'yyyy-MM-DD');
       }
 
       if (dateFilter !== '') {
-        const currentDateValue = DateUtils.add(new Date(), 1, 'day');
-        details.endDate = DateUtils.formatDate(new Date(currentDateValue), 'yyyy-MM-DD');
+        // const currentDateValue = DateUtils.add(new Date(), 1, 'day');
+        details.endDate = DateUtils.formatDate(new Date(), 'yyyy-MM-DD');
         details.startDate = DateUtils.formatDate(new Date(dateFilter), 'yyyy-MM-DD');
       }
 
@@ -275,14 +277,14 @@ export default function BookingListPage() {
       endDate: moment(item.endDate).format('DD-MM-YYYY'),
       startTime: DateUtils.formatMillisecondsToTime(item.startTime),
       endTime: DateUtils.formatMillisecondsToTime(item.endTime),
-      cashPayment: item.cashPayment,
-      onlinePayment: item.onlinePayment,
       bookingType: item.bookingtype,
       userType: JSON.parse(item.user).userType,
       email: JSON.parse(item.user).email,
       dateOfBooking: moment(item.dateOfBooking).format('DD-MM-YYYY'),
       duration: item.duration,
-      bookingAmount: item.bookingAmount || 0
+      cashPayment: item.bookingAmount.cash,
+      onlinePayment: item.bookingAmount.online,
+      totalAmount: item.bookingAmount.total
     }));
 
     const ws = XLSX.utils.json_to_sheet(ModifiedData);
@@ -325,9 +327,7 @@ export default function BookingListPage() {
     event.preventDefault();
     if (!payAmount) {
       setPayError(true);
-    }
-
-    if (payAmount) {
+    } else {
       setPayError(false);
       setUpdateModal(false);
       setEditableRowIndex(null);

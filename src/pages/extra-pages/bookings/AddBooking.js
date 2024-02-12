@@ -434,7 +434,7 @@ export default function AddBooking() {
               <TypeDropdown label="Booking Type" type={bookingType} onChange={handleChange} error={bookingTypeError} />
             </Grid>
             <Grid item md={3}>
-              <CustomDatePicker date={date} setDate={dateHandler} error={dateError} label={'Start Date'} disablePast={true} />
+              <CustomDatePicker date={date} setDate={dateHandler} error={dateError} label={'Start Date'} disablePast={false} />
             </Grid>
             <Grid item md={3}>
               <CustomDatePicker
