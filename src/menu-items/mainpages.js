@@ -4,13 +4,15 @@ import { LoginOutlined, ProfileOutlined, WalletOutlined } from '@ant-design/icon
 
 import { AccessType } from 'pages/authentication/auth-forms/AccessType';
 import AssignmentTurnedInIcon from '@mui/icons-material/AssignmentTurnedIn';
+import CampaignIcon from '@mui/icons-material/Campaign';
 
 // icons
 const icons = {
   LoginOutlined,
   ProfileOutlined,
   AssignmentTurnedInIcon,
-  WalletOutlined
+  WalletOutlined,
+  CampaignIcon
 };
 
 // ==============================|| MENU ITEMS - EXTRA PAGES ||============================== //
@@ -25,7 +27,7 @@ export const mainAll = {
       title: 'Enquiries',
       type: 'item',
       url: '/enquiries',
-      icon: icons.ProfileOutlined
+      icon: icons.CampaignIcon
     },
     {
       id: 'amount',

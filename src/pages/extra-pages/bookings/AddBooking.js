@@ -53,6 +53,7 @@ export default function AddBooking() {
 
   const handleClose = () => {
     setBookingModalOpen(false);
+    setBulkAmount();
   };
 
   const handleNumberChange = (event) => {
@@ -426,10 +427,10 @@ export default function AddBooking() {
         <Stack direction="row" spacing={2}>
           <Grid container spacing={3} alignItems="center">
             <Grid item md={3}>
-              <TypeDropdown label="Booking Type" type={bookingType} onChange={handleChange} error={bookingTypeError} />
+              <TypeDropdown label="Select Booking Type" type={bookingType} onChange={handleChange} error={bookingTypeError} />
             </Grid>
             <Grid item md={3}>
-              <CustomDatePicker date={date} setDate={dateHandler} error={dateError} label={'Start Date'} disablePast={true} />
+              <CustomDatePicker date={date} setDate={dateHandler} error={dateError} label={'Start Date'} disablePast={false} />
             </Grid>
             <Grid item md={3}>
               <CustomDatePicker
@@ -473,7 +474,7 @@ export default function AddBooking() {
               <DropDownComponent
                 value={selectedNumber || ''}
                 onChange={handleNumberChange}
-                label="Court"
+                label="Select Court"
                 options={getNumberOptions1(bookingType)}
               />
             </Grid>

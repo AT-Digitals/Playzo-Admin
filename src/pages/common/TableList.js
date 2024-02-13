@@ -1,8 +1,18 @@
 import { Table, TableBody, TableCell, TableContainer, TableHead, TablePagination, TableRow } from '@mui/material';
 
 import Paper from '@mui/material/Paper';
+import moment from 'moment';
 
 export default function TableList({ columns, data, rowsPerPage, page, handleChangeRowsPerPage, count, handleChangePage }) {
+  const renderCellContent = (column, rowData) => {
+    const { id, label } = column;
+
+    if (id === 'dateOfEnquiry') {
+      return moment(rowData[id]).format('DD-MM-yyyy');
+    } else {
+      return rowData[id];
+    }
+  };
   return (
     <>
       <TableContainer component={Paper}>
@@ -18,7 +28,7 @@ export default function TableList({ columns, data, rowsPerPage, page, handleChan
             {data.map((rowData, index) => (
               <TableRow key={index} sx={{ '&:last-child td, &:last-child th': { border: 0 } }}>
                 {columns.map((column) => (
-                  <TableCell key={column.id}>{column.id === 'No' ? index + 1 : rowData[column.id]}</TableCell>
+                  <TableCell key={column.id}>{column.id === 'No' ? index + 1 : renderCellContent(column, rowData)}</TableCell>
                 ))}
               </TableRow>
             ))}

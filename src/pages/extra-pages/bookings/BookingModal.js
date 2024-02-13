@@ -47,7 +47,14 @@ export default function BookingModal({ onChange, value, isOpen, onClose, onSubmi
               </FormControl>
             </Stack>
             {show && (
-              <CustomTextField label={label} value={value1} setValue={setValue} error={error} errorText="please Enter a valid Amount" />
+              <CustomTextField
+                label={label}
+                value={value1}
+                setValue={setValue}
+                error={error}
+                type="number"
+                errorText="please Enter a valid Amount"
+              />
             )}
             <Button variant="outlined" onClick={onSubmit} sx={{ width: '100%' }}>
               Next
