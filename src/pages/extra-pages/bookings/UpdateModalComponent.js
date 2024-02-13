@@ -27,7 +27,8 @@ export default function BookingModal({ onChange, value, isOpen, onClose, onSubmi
     <div>
       <Modal open={isOpen} onClose={onClose} aria-labelledby="modal-modal-title" aria-describedby="modal-modal-description">
         <Box sx={style}>
-          <Stack direction="row" justifyContent="end">
+          <Stack direction="row" justifyContent="space-between" mb={3}>
+            <Typography variant="h3">Edit Amount</Typography>
             <IconButton onClick={onClose}>
               <CloseIcon />
             </IconButton>

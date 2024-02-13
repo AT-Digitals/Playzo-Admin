@@ -14,6 +14,7 @@ const columns = [
   { id: 'No', label: 'No' },
   { id: 'userName', label: 'User Name' },
   { id: 'userEmail', label: 'Email ID' },
+  { id: 'dateOfEnquiry', label: 'Date of Enquiry' },
   { id: 'phoneNumber', label: 'User Number' },
   { id: 'enquiryMessage', label: 'Message' }
 ];
@@ -47,6 +48,7 @@ export default function EnquiriesPage() {
       setCount(data.length);
       setData(data);
     });
+
     const res1 = await EnquiryApi.getAllPaging({ page: page + 1, limit: rowsPerPage }).then((data) => {
       setFilteredData(data);
     });
@@ -177,6 +179,8 @@ export default function EnquiriesPage() {
     }
     return dayjs(date).isBefore(dayjs(startDate), 'day');
   };
+
+  console.log('data', data);
 
   return (
     <Stack direction="column" spacing={3}>

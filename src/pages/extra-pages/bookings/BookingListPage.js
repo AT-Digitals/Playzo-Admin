@@ -5,6 +5,7 @@ import { useCallback, useEffect, useState } from 'react';
 
 import { AccessType } from 'pages/authentication/auth-forms/AccessType';
 import BookingApi from 'api/BookingApi';
+import { BookingSubTypes } from './BookingSubTypes';
 import CommonTable from './bookingComponents/CommonTable';
 import CustomDatePicker from './bookingComponents/CustomDatePicker';
 import DateUtils from 'utils/DateUtils';
@@ -17,7 +18,6 @@ import Select from '@mui/material/Select';
 import ToggleButtonComponent from './ToggleButtonComponent';
 import dayjs from 'dayjs';
 import moment from 'moment';
-import { BookingSubTypes } from './BookingSubTypes';
 
 const Data = [
   {
@@ -31,6 +31,25 @@ const Data = [
   {
     value: 'future',
     label: 'Future'
+  }
+];
+
+const monthData = [
+  {
+    value: 'oneMonth',
+    label: '1 Month'
+  },
+  {
+    value: 'threeMonth',
+    label: '3 Month'
+  },
+  {
+    value: 'sixMonth',
+    label: '6 Month'
+  },
+  {
+    value: 'oneYear',
+    label: '1 year'
   }
 ];
 
@@ -88,8 +107,8 @@ export default function BookingListPage() {
     setPage(0);
   };
 
-  const buttonhandleChange = (event, newValue) => {
-    setMonthType(newValue);
+  const buttonhandleChange = (event) => {
+    setMonthType(event.target.value);
     setStartDateValue('');
     setEndDateValue('');
     setSelectData('');
@@ -121,6 +140,8 @@ export default function BookingListPage() {
 
   const handleClose = () => {
     setUpdateModal(false);
+    setPayError(false);
+    setRefundCheck('');
   };
 
   const handleChangePage = (_event, newPage) => {
@@ -241,13 +262,13 @@ export default function BookingListPage() {
       }
 
       if (details.startDate && details.endDate && dateFilter === '' && dayFilter === '') {
-        const a = DateUtils.add(new Date(details.endDate), 1, 'day');
-        details.endDate = DateUtils.formatDate(new Date(a), 'yyyy-MM-DD');
+        // const a = DateUtils.add(new Date(details.endDate), 1, 'day');
+        details.endDate = DateUtils.formatDate(new Date(details.endDate), 'yyyy-MM-DD');
       }
 
       if (dateFilter !== '') {
-        const currentDateValue = DateUtils.add(new Date(), 1, 'day');
-        details.endDate = DateUtils.formatDate(new Date(currentDateValue), 'yyyy-MM-DD');
+        // const currentDateValue = DateUtils.add(new Date(), 1, 'day');
+        details.endDate = DateUtils.formatDate(new Date(), 'yyyy-MM-DD');
         details.startDate = DateUtils.formatDate(new Date(dateFilter), 'yyyy-MM-DD');
       }
 
@@ -275,14 +296,14 @@ export default function BookingListPage() {
       endDate: moment(item.endDate).format('DD-MM-YYYY'),
       startTime: DateUtils.formatMillisecondsToTime(item.startTime),
       endTime: DateUtils.formatMillisecondsToTime(item.endTime),
-      cashPayment: item.cashPayment,
-      onlinePayment: item.onlinePayment,
       bookingType: item.bookingtype,
       userType: JSON.parse(item.user).userType,
       email: JSON.parse(item.user).email,
       dateOfBooking: moment(item.dateOfBooking).format('DD-MM-YYYY'),
       duration: item.duration,
-      bookingAmount: item.bookingAmount || 0
+      cashPayment: item.bookingAmount.cash,
+      onlinePayment: item.bookingAmount.online,
+      totalAmount: item.bookingAmount.total
     }));
 
     const ws = XLSX.utils.json_to_sheet(ModifiedData);
@@ -325,9 +346,7 @@ export default function BookingListPage() {
     event.preventDefault();
     if (!payAmount) {
       setPayError(true);
-    }
-
-    if (payAmount) {
+    } else {
       setPayError(false);
       setUpdateModal(false);
       setEditableRowIndex(null);
@@ -362,11 +381,11 @@ export default function BookingListPage() {
   return (
     <>
       <MainCard title="Booking List">
-        <Stack direction="column" spacing={4} width="100%" maxWidth={1120}>
+        <Stack direction="column" spacing={4} width="100%" maxWidth={1120} height={230}>
           <Grid container spacing={3}>
             <Grid item md={3}>
               <Stack spacing={2}>
-                <Typography>Select Booking Type</Typography>
+                <Typography>All Booking Type</Typography>
                 <FormControl fullWidth>
                   <Select
                     labelId="demo-simple-select-label"
@@ -409,7 +428,7 @@ export default function BookingListPage() {
             </Grid>
             <Grid item md={3}>
               <Stack spacing={2}>
-                <Typography>Payment Type</Typography>
+                <Typography>All Payment Type</Typography>
                 <FormControl fullWidth>
                   <Select
                     labelId="demo-simple-select-label"
@@ -425,11 +444,18 @@ export default function BookingListPage() {
               </Stack>
             </Grid>
             <Grid item md={3}>
-              <ToggleButtonComponent value={monthType} setValue={buttonhandleChange} disableprop={buttonDisable} />
+              <DropDownComponent
+                label="All Month Type"
+                value={monthType}
+                onChange={buttonhandleChange}
+                options={monthData}
+                disabled={buttonDisable}
+              />
+              {/* <ToggleButtonComponent value={monthType} setValue={buttonhandleChange} disableprop={buttonDisable} /> */}
             </Grid>
             <Grid item md={3}>
               <DropDownComponent
-                label="Select Day"
+                label="Booking List"
                 value={selectData}
                 onChange={handleDataChange}
                 options={Data}
@@ -460,9 +486,9 @@ export default function BookingListPage() {
                 <Button
                   variant="outlined"
                   onClick={handleDownload}
-                  sx={{ padding: '7px 15px', width: '150px', fontWeight: 600, fontSize: '15px' }}
+                  sx={{ padding: '7px 15px', width: '200px', fontWeight: 600, fontSize: '15px' }}
                 >
-                  Download
+                  Download Report
                 </Button>
               </Stack>
             </Grid>

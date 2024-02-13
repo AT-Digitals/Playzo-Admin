@@ -34,7 +34,6 @@ const CalendarBooking = () => {
     const listDate = [];
     try {
       await BookingApi.getAll().then((dataList) => {
-        console.log('datalist', dataList);
         dataList.map((list) => {
           const dateObject = new Date(list.startDate);
 
@@ -60,18 +59,16 @@ const CalendarBooking = () => {
           const startMinute = parseInt(startTime24.split(':')[1], 10);
           const endHour = parseInt(endTime24.split(':')[0], 10);
           const endMinute = parseInt(endTime24.split(':')[1], 10);
-          // const name = JSON.parse(list.user).name;
-          // const emailaddress = JSON.parse(list.user).email;
-          // const userTypeDetails = JSON.parse(item.user).userType;
+          const name = JSON.parse(list.user).name;
+          const emailaddress = JSON.parse(list.user).email;
 
           const calendarDataList = {
+            userName: name,
             title: list.type,
             start: new Date(year, month, day, startHour, startMinute, 0, 0),
-            end: new Date(endyear, endmonth, endday, endHour, endMinute, 0, 0)
-            // court: list.court
-            // userName: name
-            // email: emailaddress,
-            // userType: userTypeDetails
+            end: new Date(endyear, endmonth, endday, endHour, endMinute, 0, 0),
+            court: list.court,
+            email: emailaddress
           };
           listDate.push(calendarDataList);
         });
@@ -144,7 +141,7 @@ const CalendarBooking = () => {
           <Grid container spacing={3}>
             <Grid item md={3}>
               <Stack direction="column" spacing={2}>
-                <Typography>Select Booking Type</Typography>
+                <Typography>All Booking Type</Typography>
                 <FormControl fullWidth>
                   <Select
                     labelId="demo-simple-select-label"
