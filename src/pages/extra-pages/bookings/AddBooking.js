@@ -107,11 +107,6 @@ export default function AddBooking() {
         type: bookingType,
         endDate: endData
       });
-      // console.log('response', response);
-      // console.log('bookingdetails123', bookingDetails);
-      // const newArray = bookingDetails ? [...response, ...bookingDetails] : response;
-      // console.log('newarray', newArray, 'response');
-      // setDisableData(newArray);
       setDisableData(response);
       setIsModalOpen(true);
     } catch (error) {

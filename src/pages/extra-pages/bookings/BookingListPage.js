@@ -5,6 +5,7 @@ import { useCallback, useEffect, useState } from 'react';
 
 import { AccessType } from 'pages/authentication/auth-forms/AccessType';
 import BookingApi from 'api/BookingApi';
+import { BookingSubTypes } from './BookingSubTypes';
 import CommonTable from './bookingComponents/CommonTable';
 import CustomDatePicker from './bookingComponents/CustomDatePicker';
 import DateUtils from 'utils/DateUtils';
@@ -17,7 +18,6 @@ import Select from '@mui/material/Select';
 import ToggleButtonComponent from './ToggleButtonComponent';
 import dayjs from 'dayjs';
 import moment from 'moment';
-import { BookingSubTypes } from './BookingSubTypes';
 
 const Data = [
   {
@@ -263,7 +263,7 @@ export default function BookingListPage() {
 
       if (details.startDate && details.endDate && dateFilter === '' && dayFilter === '') {
         // const a = DateUtils.add(new Date(details.endDate), 1, 'day');
-        details.endDate = DateUtils.formatDate(new Date(), 'yyyy-MM-DD');
+        details.endDate = DateUtils.formatDate(new Date(details.endDate), 'yyyy-MM-DD');
       }
 
       if (dateFilter !== '') {
