@@ -27,16 +27,17 @@ export default function UpdateAmountModal({ onSubmit, onClose, isOpen, editedDat
     <>
       <Modal open={isOpen} onClose={onClose} aria-labelledby="modal-modal-title" aria-describedby="modal-modal-description">
         <Box sx={style}>
-          <Stack direction="row" justifyContent="end">
+          <Stack direction="row" justifyContent="space-between" mb={3}>
+            <Typography variant="h3">Edit Amount</Typography>
             <IconButton onClick={onClose}>
               <CloseIcon />
             </IconButton>
           </Stack>
           <Stack direction="column" spacing={3}>
             <Grid container columnGap={3}>
-              <Grid item md={12}>
+              <Grid item md={12} mb={2}>
                 <Stack spacing={2}>
-                  <Typography>Select Booking Type</Typography>
+                  <Typography>Selected Booking Type</Typography>
                   <FormControl fullWidth>
                     <Select
                       labelId="demo-simple-select-label"
@@ -56,7 +57,7 @@ export default function UpdateAmountModal({ onSubmit, onClose, isOpen, editedDat
                   </FormControl>
                 </Stack>
               </Grid>
-              <Grid item md={12}>
+              <Grid item md={12} mb={2}>
                 <CustomTextField
                   label="Enter Amount"
                   value={editedData.bookingAmount}
@@ -66,7 +67,7 @@ export default function UpdateAmountModal({ onSubmit, onClose, isOpen, editedDat
                   errorText="please Enter a valid Amount"
                 />
               </Grid>
-              <Grid item md={12}>
+              <Grid item md={12} mb={2}>
                 <DropDownComponent
                   label="Select Court"
                   value={editedData.court || ''}

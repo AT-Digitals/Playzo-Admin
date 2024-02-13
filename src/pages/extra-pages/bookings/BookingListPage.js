@@ -34,6 +34,25 @@ const Data = [
   }
 ];
 
+const monthData = [
+  {
+    value: 'oneMonth',
+    label: '1 Month'
+  },
+  {
+    value: 'threeMonth',
+    label: '3 Month'
+  },
+  {
+    value: 'sixMonth',
+    label: '6 Month'
+  },
+  {
+    value: 'oneYear',
+    label: '1 year'
+  }
+];
+
 export default function BookingListPage() {
   const [bookingType, setBookingType] = useState('All');
   const [data, setData] = useState([]);
@@ -88,8 +107,8 @@ export default function BookingListPage() {
     setPage(0);
   };
 
-  const buttonhandleChange = (event, newValue) => {
-    setMonthType(newValue);
+  const buttonhandleChange = (event) => {
+    setMonthType(event.target.value);
     setStartDateValue('');
     setEndDateValue('');
     setSelectData('');
@@ -362,11 +381,11 @@ export default function BookingListPage() {
   return (
     <>
       <MainCard title="Booking List">
-        <Stack direction="column" spacing={4} width="100%" maxWidth={1120}>
+        <Stack direction="column" spacing={4} width="100%" maxWidth={1120} height={230}>
           <Grid container spacing={3}>
             <Grid item md={3}>
               <Stack spacing={2}>
-                <Typography>Select Booking Type</Typography>
+                <Typography>All Booking Type</Typography>
                 <FormControl fullWidth>
                   <Select
                     labelId="demo-simple-select-label"
@@ -409,7 +428,7 @@ export default function BookingListPage() {
             </Grid>
             <Grid item md={3}>
               <Stack spacing={2}>
-                <Typography>Payment Type</Typography>
+                <Typography>All Payment Type</Typography>
                 <FormControl fullWidth>
                   <Select
                     labelId="demo-simple-select-label"
@@ -425,11 +444,18 @@ export default function BookingListPage() {
               </Stack>
             </Grid>
             <Grid item md={3}>
-              <ToggleButtonComponent value={monthType} setValue={buttonhandleChange} disableprop={buttonDisable} />
+              <DropDownComponent
+                label="All Month Type"
+                value={monthType}
+                onChange={buttonhandleChange}
+                options={monthData}
+                disabled={buttonDisable}
+              />
+              {/* <ToggleButtonComponent value={monthType} setValue={buttonhandleChange} disableprop={buttonDisable} /> */}
             </Grid>
             <Grid item md={3}>
               <DropDownComponent
-                label="Select Day"
+                label="Booking List"
                 value={selectData}
                 onChange={handleDataChange}
                 options={Data}
@@ -460,9 +486,9 @@ export default function BookingListPage() {
                 <Button
                   variant="outlined"
                   onClick={handleDownload}
-                  sx={{ padding: '7px 15px', width: '150px', fontWeight: 600, fontSize: '15px' }}
+                  sx={{ padding: '7px 15px', width: '200px', fontWeight: 600, fontSize: '15px' }}
                 >
-                  Download
+                  Download Report
                 </Button>
               </Stack>
             </Grid>

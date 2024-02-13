@@ -141,7 +141,7 @@ const CalendarBooking = () => {
           <Grid container spacing={3}>
             <Grid item md={3}>
               <Stack direction="column" spacing={2}>
-                <Typography>Select Booking Type</Typography>
+                <Typography>All Booking Type</Typography>
                 <FormControl fullWidth>
                   <Select
                     labelId="demo-simple-select-label"
