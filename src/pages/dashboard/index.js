@@ -36,7 +36,6 @@ import avatar4 from 'assets/images/users/avatar-4.png';
 import BookingApi from 'api/BookingApi';
 import PieChart from './PieChart';
 import EnquiryApi from 'api/EnquiryApi';
-import DropDownComponent from 'pages/extra-pages/DropDownComponent';
 
 // avatar style
 const avatarSX = {
@@ -81,8 +80,6 @@ const DashboardDefault = () => {
   const [enquiryData, setEnquiryData] = useState([]);
   const [selectedCategory, setSelectedCategory] = useState('All Booking Type');
 
-  // const Types = [{}];
-
   // const chartData = [
   //   { category: 'All Booking Type', onlineBookings: 30, cashBookings: 20, totalBookings: 100 },
   //   { category: 'Turf', onlineBookings: 30, cashBookings: 20, totalBookings: 20 },
@@ -121,11 +118,12 @@ const DashboardDefault = () => {
       console.log('data fetching failed');
     }
   }, []);
-  console.log('data', data);
 
   let cashBooking = data.filter((item) => item.bookingtype === 'cash');
 
   let onlineBooking = data.filter((item) => item.bookingtype === 'online');
+
+  let totalBooking = cashBooking.length + onlineBooking.length;
 
   useEffect(() => {
     fetchData();
@@ -142,15 +140,12 @@ const DashboardDefault = () => {
     Badminton: { onlineBooking: 0, cashBooking: 50, totalBooking: 50 }
   };
 
-  // Function to update chart data based on selected category
   const updateChartData = (category) => {
     if (category === null) {
-      // Show total orders for all categories
       const labels = Object.keys(allChartData);
       const series = Object.values(allChartData).map((data) => data.onlineBooking + data.cashBooking + totalBooking);
       return { labels, series };
     } else {
-      // Show breakdown of online and offline orders for the selected category
       const data = allChartData[category];
       const labels = ['Online Bookings', 'Cash Bookings', 'Total Bookings'];
       const series = [data.onlineBooking, data.cashBooking, data.totalBooking];
@@ -186,19 +181,12 @@ const DashboardDefault = () => {
         />
       </Grid>
 
-      <Grid item md={8} sx={{ display: { sm: 'none', md: 'block', lg: 'none' } }} />
-
       {/* row 2 */}
-      <Grid item xs={12} md={7} lg={8}>
+      <Grid item xs={12}>
         <Grid container alignItems="center" justifyContent="space-between">
           <Grid item>
-            <Typography variant="h5">Unique Visitor</Typography>
-          </Grid>
-          <Grid item>
-            <Stack direction="row" alignItems="center" spacing={1}>
-              {/* <DropDownComponent value={selectedCategory || ''} onChange={handleButtonClick} options={Types} /> */}
+            <Stack direction="row" alignItems="center" spacing={2}>
               <Button
-                size="small"
                 onClick={() => handleButtonClick('All Booking Type')}
                 color={selectedCategory === 'All Booking Type' ? 'primary' : 'secondary'}
                 variant={selectedCategory === 'All Booking Type' ? 'outlined' : 'text'}
@@ -206,50 +194,44 @@ const DashboardDefault = () => {
                 All Boooking Type
               </Button>
               <Button
-                size="small"
                 onClick={() => handleButtonClick('Turf')}
-                color={selectedCategory === 'turf' ? 'primary' : 'secondary'}
-                variant={selectedCategory === 'turf' ? 'outlined' : 'text'}
+                color={selectedCategory === 'Turf' ? 'primary' : 'secondary'}
+                variant={selectedCategory === 'Turf' ? 'outlined' : 'text'}
               >
                 Turf
               </Button>
               <Button
-                size="small"
                 onClick={() => handleButtonClick('Board Game')}
-                color={selectedCategory === 'boardGame' ? 'primary' : 'secondary'}
-                variant={selectedCategory === 'boardGame' ? 'outlined' : 'text'}
+                color={selectedCategory === 'Board Game' ? 'primary' : 'secondary'}
+                variant={selectedCategory === 'Board Game' ? 'outlined' : 'text'}
               >
                 Board Game
               </Button>
               <Button
-                size="small"
                 onClick={() => handleButtonClick('Play Station')}
-                color={selectedCategory === 'playStation' ? 'primary' : 'secondary'}
-                variant={selectedCategory === 'playStation' ? 'outlined' : 'text'}
+                color={selectedCategory === 'Play Station' ? 'primary' : 'secondary'}
+                variant={selectedCategory === 'Play Station' ? 'outlined' : 'text'}
               >
                 Play Station
               </Button>
               <Button
-                size="small"
                 onClick={() => handleButtonClick('Cricket Net')}
-                color={selectedCategory === 'cricketNet' ? 'primary' : 'secondary'}
-                variant={selectedCategory === 'cricketNet' ? 'outlined' : 'text'}
+                color={selectedCategory === 'Cricket Net' ? 'primary' : 'secondary'}
+                variant={selectedCategory === 'Cricket Net' ? 'outlined' : 'text'}
               >
                 Cricket Net
               </Button>
               <Button
-                size="small"
                 onClick={() => handleButtonClick('Bowling Machine')}
-                color={selectedCategory === 'bowlingMachine' ? 'primary' : 'secondary'}
-                variant={selectedCategory === 'bowlingMachine' ? 'outlined' : 'text'}
+                color={selectedCategory === 'Bowling Machine' ? 'primary' : 'secondary'}
+                variant={selectedCategory === 'Bowling Machine' ? 'outlined' : 'text'}
               >
                 Bowling Machine
               </Button>
               <Button
-                size="small"
                 onClick={() => handleButtonClick('Badminton')}
-                color={selectedCategory === 'badminton' ? 'primary' : 'secondary'}
-                variant={selectedCategory === 'badminton' ? 'outlined' : 'text'}
+                color={selectedCategory === 'Badminton' ? 'primary' : 'secondary'}
+                variant={selectedCategory === 'Badminton' ? 'outlined' : 'text'}
               >
                 Badminton
               </Button>
@@ -263,7 +245,7 @@ const DashboardDefault = () => {
           </Box>
         </MainCard>
       </Grid>
-      <Grid item xs={12} md={5} lg={4}>
+      {/* <Grid item xs={12} md={5} lg={4}>
         <Grid container alignItems="center" justifyContent="space-between">
           <Grid item>
             <Typography variant="h5">Income Overview</Typography>
@@ -281,9 +263,9 @@ const DashboardDefault = () => {
           </Box>
           <MonthlyBarChart />
         </MainCard>
-      </Grid>
+      </Grid> */}
 
-      {/* row 3 */}
+      {/* row 3
       <Grid item xs={12} md={7} lg={8}>
         <Grid container alignItems="center" justifyContent="space-between">
           <Grid item>
@@ -319,9 +301,9 @@ const DashboardDefault = () => {
           </List>
           <ReportAreaChart />
         </MainCard>
-      </Grid>
+      </Grid> */}
 
-      {/* row 4 */}
+      {/* row 4
       <Grid item xs={12} md={7} lg={8}>
         <Grid container alignItems="center" justifyContent="space-between">
           <Grid item>
@@ -471,8 +453,8 @@ const DashboardDefault = () => {
               Need Help?
             </Button>
           </Stack>
-        </MainCard>
-      </Grid>
+        </MainCard> */}
+      {/* {/* </Grid> */}
     </Grid>
   );
 };

@@ -1,40 +1,44 @@
 import Chart from 'react-apexcharts';
-import { Box } from '@mui/material';
+import { Box, Typography, styled } from '@mui/material';
+
+const StyledCharts = styled(Chart)(({ theme }) => ({
+  '.apexcharts-canvas': {
+    margin: '0 auto'
+  }
+  // ".apexcharts-tooltip .tooltip-container": {
+  //   padding: theme.spacing(0.5, 1),
+  //   ".label": {
+  //     color: Colors.MENU_COLOR,
+  //     fontSize: theme.typography.caption.fontSize,
+  //   },
+  //   ".value": {
+  //     color: Colors.WHITE,
+  //     fontSize: theme.typography.body3.fontSize,
+  //     fontWeight: 700,
+  //   },
+  // },
+}));
 
 const PieChart = ({ selectData }) => {
-  // Sample data for the pie chart
-
-  // Options for the pie chart
-  // const chartOptions = {
-  //   labels: selectData.map((data) => data.category)
-  // };
-
   const { labels, series } = selectData;
 
-  // Options for the pie chart
   const chartOptions = {
-    labels: labels
+    labels: labels,
+    dataLabels: {
+      enabled: true,
+      formatter: function (value, { seriesIndex, dataPointIndex, w }) {
+        return labels[dataPointIndex];
+      }
+    }
   };
 
   return (
-    <>
-      <Box py={3}>
-        <h2>Booking Chart</h2>
-        <Chart options={chartOptions} series={series} type="pie" width="600" />
+    <Box paddingX={3} paddingY={2}>
+      <Typography variant="h3">Booking Chart</Typography>
+      <Box width="100%" maxWidth="1200px" margin="auto">
+        <StyledCharts options={chartOptions} series={series} type="pie" width="650" />
       </Box>
-      {/* {selectedCategory === 'All Booking Type' ? (
-        <></>
-      ) : (
-        selectData.map((data) => (
-          <div key={data.category}>
-            <h3>{data.category}</h3>
-            <p>Total Orders: {data.totalBookings}</p>
-            <p>Online Orders: {data.onlineBookings}</p>
-            <p>Offline Orders: {data.offlineBookings}</p>
-          </div>
-        ))
-      )} */}
-    </>
+    </Box>
   );
 };
 

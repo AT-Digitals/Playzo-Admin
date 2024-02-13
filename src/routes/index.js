@@ -36,10 +36,6 @@ export default function ThemeRoutes() {
         {
           path: '/',
           element: <AuthLogin />
-        },
-        {
-          path: 'register',
-          element: <AuthRegister />
         }
       ]
     },
@@ -54,6 +50,10 @@ export default function ThemeRoutes() {
               element: <DashboardDefault />
             }
           ]
+        },
+        {
+          path: 'register',
+          element: <AuthRegister />
         },
         {
           path: 'sample-page',

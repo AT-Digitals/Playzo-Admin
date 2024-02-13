@@ -53,6 +53,7 @@ export default function AddBooking() {
 
   const handleClose = () => {
     setBookingModalOpen(false);
+    setBulkAmount();
   };
 
   const handleNumberChange = (event) => {
