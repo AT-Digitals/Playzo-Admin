@@ -35,6 +35,8 @@ import avatar3 from 'assets/images/users/avatar-3.png';
 import avatar4 from 'assets/images/users/avatar-4.png';
 import BookingApi from 'api/BookingApi';
 import PieChart from './PieChart';
+import EnquiryApi from 'api/EnquiryApi';
+import DropDownComponent from 'pages/extra-pages/DropDownComponent';
 
 // avatar style
 const avatarSX = {
@@ -73,15 +75,47 @@ const status = [
 
 const DashboardDefault = () => {
   const [value, setValue] = useState('today');
-  const [slot, setSlot] = useState('turf');
+  //const [slot, setSlot] = useState('turf');
   const [count, setCount] = useState('');
   const [data, setData] = useState([]);
+  const [enquiryData, setEnquiryData] = useState([]);
+  const [selectedCategory, setSelectedCategory] = useState('All Booking Type');
+
+  // const Types = [{}];
+
+  // const chartData = [
+  //   { category: 'All Booking Type', onlineBookings: 30, cashBookings: 20, totalBookings: 100 },
+  //   { category: 'Turf', onlineBookings: 30, cashBookings: 20, totalBookings: 20 },
+  //   { category: 'Board Game', onlineBookings: 40, cashBookings: 10, totalBookings: 30 },
+  //   { category: 'Play Station', onlineBookings: 20, cashBookings: 10, totalBookings: 40 },
+  //   { category: 'Cricket Net', onlineBookings: 30, cashBookings: 10, totalBookings: 50 },
+  //   { category: 'Bowling Machine', onlineBookings: 20, cashBookings: 20, totalBookings: 10 },
+  //   { category: 'Badminton', onlineBookings: 50, cashBookings: 0, totalBookings: 25 }
+  // ];
+
+  // const filteredChartData =
+  //   selectedCategory === 'All Booking Type' ? chartData : chartData.filter((data) => data.category === selectedCategory);
+
+  const handleButtonClick = (category) => {
+    setSelectedCategory(category);
+  };
 
   const fetchData = useCallback(async () => {
     try {
       const res = await BookingApi.getAll({}).then((data) => {
         //setCount(res.length);
         setData(data);
+      });
+    } catch {
+      console.log('data fetching failed');
+    }
+  }, []);
+
+  const fetchEnquiry = useCallback(async () => {
+    try {
+      const res = await EnquiryApi.getAll({}).then((data) => {
+        //setCount(res.length);
+        setEnquiryData(data);
       });
     } catch {
       console.log('data fetching failed');
@@ -95,7 +129,36 @@ const DashboardDefault = () => {
 
   useEffect(() => {
     fetchData();
+    fetchEnquiry();
   }, []);
+
+  const allChartData = {
+    'All Booking Type': { onlineBooking: 150, cashBooking: 150, totalBooking: 300 },
+    Turf: { onlineBooking: 40, cashBooking: 10, totalBooking: 50 },
+    'Board Game': { onlineBooking: 0, cashBooking: 50, totalBooking: 50 },
+    'Play Station': { onlineBooking: 40, cashBooking: 10, totalBooking: 50 },
+    'Cricket Net': { onlineBooking: 30, cashBooking: 30, totalBooking: 50 },
+    'Bowling Machine': { onlineBooking: 40, cashBooking: 0, totalBooking: 50 },
+    Badminton: { onlineBooking: 0, cashBooking: 50, totalBooking: 50 }
+  };
+
+  // Function to update chart data based on selected category
+  const updateChartData = (category) => {
+    if (category === null) {
+      // Show total orders for all categories
+      const labels = Object.keys(allChartData);
+      const series = Object.values(allChartData).map((data) => data.onlineBooking + data.cashBooking + totalBooking);
+      return { labels, series };
+    } else {
+      // Show breakdown of online and offline orders for the selected category
+      const data = allChartData[category];
+      const labels = ['Online Bookings', 'Cash Bookings', 'Total Bookings'];
+      const series = [data.onlineBooking, data.cashBooking, data.totalBooking];
+      return { labels, series };
+    }
+  };
+
+  const chartData = updateChartData(selectedCategory);
 
   return (
     <Grid container rowSpacing={4.5} columnSpacing={2.75}>
@@ -113,7 +176,14 @@ const DashboardDefault = () => {
         <AnalyticEcommerce title="Online Bookings" count={onlineBooking.length.toString()} percentage={27.4} isLoss color="warning" />
       </Grid>
       <Grid item xs={12} sm={6} md={4} lg={3}>
-        <AnalyticEcommerce title="Total Enquiries" count="$35,078" percentage={27.4} isLoss color="warning" extra="$20,395" />
+        <AnalyticEcommerce
+          title="Total Enquiries"
+          count={enquiryData.length.toString()}
+          percentage={27.4}
+          isLoss
+          color="warning"
+          extra="$20,395"
+        />
       </Grid>
 
       <Grid item md={8} sx={{ display: { sm: 'none', md: 'block', lg: 'none' } }} />
@@ -125,52 +195,61 @@ const DashboardDefault = () => {
             <Typography variant="h5">Unique Visitor</Typography>
           </Grid>
           <Grid item>
-            <Stack direction="row" alignItems="center" spacing={2}>
+            <Stack direction="row" alignItems="center" spacing={1}>
+              {/* <DropDownComponent value={selectedCategory || ''} onChange={handleButtonClick} options={Types} /> */}
               <Button
                 size="small"
-                onClick={() => setSlot('turf')}
-                color={slot === 'turf' ? 'primary' : 'secondary'}
-                variant={slot === 'turf' ? 'outlined' : 'text'}
+                onClick={() => handleButtonClick('All Booking Type')}
+                color={selectedCategory === 'All Booking Type' ? 'primary' : 'secondary'}
+                variant={selectedCategory === 'All Booking Type' ? 'outlined' : 'text'}
+              >
+                All Boooking Type
+              </Button>
+              <Button
+                size="small"
+                onClick={() => handleButtonClick('Turf')}
+                color={selectedCategory === 'turf' ? 'primary' : 'secondary'}
+                variant={selectedCategory === 'turf' ? 'outlined' : 'text'}
               >
                 Turf
               </Button>
               <Button
                 size="small"
-                onClick={() => setSlot('boardGame')}
-                color={slot === 'boardGame' ? 'primary' : 'secondary'}
-                variant={slot === 'boardGame' ? 'outlined' : 'text'}
+                onClick={() => handleButtonClick('Board Game')}
+                color={selectedCategory === 'boardGame' ? 'primary' : 'secondary'}
+                variant={selectedCategory === 'boardGame' ? 'outlined' : 'text'}
               >
                 Board Game
               </Button>
               <Button
                 size="small"
-                onClick={() => setSlot('playStation')}
-                color={slot === 'playStation' ? 'primary' : 'secondary'}
-                variant={slot === 'playStation' ? 'outlined' : 'text'}
+                onClick={() => handleButtonClick('Play Station')}
+                color={selectedCategory === 'playStation' ? 'primary' : 'secondary'}
+                variant={selectedCategory === 'playStation' ? 'outlined' : 'text'}
               >
                 Play Station
               </Button>
               <Button
                 size="small"
-                onClick={() => setSlot('cricketNet')}
-                color={slot === 'cricketNet' ? 'primary' : 'secondary'}
-                variant={slot === 'cricketNet' ? 'outlined' : 'text'}
+                onClick={() => handleButtonClick('Cricket Net')}
+                color={selectedCategory === 'cricketNet' ? 'primary' : 'secondary'}
+                variant={selectedCategory === 'cricketNet' ? 'outlined' : 'text'}
               >
                 Cricket Net
               </Button>
               <Button
                 size="small"
-                onClick={() => setSlot('bowlingMachine')}
-                color={slot === 'bowlingMachine' ? 'primary' : 'secondary'}
-                variant={slot === 'bowlingMachine' ? 'outlined' : 'text'}
+                onClick={() => handleButtonClick('Bowling Machine')}
+                color={selectedCategory === 'bowlingMachine' ? 'primary' : 'secondary'}
+                variant={selectedCategory === 'bowlingMachine' ? 'outlined' : 'text'}
               >
                 Bowling Machine
               </Button>
               <Button
                 size="small"
-                onClick={() => setSlot('badminton')}
-                color={slot === 'badminton' ? 'primary' : 'secondary'}
-                variant={slot === 'badminton' ? 'outlined' : 'text'}
+                onClick={() => handleButtonClick('Badminton')}
+                color={selectedCategory === 'badminton' ? 'primary' : 'secondary'}
+                variant={selectedCategory === 'badminton' ? 'outlined' : 'text'}
               >
                 Badminton
               </Button>
@@ -180,7 +259,7 @@ const DashboardDefault = () => {
         <MainCard content={false} sx={{ mt: 1.5 }}>
           <Box sx={{ pt: 1, pr: 2 }}>
             {/* <IncomeAreaChart slot={slot} /> */}
-            <PieChart />
+            <PieChart selectData={chartData} />
           </Box>
         </MainCard>
       </Grid>
