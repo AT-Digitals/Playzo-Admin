@@ -41,7 +41,7 @@ const DashboardDefault = () => {
     }
   }, []);
 
-  const calculateBookings = () => {
+  const calculateBookings = (data) => {
     const cashBooking = data.filter((item) => item.bookingtype === 'cash');
     const onlineBooking = data.filter((item) => item.bookingtype === 'online');
     const cash = cashBooking.length;
@@ -60,7 +60,6 @@ const DashboardDefault = () => {
     return { cash, online, totalBooking };
   };
 
-  const [bookingInfo, setBookingInfo] = useState(calculateBookings());
   const bookingTypeInfo = calculateBookingTypes(data, 'turf');
   const bookingType2Info = calculateBookingTypes(data, 'boardGame');
   const bookingType3Info = calculateBookingTypes(data, 'playstation');
@@ -68,11 +67,12 @@ const DashboardDefault = () => {
   const bookingType5Info = calculateBookingTypes(data, 'bowlingMachine');
   const bookingType6Info = calculateBookingTypes(data, 'badminton');
 
+  const bookingInfo = calculateBookings(data);
+
   useEffect(() => {
     fetchData();
     fetchEnquiry();
-    setBookingInfo(calculateBookings());
-  }, [data]);
+  }, []);
 
   const allChartData = {
     'All Booking Type': { onlineBooking: bookingInfo.online, cashBooking: bookingInfo.cash, totalBooking: bookingInfo.totalBooking },
@@ -145,7 +145,7 @@ const DashboardDefault = () => {
       <Grid item xs={12}>
         <Grid container alignItems="center" justifyContent="space-between">
           <Grid item>
-            <Typography variant="h5">Booking Types</Typography>
+            <Typography variant="h3">Booking Chart</Typography>
           </Grid>
           <Grid item>
             <Stack direction="row" alignItems="center" spacing={2}>

@@ -31,7 +31,7 @@ export const mainAll = {
     },
     {
       id: 'amount',
-      title: 'Amount List',
+      title: 'Amount',
       type: 'item',
       url: '/amount',
       icon: icons.WalletOutlined

@@ -47,7 +47,7 @@ export default function AdminUserList() {
   }, [fetchInfo]);
 
   return (
-    <MainCard title="Admin Users">
+    <MainCard title="Admin Users List">
       <Stack direction="column" spacing={4}>
         <TableList
           count={count}

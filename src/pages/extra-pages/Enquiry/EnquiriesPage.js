@@ -182,7 +182,7 @@ export default function EnquiriesPage() {
 
   return (
     <Stack direction="column" spacing={3}>
-      <MainCard title="Enquiries">
+      <MainCard title="Enquiries List">
         <Stack direction="row" height={100}>
           <Grid container spacing={3}>
             <Grid item md={3}>
