@@ -180,8 +180,6 @@ export default function EnquiriesPage() {
     return dayjs(date).isBefore(dayjs(startDate), 'day');
   };
 
-  console.log('data', data);
-
   return (
     <Stack direction="column" spacing={3}>
       <MainCard title="Enquiries">

@@ -25,8 +25,6 @@ const CalendarComponent = ({ data }) => {
     setEventModal(false);
   };
 
-  console.log('data', selectedEvent, selectedDate);
-
   return (
     <div style={{ height: '900px' }}>
       <Calendar

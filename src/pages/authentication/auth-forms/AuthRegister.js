@@ -45,7 +45,6 @@ const AuthRegister = () => {
   const changePassword = (value) => {
     const temp = strengthIndicator(value);
     // setLevel(strengthColor(temp));
-    console.log(temp);
   };
 
   useEffect(() => {
@@ -74,7 +73,6 @@ const AuthRegister = () => {
         })}
         onSubmit={async (values, { setErrors, setStatus, setSubmitting }) => {
           try {
-            console.log('values', values);
             if (values.user === 'admin') {
               const response = await RegisterApi.createAdmin({
                 email: values.email,

@@ -50,7 +50,6 @@ export default function AmountPage() {
 
   const [editedData, setEditedData] = useState([]);
   const [editableRowIndex, setEditableRowIndex] = useState(null);
-  // const [editedData, setEditedData] = useState({ type: '', amount: '', count: '' });
 
   const handleChange = (event) => {
     setBookingType(event.target.value);
@@ -88,7 +87,6 @@ export default function AmountPage() {
         court: selectCourt
       };
 
-      console.log(details, ' amountdata');
       const booking = async () => {
         try {
           const response = await AmountApi.createAmount(details);
@@ -115,7 +113,6 @@ export default function AmountPage() {
     setUpdateModal(true);
     setEditedData(index);
   };
-  console.log('edit', editedData);
 
   const updateModalChange = async () => {
     const idToUpdate = editedData.id;
@@ -135,7 +132,6 @@ export default function AmountPage() {
     } catch (error) {
       console.log('please provide valid data', error);
     }
-    console.log('value', details);
 
     fetchInfo();
     handleClose();
@@ -169,12 +165,12 @@ export default function AmountPage() {
         <Stack direction="column" spacing={4} width="100%" maxWidth={1120} height={130}>
           <Grid container spacing={3}>
             <Grid item md={3}>
-              <TypeDropdown label="Select Booking Type" type={bookingType} onChange={handleChange} error={typeError} />
+              <TypeDropdown label="Select Booking Type" type={bookingType || ''} onChange={handleChange} error={typeError} />
             </Grid>
             <Grid item md={3}>
               <CustomTextField
                 label="Enter Amount"
-                value={amount}
+                value={amount || ''}
                 setValue={handleAmountChange}
                 error={amountError}
                 errorText="please Enter a valid Amount"
