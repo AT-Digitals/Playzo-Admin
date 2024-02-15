@@ -45,7 +45,6 @@ const AuthRegister = () => {
   const changePassword = (value) => {
     const temp = strengthIndicator(value);
     // setLevel(strengthColor(temp));
-    console.log(temp);
   };
 
   useEffect(() => {
@@ -74,7 +73,6 @@ const AuthRegister = () => {
         })}
         onSubmit={async (values, { setErrors, setStatus, setSubmitting }) => {
           try {
-            console.log('values', values);
             if (values.user === 'admin') {
               const response = await RegisterApi.createAdmin({
                 email: values.email,
@@ -259,7 +257,7 @@ const AuthRegister = () => {
               <Grid item xs={12}>
                 <AnimateButton>
                   <Button disableElevation disabled={isSubmitting} fullWidth size="large" type="submit" variant="contained" color="primary">
-                    Create Account
+                    Create User
                   </Button>
                 </AnimateButton>
               </Grid>

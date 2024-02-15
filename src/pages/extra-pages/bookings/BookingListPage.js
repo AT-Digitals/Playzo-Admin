@@ -141,7 +141,7 @@ export default function BookingListPage() {
   const handleClose = () => {
     setUpdateModal(false);
     setPayError(false);
-    setRefundCheck('');
+    setRefundCheck(false);
   };
 
   const handleChangePage = (_event, newPage) => {
@@ -375,7 +375,7 @@ export default function BookingListPage() {
     console.log('value', value);
 
     fetchInfo();
-    setRefundCheck('');
+    setRefundCheck(false);
   };
 
   return (

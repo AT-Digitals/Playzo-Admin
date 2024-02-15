@@ -46,7 +46,7 @@ export default function UserList() {
   }, [fetchInfo]);
 
   return (
-    <MainCard title="Users">
+    <MainCard title="Users List">
       <Stack direction="column" spacing={4}>
         <TableList
           count={count}

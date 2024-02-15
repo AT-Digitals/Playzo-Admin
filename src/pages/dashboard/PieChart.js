@@ -4,19 +4,21 @@ import { Box, Typography, styled } from '@mui/material';
 const StyledCharts = styled(Chart)(({ theme }) => ({
   '.apexcharts-canvas': {
     margin: '0 auto'
+  },
+  '.apexcharts-legend': {
+    top: '100px !important'
+  },
+  '.apexcharts-legend-series': {
+    fontSize: '40px',
+    marginTop: '50px'
+  },
+  '.apexcharts-legend-marker': {
+    height: '20px !important',
+    width: '20px !important'
+  },
+  '.apexcharts-legend-text': {
+    fontSize: '20px !important'
   }
-  // ".apexcharts-tooltip .tooltip-container": {
-  //   padding: theme.spacing(0.5, 1),
-  //   ".label": {
-  //     color: Colors.MENU_COLOR,
-  //     fontSize: theme.typography.caption.fontSize,
-  //   },
-  //   ".value": {
-  //     color: Colors.WHITE,
-  //     fontSize: theme.typography.body3.fontSize,
-  //     fontWeight: 700,
-  //   },
-  // },
 }));
 
 const PieChart = ({ selectData }) => {
@@ -26,17 +28,25 @@ const PieChart = ({ selectData }) => {
     labels: labels,
     dataLabels: {
       enabled: true,
+      textAnchor: 'middle',
+      offsetX: 50,
+      offsetY: 40,
+      style: {
+        fontSize: '15px',
+        paddingX: '40px'
+      },
       formatter: function (value, { seriesIndex, dataPointIndex, w }) {
-        return labels[dataPointIndex];
+        const categoryName = w.config.labels[seriesIndex];
+        const valueForCategory = w.config.series[seriesIndex];
+        return `${valueForCategory}`;
       }
     }
   };
 
   return (
-    <Box paddingX={3} paddingY={2}>
-      <Typography variant="h3">Booking Chart</Typography>
+    <Box paddingX={3} paddingTop={5} paddingBottom={5}>
       <Box width="100%" maxWidth="1200px" margin="auto">
-        <StyledCharts options={chartOptions} series={series} type="pie" width="650" />
+        <StyledCharts options={chartOptions} series={series} type="pie" width="700" />
       </Box>
     </Box>
   );
