@@ -49,7 +49,7 @@ export default function AmountTable({
                     ) : column.id === 'No' ? (
                       index + 1
                     ) : column.id === 'court' ? (
-                      BookingSubTypes[rowData['bookingType']][rowData[column.id]]
+                      rowData['bookingType'] && BookingSubTypes[rowData['bookingType']][rowData[column.id]]
                     ) : (
                       rowData[column.id]
                     )}
