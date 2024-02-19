@@ -92,14 +92,12 @@ export default function AmountPage() {
       const booking = async () => {
         try {
           const response = await AmountApi.createAmount(details);
-          setSuccesstoast('Your Amount is added.');
           if (response) {
             setAmountData([...amountData, response]);
-          } else {
-            console.error('Failed to add data:', response);
+            setSuccesstoast('Your Amount is added.');
           }
         } catch (error) {
-          console.log('please provide valid data', error);
+          setToast(error.message);
         }
       };
       booking();
@@ -107,6 +105,7 @@ export default function AmountPage() {
       setSelectCourt();
       setBookingType();
       setSuccesstoast('');
+      setToast('');
     }
   };
 
@@ -198,6 +197,7 @@ export default function AmountPage() {
             </Grid>
           </Grid>
         </Stack>
+        {toast !== '' ? <NotificationToast error={toast} /> : <></>}
         {successtoast !== '' ? <NotificationSuccessToast success={successtoast} /> : <></>}
       </MainCard>
       <MainCard>
@@ -217,7 +217,6 @@ export default function AmountPage() {
           handleChangePage={handleChangePage}
           handleChangeRowsPerPage={handleChangeRowsPerPage}
         />
-        {toast !== '' ? <NotificationToast error={toast} /> : <></>}
         {updateSuccesstoast !== '' ? <NotificationSuccessToast success={updateSuccesstoast} /> : <></>}
       </MainCard>
     </Stack>
