@@ -50,7 +50,7 @@ const CommonTable = ({
       const data = JSON.parse(rowData['user']).email;
       return data;
     } else if (id === 'user' && label === 'User Name') {
-      const data = JSON.parse(rowData[id]).name;
+      const data = JSON.parse(rowData['user']).name;
       return data;
     } else if (id === 'bookingAmount' && label === 'Booking Amount') {
       const data = rowData[id].total;
