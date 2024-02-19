@@ -1,9 +1,7 @@
-import { Button, Stack, Grid } from '@mui/material';
+import { Button, Grid, Stack } from '@mui/material';
 import { useCallback, useEffect, useState } from 'react';
 
-import CommonTable from '../bookings/bookingComponents/CommonTable';
 import CustomDatePicker from '../bookings/bookingComponents/CustomDatePicker';
-import DateUtils from 'utils/DateUtils';
 import EnquiryApi from 'api/EnquiryApi';
 import MainCard from 'components/MainCard';
 import TableList from 'pages/common/TableList';
@@ -113,22 +111,6 @@ export default function EnquiriesPage() {
   useEffect(() => {
     fetchInfo();
   }, [fetchInfo]);
-  // useEffect(() => {
-  //   const fetchInfo = async () => {
-  //     try {
-  //       const res = await EnquiryApi.getAll({}).then((data) => {
-  //         setCount(data.length);
-  //       });
-  //       const res1 = await EnquiryApi.getAllPaging({ page: page + 1, limit: rowsPerPage }).then((data) => {
-  //         setData(data);
-  //         setFilteredData(data);
-  //       });
-  //     } catch {
-  //       console.log('Error fetching data');
-  //     }
-  //   };
-  //   fetchInfo();
-  // }, [page, rowsPerPage]);
 
   const ApplyFilter = useCallback(
     async (event) => {
@@ -141,26 +123,12 @@ export default function EnquiriesPage() {
         setEndDateError(true);
         return;
       }
-      // if (startDate && endDate === '') {
-      //   setEndDateError(true);
-      //   return;
-      // }
-
-      // if (endDate && startDate === '') {
-      //   setStartDateError(true);
-      //   return;
-      // }
 
       if (startDate !== '' || endDate !== '') {
         const filter = {
           startDate: startDate,
           endDate: endDate
         };
-        if (filter.startDate && filter.endDate) {
-          const a = DateUtils.add(new Date(filter.endDate), 1, 'day');
-          filter.endDate = DateUtils.formatDate(new Date(a), 'yyyy-MM-DD');
-        }
-        console.log('filter', filter);
         setFilterData(filter);
         setBool(true);
       } else {

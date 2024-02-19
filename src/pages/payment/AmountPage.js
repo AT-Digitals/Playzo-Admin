@@ -9,6 +9,7 @@ import CustomTextField from 'pages/extra-pages/bookings/bookingComponents/Custom
 import DropDownComponent from 'pages/extra-pages/DropDownComponent';
 import MainCard from 'components/MainCard';
 import NotificationSuccessToast from 'pages/components-overview/NotificationSuccessToast';
+import NotificationToast from 'pages/components-overview/NotificationToast';
 import TypeDropdown from 'pages/extra-pages/bookings/bookingComponents/TypeDropdown';
 
 // const Data = [
@@ -38,6 +39,7 @@ export default function AmountPage() {
   const [updateSuccesstoast, setUpdateSuccesstoast] = useState('');
   const [page, setPage] = useState(0);
   const [rowsPerPage, setRowsPerPage] = useState(10);
+  const [toast, setToast] = useState('');
 
   const handleChangePage = (event, newPage) => {
     setPage(newPage);
@@ -215,6 +217,7 @@ export default function AmountPage() {
           handleChangePage={handleChangePage}
           handleChangeRowsPerPage={handleChangeRowsPerPage}
         />
+        {toast !== '' ? <NotificationToast error={toast} /> : <></>}
         {updateSuccesstoast !== '' ? <NotificationSuccessToast success={updateSuccesstoast} /> : <></>}
       </MainCard>
     </Stack>
