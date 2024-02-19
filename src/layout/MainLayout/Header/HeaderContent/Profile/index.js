@@ -58,6 +58,8 @@ function a11yProps(index) {
 const Profile = () => {
   const theme = useTheme();
   const navigate = useNavigate();
+  const user = localStorage.getItem('user');
+  const userData = JSON.parse(user);
 
   const handleLogout = async () => {
     try {
@@ -107,7 +109,7 @@ const Profile = () => {
       >
         <Stack direction="row" spacing={2} alignItems="center" sx={{ p: 0.5 }}>
           <Avatar alt="profile user" src={avatar1} sx={{ width: 32, height: 32 }} />
-          <Typography variant="subtitle1">John Doe</Typography>
+          <Typography variant="subtitle1">{userData.name}</Typography>
         </Stack>
       </ButtonBase>
       <Popper

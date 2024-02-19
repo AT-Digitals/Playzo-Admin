@@ -84,6 +84,8 @@ export default function AddBooking() {
     const formattedDate = parsedDate.format('YYYY-MM-DD');
     setDate(formattedDate);
     setDateError(false);
+    setStartTime('');
+    setEndTime('');
 
     if (endDateValue && new Date(endDateValue) < new Date(formattedDate)) {
       setIsModalOpen(false);
@@ -98,6 +100,8 @@ export default function AddBooking() {
     setEndDateValue(formattedDate);
     ApiCall(formattedDate);
     setEndDateError(false);
+    setStartTime('');
+    setEndTime('');
   };
 
   const ApiCall = async (endData) => {
