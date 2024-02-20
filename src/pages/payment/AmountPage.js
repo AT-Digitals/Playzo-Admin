@@ -9,6 +9,7 @@ import CustomTextField from 'pages/extra-pages/bookings/bookingComponents/Custom
 import DropDownComponent from 'pages/extra-pages/DropDownComponent';
 import MainCard from 'components/MainCard';
 import NotificationSuccessToast from 'pages/components-overview/NotificationSuccessToast';
+import NotificationToast from 'pages/components-overview/NotificationToast';
 import TypeDropdown from 'pages/extra-pages/bookings/bookingComponents/TypeDropdown';
 
 // const Data = [
@@ -38,6 +39,7 @@ export default function AmountPage() {
   const [updateSuccesstoast, setUpdateSuccesstoast] = useState('');
   const [page, setPage] = useState(0);
   const [rowsPerPage, setRowsPerPage] = useState(10);
+  const [toast, setToast] = useState('');
 
   const handleChangePage = (event, newPage) => {
     setPage(newPage);
@@ -90,14 +92,12 @@ export default function AmountPage() {
       const booking = async () => {
         try {
           const response = await AmountApi.createAmount(details);
-          setSuccesstoast('Your Amount is added.');
           if (response) {
             setAmountData([...amountData, response]);
-          } else {
-            console.error('Failed to add data:', response);
+            setSuccesstoast('Your Amount is added.');
           }
         } catch (error) {
-          console.log('please provide valid data', error);
+          setToast(error.message);
         }
       };
       booking();
@@ -105,6 +105,7 @@ export default function AmountPage() {
       setSelectCourt();
       setBookingType();
       setSuccesstoast('');
+      setToast('');
     }
   };
 
@@ -196,6 +197,7 @@ export default function AmountPage() {
             </Grid>
           </Grid>
         </Stack>
+        {toast !== '' ? <NotificationToast error={toast} /> : <></>}
         {successtoast !== '' ? <NotificationSuccessToast success={successtoast} /> : <></>}
       </MainCard>
       <MainCard>

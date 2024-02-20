@@ -1,3 +1,4 @@
+import { BookingSubTypes } from '../BookingSubTypes';
 import DateUtils from 'utils/DateUtils';
 import EditIcon from '@mui/icons-material/Edit';
 import IconButton from '@mui/material/IconButton';
@@ -12,7 +13,6 @@ import { TablePagination } from '@mui/material';
 import TableRow from '@mui/material/TableRow';
 import UpdateModalComponent from '../UpdateModalComponent';
 import moment from 'moment';
-import { BookingSubTypes } from '../BookingSubTypes';
 
 const CommonTable = ({
   columns,
@@ -44,13 +44,14 @@ const CommonTable = ({
     } else if (id === 'startTime' || id === 'endTime') {
       return DateUtils.formatMillisecondsToTime(rowData[id]);
     } else if (id === 'userType' && label === 'User Type') {
-      const data = JSON.parse(rowData['user']).userType;
+      const data = rowData['user'] !== 'null' && JSON.parse(rowData['user']).userType;
       return data;
     } else if (id === 'userId' && label === 'Email ID') {
-      const data = JSON.parse(rowData['user']).email;
+      const data = rowData['user'] !== 'null' && JSON.parse(rowData['user']).email;
       return data;
     } else if (id === 'user' && label === 'User Name') {
-      const data = JSON.parse(rowData['user']).name;
+      console.log('rowdataaaa', rowData);
+      const data = rowData['user'] !== 'null' && JSON.parse(rowData['user']).name;
       return data;
     } else if (id === 'bookingAmount' && label === 'Booking Amount') {
       const data = rowData[id].total;
