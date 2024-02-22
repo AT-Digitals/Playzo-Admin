@@ -140,9 +140,9 @@ export default function AmountPage() {
 
   const columns = [
     { id: 'No', label: 'No' },
-    { id: 'bookingType', label: 'Booking Type' },
+    { id: 'bookingType', label: 'Services' },
+    { id: 'court', label: 'Service Type' },
     { id: 'bookingAmount', label: 'Amount' },
-    { id: 'court', label: 'Court' },
     { id: 'action', label: 'Action' }
   ];
 
@@ -166,7 +166,16 @@ export default function AmountPage() {
         <Stack direction="column" spacing={4} width="100%" maxWidth={1120} height={130}>
           <Grid container spacing={3}>
             <Grid item md={3}>
-              <TypeDropdown label="Select Booking Type" type={bookingType || ''} onChange={handleChange} error={typeError} />
+              <TypeDropdown label="Select Service" type={bookingType || ''} onChange={handleChange} error={typeError} />
+            </Grid>
+            <Grid item md={3}>
+              <DropDownComponent
+                label="Select Service Type"
+                value={selectCourt || ''}
+                onChange={handleCourtChange}
+                options={getNumberOptions1(bookingType)}
+                error={courtError}
+              />
             </Grid>
             <Grid item md={3}>
               <CustomTextField
@@ -174,16 +183,7 @@ export default function AmountPage() {
                 value={amount || ''}
                 setValue={handleAmountChange}
                 error={amountError}
-                errorText="please Enter a valid Amount"
-              />
-            </Grid>
-            <Grid item md={3}>
-              <DropDownComponent
-                label="Select Court"
-                value={selectCourt || ''}
-                onChange={handleCourtChange}
-                options={getNumberOptions1(bookingType)}
-                error={courtError}
+                errorText="Please Enter a valid Amount"
               />
             </Grid>
             <Grid item md={3}>

@@ -20,7 +20,7 @@ export default function TypeDropdown({ type, onChange, label, error }) {
           <MenuItem value="bowlingMachine">Bowling Machine</MenuItem>
           <MenuItem value="badminton">Badminton</MenuItem>
         </Select>
-        {error ? <FormHelperText error>Please select a type</FormHelperText> : <></>}
+        {error ? <FormHelperText error>Please select a service</FormHelperText> : <></>}
       </FormControl>
     </Stack>
   );

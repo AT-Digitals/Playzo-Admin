@@ -23,13 +23,6 @@ const CalendarBooking = () => {
     setBookingType(event.target.value);
   };
 
-  const handleButtonClick = () => {
-    setBookingType('All');
-    setIsApplyMode(true);
-    setButtonDisable(false);
-    fetchInfo();
-  };
-
   const fetchInfo = async () => {
     const listDate = [];
     try {
@@ -64,11 +57,11 @@ const CalendarBooking = () => {
 
           const calendarDataList = {
             userName: name,
+            email: emailaddress,
             title: list.type,
-            start: new Date(year, month, day, startHour, startMinute, 0, 0),
-            end: new Date(endyear, endmonth, endday, endHour, endMinute, 0, 0),
             court: list.court,
-            email: emailaddress
+            start: new Date(year, month, day, startHour, startMinute, 0, 0),
+            end: new Date(endyear, endmonth, endday, endHour, endMinute, 0, 0)
           };
           listDate.push(calendarDataList);
         });
@@ -104,8 +97,13 @@ const CalendarBooking = () => {
           const startMinute = parseInt(startTime24.split(':')[1], 10);
           const endHour = parseInt(endTime24.split(':')[0], 10);
           const endMinute = parseInt(endTime24.split(':')[1], 10);
+          const name = JSON.parse(list.user).name;
+          const emailaddress = JSON.parse(list.user).email;
           const calendarDataList = {
+            userName: name,
+            email: emailaddress,
             title: list.type,
+            court: list.court,
             start: new Date(year, month, day, startHour, startMinute, 0, 0),
             end: new Date(endyear, endmonth, endday, endHour, endMinute, 0, 0)
           };
@@ -118,6 +116,10 @@ const CalendarBooking = () => {
     }
   };
 
+  useEffect(() => {
+    fetchInfo();
+  }, []);
+
   const applyFilters = () => {
     if (bookingType !== 'All') {
       filterType();
@@ -125,14 +127,17 @@ const CalendarBooking = () => {
       setButtonDisable(true);
     } else {
       fetchInfo();
-      setIsApplyMode(true);
-      setButtonDisable(false);
+      setIsApplyMode(false);
+      setButtonDisable(true);
     }
   };
 
-  useEffect(() => {
+  const handleButtonClick = () => {
+    setBookingType('All');
+    setIsApplyMode(true);
+    setButtonDisable(false);
     fetchInfo();
-  }, []);
+  };
 
   return (
     <Stack direction="column" spacing={3}>
@@ -141,7 +146,7 @@ const CalendarBooking = () => {
           <Grid container spacing={3}>
             <Grid item md={3}>
               <Stack direction="column" spacing={2}>
-                <Typography>All Booking Type</Typography>
+                <Typography>All Services</Typography>
                 <FormControl fullWidth>
                   <Select
                     labelId="demo-simple-select-label"

@@ -8,7 +8,7 @@ import { mainAll, mainRead } from './mainpages';
 
 const menuItems = {
   allItems: [dashboardAll, bookingAll, mainAll],
-  writeItems: [dashboardWrite, bookingRead, mainRead],
+  writeItems: [dashboardWrite, bookingAll, mainRead],
   readItems: [dashboardRead, bookingRead, mainRead]
 };
 

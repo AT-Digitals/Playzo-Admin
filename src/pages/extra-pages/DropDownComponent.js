@@ -24,7 +24,7 @@ export default function DropDownComponent({ label, options, value, onChange, err
             </MenuItem>
           ))}
         </Select>
-        {error ? <FormHelperText error>Please select a Court value</FormHelperText> : <></>}
+        {error ? <FormHelperText error>Please select a service type</FormHelperText> : <></>}
       </FormControl>
     </Stack>
   );

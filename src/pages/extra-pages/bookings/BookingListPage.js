@@ -15,14 +15,14 @@ import MainCard from 'components/MainCard';
 import MenuItem from '@mui/material/MenuItem';
 import NotificationSuccessToast from 'pages/components-overview/NotificationSuccessToast';
 import Select from '@mui/material/Select';
-import ToggleButtonComponent from './ToggleButtonComponent';
 import dayjs from 'dayjs';
 import moment from 'moment';
+import { BookingLength } from './BookingLength';
 
 const Data = [
   {
     value: 'previous',
-    label: 'Previous'
+    label: 'Yesterday'
   },
   {
     value: 'today',
@@ -30,7 +30,18 @@ const Data = [
   },
   {
     value: 'future',
-    label: 'Future'
+    label: 'Tomorrow'
+  }
+];
+
+const BookingTypeData = [
+  {
+    value: 'manual',
+    label: 'Manual'
+  },
+  {
+    value: 'online',
+    label: 'Online'
   }
 ];
 
@@ -52,6 +63,14 @@ const monthData = [
     label: '1 year'
   }
 ];
+
+const getNumberOptions1 = (Type) => {
+  const length = BookingLength[Type] || 0;
+  return Array.from({ length }, (_, index) => ({
+    value: (index + 1).toString(),
+    label: BookingSubTypes[Type][index + 1]
+  }));
+};
 
 export default function BookingListPage() {
   const [bookingType, setBookingType] = useState('All');
@@ -79,9 +98,19 @@ export default function BookingListPage() {
   const [editableRowIndex, setEditableRowIndex] = useState(null);
   const [updateToast, setUpdateToast] = useState('');
   const [refundCheck, setRefundCheck] = useState(false);
+  const [selectBooking, setSelectBooking] = useState('');
+  const [selectServiceType, setSelectServiceType] = useState('');
 
   const handleRefundChange = (event) => {
     setRefundCheck(event.target.checked);
+  };
+
+  const handleBookingChange = (event) => {
+    setSelectBooking(event.target.value);
+  };
+
+  const handleCourtChange = (event) => {
+    setSelectServiceType(event.target.value);
   };
 
   const handleButtonClick = async () => {
@@ -142,6 +171,7 @@ export default function BookingListPage() {
     setUpdateModal(false);
     setPayError(false);
     setRefundCheck(false);
+    setPayAmount('');
   };
 
   const handleChangePage = (_event, newPage) => {
@@ -286,25 +316,31 @@ export default function BookingListPage() {
   const handleDownload = () => {
     const wb = XLSX.utils.book_new();
 
-    const ModifiedData = data.map((item, index) => ({
-      // ...item,
-      No: index + 1,
-      userName: JSON.parse(item.user).name,
-      service: item.type,
-      serviceType: BookingSubTypes[item.type][item.court],
-      startDate: moment(item.startDate).format('DD-MM-YYYY'),
-      endDate: moment(item.endDate).format('DD-MM-YYYY'),
-      startTime: DateUtils.formatMillisecondsToTime(item.startTime),
-      endTime: DateUtils.formatMillisecondsToTime(item.endTime),
-      bookingType: item.bookingtype,
-      userType: JSON.parse(item.user).userType,
-      email: JSON.parse(item.user).email,
-      dateOfBooking: moment(item.dateOfBooking).format('DD-MM-YYYY'),
-      duration: item.duration,
-      cashPayment: item.bookingAmount.cash,
-      onlinePayment: item.bookingAmount.online,
-      totalAmount: item.bookingAmount.total
-    }));
+    const ModifiedData = data.map((item, index) => {
+      console.log(item.user);
+      const userData = JSON.parse(item.user !== null);
+      console.log('userData', userData);
+      if (userData) {
+        return {
+          No: index + 1,
+          userName: userData.name,
+          service: item.type,
+          serviceType: BookingSubTypes[item.type][item.court],
+          startDate: moment(item.startDate).format('DD-MM-YYYY'),
+          endDate: moment(item.endDate).format('DD-MM-YYYY'),
+          startTime: DateUtils.formatMillisecondsToTime(item.startTime),
+          endTime: DateUtils.formatMillisecondsToTime(item.endTime),
+          bookingType: item.bookingtype,
+          userType: userData.userType,
+          email: userData.email,
+          dateOfBooking: moment(item.dateOfBooking).format('DD-MM-YYYY'),
+          duration: item.duration,
+          cashPayment: item.bookingAmount.cash,
+          onlinePayment: item.bookingAmount.online,
+          totalAmount: item.bookingAmount.total
+        };
+      }
+    });
 
     const ws = XLSX.utils.json_to_sheet(ModifiedData);
     XLSX.utils.book_append_sheet(wb, ws, 'Sheet1');
@@ -381,11 +417,11 @@ export default function BookingListPage() {
   return (
     <>
       <MainCard title="Booking List">
-        <Stack direction="column" spacing={4} width="100%" maxWidth={1120} height={230}>
+        <Stack direction="column" spacing={4} width="100%" maxWidth={1120} height={280}>
           <Grid container spacing={3}>
             <Grid item md={3}>
               <Stack spacing={2}>
-                <Typography>All Booking Type</Typography>
+                <Typography>All Services</Typography>
                 <FormControl fullWidth>
                   <Select
                     labelId="demo-simple-select-label"
@@ -404,6 +440,14 @@ export default function BookingListPage() {
                   </Select>
                 </FormControl>
               </Stack>
+            </Grid>
+            <Grid item md={3}>
+              <DropDownComponent
+                label="Select Service Type"
+                value={selectServiceType || ''}
+                onChange={handleCourtChange}
+                options={getNumberOptions1(bookingType)}
+              />
             </Grid>
             <Grid item md={3}>
               <CustomDatePicker
@@ -428,7 +472,7 @@ export default function BookingListPage() {
             </Grid>
             <Grid item md={3}>
               <Stack spacing={2}>
-                <Typography>All Payment Type</Typography>
+                <Typography>Payment Type</Typography>
                 <FormControl fullWidth>
                   <Select
                     labelId="demo-simple-select-label"
@@ -445,7 +489,16 @@ export default function BookingListPage() {
             </Grid>
             <Grid item md={3}>
               <DropDownComponent
-                label="All Month Type"
+                label="Booking Type"
+                value={selectBooking}
+                onChange={handleBookingChange}
+                options={BookingTypeData}
+                disabled={buttonDisable}
+              />
+            </Grid>
+            <Grid item md={3}>
+              <DropDownComponent
+                label="Monthly Report"
                 value={monthType}
                 onChange={buttonhandleChange}
                 options={monthData}
@@ -455,7 +508,7 @@ export default function BookingListPage() {
             </Grid>
             <Grid item md={3}>
               <DropDownComponent
-                label="Booking List"
+                label="Current Bookings"
                 value={selectData}
                 onChange={handleDataChange}
                 options={Data}
@@ -464,12 +517,12 @@ export default function BookingListPage() {
             </Grid>
 
             <Grid item md={5}>
-              <Stack direction="row" spacing={2} mt={4.5}>
+              <Stack direction="row" spacing={2}>
                 {isApplyMode ? (
                   <Button
                     variant="outlined"
                     onClick={applyFilters}
-                    sx={{ padding: '7px 15px', width: '150px', fontWeight: 600, fontSize: '15px' }}
+                    sx={{ padding: '7px 15px', width: '150px', height: '43px', fontWeight: 600, fontSize: '15px' }}
                   >
                     Apply
                   </Button>
@@ -477,7 +530,7 @@ export default function BookingListPage() {
                   <Button
                     variant="outlined"
                     onClick={handleButtonClick}
-                    sx={{ padding: '7px 15px', width: '150px', fontWeight: 600, fontSize: '15px' }}
+                    sx={{ padding: '7px 15px', width: '150px', height: '43px', fontWeight: 600, fontSize: '15px' }}
                   >
                     Clear
                   </Button>
@@ -486,7 +539,7 @@ export default function BookingListPage() {
                 <Button
                   variant="outlined"
                   onClick={handleDownload}
-                  sx={{ padding: '7px 15px', width: '200px', fontWeight: 600, fontSize: '15px' }}
+                  sx={{ padding: '7px 15px', width: '200px', height: '43px', fontWeight: 600, fontSize: '15px' }}
                 >
                   Download Report
                 </Button>

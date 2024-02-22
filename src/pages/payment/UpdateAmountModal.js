@@ -37,7 +37,7 @@ export default function UpdateAmountModal({ onSubmit, onClose, isOpen, editedDat
             <Grid container columnGap={3}>
               <Grid item md={12} mb={2}>
                 <Stack spacing={2}>
-                  <Typography>Selected Booking Type</Typography>
+                  <Typography>Selected Service</Typography>
                   <FormControl fullWidth>
                     <Select
                       labelId="demo-simple-select-label"
@@ -58,21 +58,22 @@ export default function UpdateAmountModal({ onSubmit, onClose, isOpen, editedDat
                 </Stack>
               </Grid>
               <Grid item md={12} mb={2}>
+                <DropDownComponent
+                  label="Select Service Type"
+                  value={editedData.court || ''}
+                  onChange={(e) => setEditedData({ ...editedData, court: e.target.value })}
+                  options={data}
+                  disabled={true}
+                />
+              </Grid>
+              <Grid item md={12} mb={2}>
                 <CustomTextField
                   label="Enter Amount"
                   value={editedData.bookingAmount}
                   setValue={(e) => setEditedData({ ...editedData, bookingAmount: e.target.value })}
                   error={error}
                   type="number"
-                  errorText="please Enter a valid Amount"
-                />
-              </Grid>
-              <Grid item md={12} mb={2}>
-                <DropDownComponent
-                  label="Select Court"
-                  value={editedData.court || ''}
-                  onChange={(e) => setEditedData({ ...editedData, court: e.target.value })}
-                  options={data}
+                  errorText="Please Enter a valid Amount"
                 />
               </Grid>
             </Grid>

@@ -12,8 +12,8 @@ const columns = [
   { id: 'No', label: 'No' },
   { id: 'userName', label: 'User Name' },
   { id: 'userEmail', label: 'Email ID' },
+  { id: 'phoneNumber', label: 'Phone Number' },
   { id: 'dateOfEnquiry', label: 'Date of Enquiry' },
-  { id: 'phoneNumber', label: 'User Number' },
   { id: 'enquiryMessage', label: 'Message' }
 ];
 

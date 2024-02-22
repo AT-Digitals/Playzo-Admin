@@ -15,7 +15,7 @@ import EnquiryApi from 'api/EnquiryApi';
 const DashboardDefault = () => {
   const [data, setData] = useState([]);
   const [enquiryData, setEnquiryData] = useState([]);
-  const [selectedCategory, setSelectedCategory] = useState('All Booking Type');
+  const [selectedCategory, setSelectedCategory] = useState('All Services');
 
   const handleButtonClick = (category) => {
     setSelectedCategory(category);
@@ -75,7 +75,7 @@ const DashboardDefault = () => {
   }, []);
 
   const allChartData = {
-    'All Booking Type': { onlineBooking: bookingInfo.online, cashBooking: bookingInfo.cash, totalBooking: bookingInfo.totalBooking },
+    'All Services': { onlineBooking: bookingInfo.online, cashBooking: bookingInfo.cash, totalBooking: bookingInfo.totalBooking },
     Turf: { onlineBooking: bookingTypeInfo.online, cashBooking: bookingTypeInfo.cash, totalBooking: bookingTypeInfo.totalBooking },
     'Board Game': {
       onlineBooking: bookingType2Info.online,
@@ -107,7 +107,7 @@ const DashboardDefault = () => {
       return { labels, series };
     } else {
       const data = allChartData[category];
-      const labels = ['Online Bookings', 'Cash Bookings', 'Total Bookings'];
+      const labels = ['Online Bookings', 'Manual Bookings', 'Total Bookings'];
       const series = [data.onlineBooking, data.cashBooking, data.totalBooking];
       return { labels, series };
     }
@@ -125,14 +125,14 @@ const DashboardDefault = () => {
         <AnalyticEcommerce title="Total Bookings" count={bookingInfo.totalBooking.toString()} percentage={59.3} />
       </Grid>
       <Grid item xs={12} sm={6} md={4} lg={3}>
-        <AnalyticEcommerce title="Cash Bookings" count={bookingInfo.cash.toString()} percentage={70.5} />
+        <AnalyticEcommerce title="Manual Bookings" count={bookingInfo.cash.toString()} percentage={70.5} />
       </Grid>
       <Grid item xs={12} sm={6} md={4} lg={3}>
         <AnalyticEcommerce title="Online Bookings" count={bookingInfo.online.toString()} percentage={27.4} isLoss color="warning" />
       </Grid>
       <Grid item xs={12} sm={6} md={4} lg={3}>
         <AnalyticEcommerce
-          title="Total Enquiries"
+          title="Enquiries"
           count={enquiryData.length.toString()}
           percentage={27.4}
           isLoss
@@ -150,11 +150,11 @@ const DashboardDefault = () => {
           <Grid item>
             <Stack direction="row" alignItems="center" spacing={2}>
               <Button
-                onClick={() => handleButtonClick('All Booking Type')}
-                color={selectedCategory === 'All Booking Type' ? 'primary' : 'secondary'}
-                variant={selectedCategory === 'All Booking Type' ? 'outlined' : 'text'}
+                onClick={() => handleButtonClick('All Services')}
+                color={selectedCategory === 'All Services' ? 'primary' : 'secondary'}
+                variant={selectedCategory === 'All Services' ? 'outlined' : 'text'}
               >
-                All Boooking Type
+                All Services
               </Button>
               <Button
                 onClick={() => handleButtonClick('Turf')}

@@ -33,16 +33,16 @@ export const dashboardAll = {
       breadcrumbs: false
     },
     {
-      id: 'adminusers',
-      title: 'Admin Users',
+      id: 'adminpanel',
+      title: 'Admin Panel',
       type: 'item',
       url: '/admin-users',
       icon: icons.UserOutlined,
       breadcrumbs: false
     },
     {
-      id: 'users',
-      title: 'Users',
+      id: 'customers',
+      title: 'Customers',
       type: 'item',
       url: '/users',
       icon: icons.UserOutlined,
@@ -62,23 +62,6 @@ export const dashboardWrite = {
       type: 'item',
       url: '/dashboard/default',
       icon: icons.DashboardOutlined,
-      breadcrumbs: false
-    },
-
-    {
-      id: 'adminusers',
-      title: 'Admin Users',
-      type: 'item',
-      url: '/admin-users',
-      icon: icons.UserOutlined,
-      breadcrumbs: false
-    },
-    {
-      id: 'users',
-      title: 'Users',
-      type: 'item',
-      url: '/users',
-      icon: icons.UserOutlined,
       breadcrumbs: false
     }
   ]
