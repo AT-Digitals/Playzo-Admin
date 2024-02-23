@@ -6,7 +6,10 @@ import Box from '@mui/material/Box';
 import Button from '@mui/material/Button';
 import CloseIcon from '@mui/icons-material/Close';
 import Modal from '@mui/material/Modal';
-import CustomTextField from '../bookings/bookingComponents/CustomTextField';
+import Visibility from '@mui/icons-material/Visibility';
+import VisibilityOff from '@mui/icons-material/VisibilityOff';
+import InputAdornment from '@mui/material/InputAdornment';
+import OutlinedInput from '@mui/material/OutlinedInput';
 
 const style = {
   position: 'absolute',
@@ -28,7 +31,11 @@ export default function UpdatePasswordModal({
   confirmPassword,
   setConfirm,
   error,
-  error1
+  error1,
+  handleClickShowPassword,
+  showPassword,
+  handleClickShowConfirmPassword,
+  showConfirmPassword
 }) {
   return (
     <>
@@ -43,22 +50,44 @@ export default function UpdatePasswordModal({
           <Stack direction="column" spacing={3}>
             <Grid container columnGap={3}>
               <Grid item md={12} mb={2}>
-                <CustomTextField
-                  label="Password"
-                  value={password}
-                  setValue={setPassword}
-                  error={error}
-                  errorText="Please Enter a Valid Password"
-                />
+                <Stack direction="column" spacing={2}>
+                  <Typography>Password</Typography>
+                  <OutlinedInput
+                    id="outlined-adornment-password"
+                    type={showPassword ? 'text' : 'password'}
+                    endAdornment={
+                      <InputAdornment position="end">
+                        <IconButton aria-label="toggle password visibility" onClick={handleClickShowPassword} edge="end">
+                          {showPassword ? <VisibilityOff /> : <Visibility />}
+                        </IconButton>
+                      </InputAdornment>
+                    }
+                    error={error}
+                    helpertext={error === true ? 'Please Enter a Valid Password' : ''}
+                    value={password}
+                    onChange={setPassword}
+                  />
+                </Stack>
               </Grid>
               <Grid item md={12} mb={2}>
-                <CustomTextField
-                  label="Confirm Password"
-                  value={confirmPassword}
-                  setValue={setConfirm}
-                  error={error1}
-                  errorText="Please Enter a Valid Confirm Password"
-                />
+                <Stack direction="column" spacing={2}>
+                  <Typography>Confirm Password</Typography>
+                  <OutlinedInput
+                    id="outlined-adornment-password"
+                    type={showConfirmPassword ? 'text' : 'password'}
+                    endAdornment={
+                      <InputAdornment position="end">
+                        <IconButton aria-label="toggle password visibility" onClick={handleClickShowConfirmPassword} edge="end">
+                          {showConfirmPassword ? <VisibilityOff /> : <Visibility />}
+                        </IconButton>
+                      </InputAdornment>
+                    }
+                    error={error1}
+                    helpertext={error === true ? 'Please Enter a Valid Confirm Password' : ''}
+                    value={confirmPassword}
+                    onChange={setConfirm}
+                  />
+                </Stack>
               </Grid>
             </Grid>
             <Stack direction="row" spacing={2}>

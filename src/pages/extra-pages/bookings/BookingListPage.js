@@ -5,6 +5,7 @@ import { useCallback, useEffect, useState } from 'react';
 
 import { AccessType } from 'pages/authentication/auth-forms/AccessType';
 import BookingApi from 'api/BookingApi';
+import { BookingLength } from './BookingLength';
 import { BookingSubTypes } from './BookingSubTypes';
 import CommonTable from './bookingComponents/CommonTable';
 import CustomDatePicker from './bookingComponents/CustomDatePicker';
@@ -17,7 +18,7 @@ import NotificationSuccessToast from 'pages/components-overview/NotificationSucc
 import Select from '@mui/material/Select';
 import dayjs from 'dayjs';
 import moment from 'moment';
-import { BookingLength } from './BookingLength';
+import NotificationToast from 'pages/components-overview/NotificationToast';
 
 const Data = [
   {
@@ -85,7 +86,7 @@ export default function BookingListPage() {
 
   const [isApplyMode, setIsApplyMode] = useState(true);
   const [buttonDisable, setButtonDisable] = useState(false);
-  const [paymentType, setPaymentType] = useState('');
+  // const [paymentType, setPaymentType] = useState('');
   const [filterData, setFilterData] = useState();
   const [bool, setBool] = useState(false);
 
@@ -100,6 +101,7 @@ export default function BookingListPage() {
   const [refundCheck, setRefundCheck] = useState(false);
   const [selectBooking, setSelectBooking] = useState('');
   const [selectServiceType, setSelectServiceType] = useState('');
+  const [errorToast, setErrorToast] = useState('');
 
   const handleRefundChange = (event) => {
     setRefundCheck(event.target.checked);
@@ -120,7 +122,7 @@ export default function BookingListPage() {
     setIsApplyMode(true);
     setStartDateValue('');
     setEndDateValue('');
-    setPaymentType('');
+    setSelectBooking('');
     setSelectData('');
     setButtonDisable(false);
     setBool(false);
@@ -153,20 +155,19 @@ export default function BookingListPage() {
     setEndDateValue('');
   };
 
-  const handlePaymentChange = (event) => {
-    setPaymentType(event.target.value);
-  };
-
-  const handleModalChange = (index) => {
-    setEditableRowIndex(index);
-    setUpdateModal(true);
-  };
+  // const handlePaymentChange = (event) => {
+  //   setPaymentType(event.target.value);
+  // };
 
   const handleAmountChange = (event) => {
     setPayAmount(event.target.value);
     setPayError(false);
   };
 
+  const handleModalChange = (index) => {
+    setEditableRowIndex(index);
+    setUpdateModal(true);
+  };
   const handleClose = () => {
     setUpdateModal(false);
     setPayError(false);
@@ -254,18 +255,20 @@ export default function BookingListPage() {
       bookingType !== 'All' ||
       startDateValue !== '' ||
       endDateValue !== '' ||
-      paymentType !== '' ||
+      selectBooking !== '' ||
       monthType !== '' ||
       selectData !== ''
     ) {
       const details = {
         type: bookingType,
         startDate: startDateValue,
-        endDate: endDateValue,
-        bookingtype: paymentType
+        endDate: endDateValue
+        // bookingtype: paymentType
         // monthType: monthType,
         // day: selectData
       };
+
+      console.log('selectServiceType', selectServiceType);
       let dateFilter = '';
       if (monthType === 'oneMonth') {
         dateFilter = DateUtils.subtract(new Date(), 1, 'month', 'yyyy-MM-DD');
@@ -301,7 +304,13 @@ export default function BookingListPage() {
         details.endDate = DateUtils.formatDate(new Date(), 'yyyy-MM-DD');
         details.startDate = DateUtils.formatDate(new Date(dateFilter), 'yyyy-MM-DD');
       }
-
+      if (selectServiceType) {
+        details['court'] = selectServiceType.toString();
+      }
+      if (selectBooking) {
+        console.log('selectBooking', selectBooking);
+        details['userBookingType'] = selectBooking;
+      }
       setFilterData(details);
       setBool(true);
     } else {
@@ -311,7 +320,7 @@ export default function BookingListPage() {
     setIsApplyMode(false);
     setPage(0);
     setButtonDisable(true);
-  }, [bookingType, endDateValue, monthType, paymentType, selectData, startDateValue]);
+  }, [bookingType, endDateValue, monthType, selectBooking, selectData, selectServiceType, startDateValue]);
 
   const handleDownload = () => {
     const wb = XLSX.utils.book_new();
@@ -330,8 +339,7 @@ export default function BookingListPage() {
           endDate: moment(item.endDate).format('DD-MM-YYYY'),
           startTime: DateUtils.formatMillisecondsToTime(item.startTime),
           endTime: DateUtils.formatMillisecondsToTime(item.endTime),
-          bookingType: item.bookingtype,
-          userType: userData.userType,
+          bookingType: item.userBookingType,
           email: userData.email,
           dateOfBooking: moment(item.dateOfBooking).format('DD-MM-YYYY'),
           duration: item.duration,
@@ -367,10 +375,13 @@ export default function BookingListPage() {
     { id: 'endDate', label: 'End Date' },
     { id: 'startTime', label: 'Start Time' },
     { id: 'endTime', label: 'End Time' },
-    { id: 'bookingtype', label: 'Booking Type' },
-    { id: 'userType', label: 'User Type' },
+    // { id: 'bookingtype', label: 'Booking Type' },
+    // { id: 'userType', label: 'User Type' },
+    { id: 'userBookingType', label: 'Booking Type' },
     { id: 'cashPayment', label: 'Cash Payment' },
-    { id: 'onlinePayment', label: 'Online Payment' }
+    { id: 'onlinePayment', label: 'Online Payment' },
+    { id: 'total', label: 'Total' },
+    { id: 'refund', label: 'Refund' }
   ];
   if (userData.accessType !== AccessType.READ) {
     columns.push({
@@ -378,24 +389,27 @@ export default function BookingListPage() {
       label: 'Action'
     });
   }
+  console.log('edit', editableRowIndex);
   const UpdateChange = async (event) => {
     event.preventDefault();
     if (!payAmount) {
       setPayError(true);
     } else {
       setPayError(false);
-      setUpdateModal(false);
+      // setUpdateModal(false);
       setEditableRowIndex(null);
       setPayAmount('');
     }
+
     const idToUpdate = filteredData[editableRowIndex].id;
+    console.log('id', idToUpdate);
     const value = {
       amount: payAmount,
       id: idToUpdate,
       refund: refundCheck
     };
     try {
-      await BookingApi.updateAmount(value.id, {
+      const response = await BookingApi.updateAmount(value.id, {
         bookingAmount: {
           online: 0,
           cash: value.refund ? 0 : value.amount,
@@ -404,11 +418,17 @@ export default function BookingListPage() {
         },
         isRefund: value.refund
       });
-      setUpdateToast('Your Amount is updated successfully!');
+      console.log('error', response);
+      if (response) {
+        setUpdateToast('Your Amount is updated successfully!');
+        handleClose();
+      } else {
+        setErrorToast(response.message);
+      }
     } catch (error) {
+      //setErrorToast(error.message);
       console.log('please provide valid amount', error);
     }
-    console.log('value', value);
 
     fetchInfo();
     setRefundCheck(false);
@@ -447,6 +467,7 @@ export default function BookingListPage() {
                 value={selectServiceType || ''}
                 onChange={handleCourtChange}
                 options={getNumberOptions1(bookingType)}
+                disabled={buttonDisable}
               />
             </Grid>
             <Grid item md={3}>
@@ -470,7 +491,7 @@ export default function BookingListPage() {
                 error={endDateError}
               />
             </Grid>
-            <Grid item md={3}>
+            {/* <Grid item md={3}>
               <Stack spacing={2}>
                 <Typography>Payment Type</Typography>
                 <FormControl fullWidth>
@@ -486,7 +507,7 @@ export default function BookingListPage() {
                   </Select>
                 </FormControl>
               </Stack>
-            </Grid>
+            </Grid> */}
             <Grid item md={3}>
               <DropDownComponent
                 label="Booking Type"
@@ -504,7 +525,6 @@ export default function BookingListPage() {
                 options={monthData}
                 disabled={buttonDisable}
               />
-              {/* <ToggleButtonComponent value={monthType} setValue={buttonhandleChange} disableprop={buttonDisable} /> */}
             </Grid>
             <Grid item md={3}>
               <DropDownComponent
@@ -548,6 +568,7 @@ export default function BookingListPage() {
           </Grid>
         </Stack>
       </MainCard>
+      {errorToast !== '' ? <NotificationToast error={errorToast} /> : <></>}
       {updateToast !== '' ? <NotificationSuccessToast success={updateToast} /> : <></>}
       <MainCard sx={{ marginTop: '30px' }}>
         <CommonTable

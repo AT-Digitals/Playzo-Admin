@@ -347,7 +347,7 @@ export default function AddBooking() {
       const endH = parseInt(etime.split(':')[0], 10);
       const endM = parseInt(etime.split(':')[1], 10);
 
-      return (hour < startH && hour < endH) || (hour === endH && minute < endM);
+      return (hour < startH && hour <= endH) || (hour === endH && minute <= endM);
     }
 
     if (disableData && Array.isArray(disableData)) {

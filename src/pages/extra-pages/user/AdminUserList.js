@@ -1,10 +1,11 @@
 import { useCallback, useEffect, useState } from 'react';
 
 import MainCard from 'components/MainCard';
+import NotificationSuccessToast from 'pages/components-overview/NotificationSuccessToast';
 import { Stack } from '@mui/material';
 import TableList from 'pages/common/TableList';
 import UserApi from 'api/UserApi';
-import NotificationSuccessToast from 'pages/components-overview/NotificationSuccessToast';
+import NotificationToast from 'pages/components-overview/NotificationToast';
 
 const columns = [
   { id: 'No', label: 'No' },
@@ -27,7 +28,14 @@ export default function AdminUserList() {
   const [editData, setEditData] = useState('');
   const [errorPassword, setErrorPassword] = useState(false);
   const [errorConfirmPassword, setErrorConfirmPassword] = useState(false);
-  const [updateSuccesstoast, setUpdateSuccesstoast] = useState(false);
+  const [updateSuccessToast, setUpdateSuccessToast] = useState('');
+  const [errorToast, setErrorToast] = useState('');
+
+  const [showPassword, setShowPassword] = useState(false);
+  const [showConfirmPassword, setShowConfirmPassword] = useState(false);
+
+  const handleClickShowPassword = () => setShowPassword((show) => !show);
+  const handleClickShowConfirmPassword = () => setShowConfirmPassword((show) => !show);
 
   const handleChangePage = (_event, newPage) => {
     setPage(newPage);
@@ -47,7 +55,19 @@ export default function AdminUserList() {
     setErrorConfirmPassword(false);
   };
 
-  const UpdatePassword = () => {
+  const handleClose = () => {
+    setUpdatePasswordModal(false);
+    setPassword('');
+    setConfirmPassword('');
+    setErrorPassword(false);
+    setErrorConfirmPassword(false);
+    setShowConfirmPassword(false);
+    setShowPassword(false);
+    setUpdateSuccessToast('');
+    setErrorToast('');
+  };
+
+  const UpdatePassword = async () => {
     if (!password) {
       setErrorPassword(true);
     }
@@ -58,24 +78,36 @@ export default function AdminUserList() {
       password: password,
       confirmPassword: confirmPassword
     };
-    setUpdatePasswordModal(false);
-    setPassword('');
-    setConfirmPassword('');
-    setUpdateSuccesstoast(true);
-    console.log('data', data);
+
+    const updatePasswordChange = async () => {
+      if (password === confirmPassword) {
+        try {
+          const response = await UserApi.updatePassword(editData.id, { password: data.password });
+          setUpdatePasswordModal(false);
+          setPassword('');
+          setConfirmPassword('');
+          setShowConfirmPassword(false);
+          setShowPassword(false);
+          setUpdateSuccessToast('Your password updated successfully');
+        } catch (error) {
+          setErrorToast(error.message);
+        }
+      } else {
+        setErrorToast('Please provide same value for confirm password');
+        setUpdateSuccessToast('');
+      }
+    };
+    updatePasswordChange();
   };
+
+  console.log('updateToast', updateSuccessToast);
 
   const handleClickChange = (index) => {
+    console.log('index', index);
     setEditData(index);
     setUpdatePasswordModal(true);
-  };
-
-  const handleClose = () => {
-    setUpdatePasswordModal(false);
-    setPassword('');
-    setConfirmPassword('');
-    setErrorPassword(false);
-    setErrorConfirmPassword(false);
+    setUpdateSuccessToast('');
+    setErrorToast('');
   };
 
   const fetchInfo = useCallback(() => {
@@ -116,8 +148,13 @@ export default function AdminUserList() {
           handleClick={handleClickChange}
           error={errorPassword}
           error1={errorConfirmPassword}
+          handleClickShowPassword={handleClickShowPassword}
+          showPassword={showPassword}
+          showConfirmPassword={showConfirmPassword}
+          handleClickShowConfirmPassword={handleClickShowConfirmPassword}
         ></TableList>
-        {updateSuccesstoast !== '' ? <NotificationSuccessToast success={updateSuccesstoast} /> : <></>}
+        {errorToast !== '' ? <NotificationToast error={errorToast} /> : <></>}
+        {updateSuccessToast !== '' ? <NotificationSuccessToast success={updateSuccessToast} /> : <></>}
       </Stack>
     </MainCard>
   );

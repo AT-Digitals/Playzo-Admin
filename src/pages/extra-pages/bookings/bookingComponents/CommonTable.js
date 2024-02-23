@@ -50,7 +50,6 @@ const CommonTable = ({
       const data = rowData['user'] !== 'null' && JSON.parse(rowData['user']).email;
       return data;
     } else if (id === 'user' && label === 'User Name') {
-      console.log('rowdataaaa', rowData);
       const data = rowData['user'] !== 'null' && JSON.parse(rowData['user']).name;
       return data;
     } else if (id === 'bookingAmount' && label === 'Booking Amount') {
@@ -62,8 +61,11 @@ const CommonTable = ({
     } else if (id === 'onlinePayment' && label === 'Online Payment') {
       const data = rowData['bookingAmount'].online;
       return data;
-    } else if (id === 'total' && label === 'Total Amount') {
+    } else if (id === 'total' && label === 'Total') {
       const data = rowData['bookingAmount'].total;
+      return data;
+    } else if (id === 'refund' && label === 'Refund') {
+      const data = rowData['bookingAmount'].refund;
       return data;
     } else if (id === 'court' && label === 'Service Type') {
       const data = BookingSubTypes[rowData['type']][rowData['court']];
@@ -87,7 +89,7 @@ const CommonTable = ({
             {data.map((rowData, index) => (
               <TableRow key={index} sx={{ '&:last-child td, &:last-child th': { border: 0 } }}>
                 {columns.map((column) => (
-                  <TableCell key={column.id}>
+                  <TableCell key={column.id} sx={{ textTransform: 'capitalize' }}>
                     {column.id === 'action' ? (
                       <IconButton aria-label="edit" color="primary" onClick={() => handleModalChange(index)}>
                         <EditIcon />
