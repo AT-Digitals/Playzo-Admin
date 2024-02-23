@@ -58,7 +58,7 @@ export default function AdminUserList() {
       password: password,
       confirmPassword: confirmPassword
     };
-    UserApi.updatePassword('id', { password: data.password });
+    UserApi.updatePassword('65c23da4bb2cd82560615f76', { password: data.password });
     setUpdatePasswordModal(false);
     setPassword('');
     setConfirmPassword('');
