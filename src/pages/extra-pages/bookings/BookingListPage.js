@@ -5,6 +5,7 @@ import { useCallback, useEffect, useState } from 'react';
 
 import { AccessType } from 'pages/authentication/auth-forms/AccessType';
 import BookingApi from 'api/BookingApi';
+import { BookingLength } from './BookingLength';
 import { BookingSubTypes } from './BookingSubTypes';
 import CommonTable from './bookingComponents/CommonTable';
 import CustomDatePicker from './bookingComponents/CustomDatePicker';
@@ -17,7 +18,6 @@ import NotificationSuccessToast from 'pages/components-overview/NotificationSucc
 import Select from '@mui/material/Select';
 import dayjs from 'dayjs';
 import moment from 'moment';
-import { BookingLength } from './BookingLength';
 
 const Data = [
   {
@@ -85,7 +85,7 @@ export default function BookingListPage() {
 
   const [isApplyMode, setIsApplyMode] = useState(true);
   const [buttonDisable, setButtonDisable] = useState(false);
-  const [paymentType, setPaymentType] = useState('');
+  // const [paymentType, setPaymentType] = useState('');
   const [filterData, setFilterData] = useState();
   const [bool, setBool] = useState(false);
 
@@ -120,7 +120,7 @@ export default function BookingListPage() {
     setIsApplyMode(true);
     setStartDateValue('');
     setEndDateValue('');
-    setPaymentType('');
+    setSelectBooking('');
     setSelectData('');
     setButtonDisable(false);
     setBool(false);
@@ -153,9 +153,9 @@ export default function BookingListPage() {
     setEndDateValue('');
   };
 
-  const handlePaymentChange = (event) => {
-    setPaymentType(event.target.value);
-  };
+  // const handlePaymentChange = (event) => {
+  //   setPaymentType(event.target.value);
+  // };
 
   const handleModalChange = (index) => {
     setEditableRowIndex(index);
@@ -254,18 +254,20 @@ export default function BookingListPage() {
       bookingType !== 'All' ||
       startDateValue !== '' ||
       endDateValue !== '' ||
-      paymentType !== '' ||
+      selectBooking !== '' ||
       monthType !== '' ||
       selectData !== ''
     ) {
       const details = {
         type: bookingType,
         startDate: startDateValue,
-        endDate: endDateValue,
-        bookingtype: paymentType
+        endDate: endDateValue
+        // bookingtype: paymentType
         // monthType: monthType,
         // day: selectData
       };
+
+      console.log('selectServiceType', selectServiceType);
       let dateFilter = '';
       if (monthType === 'oneMonth') {
         dateFilter = DateUtils.subtract(new Date(), 1, 'month', 'yyyy-MM-DD');
@@ -301,7 +303,13 @@ export default function BookingListPage() {
         details.endDate = DateUtils.formatDate(new Date(), 'yyyy-MM-DD');
         details.startDate = DateUtils.formatDate(new Date(dateFilter), 'yyyy-MM-DD');
       }
-
+      if (selectServiceType) {
+        details['court'] = selectServiceType.toString();
+      }
+      if (selectBooking) {
+        console.log('selectBooking', selectBooking);
+        details['userBookingType'] = selectBooking;
+      }
       setFilterData(details);
       setBool(true);
     } else {
@@ -311,7 +319,7 @@ export default function BookingListPage() {
     setIsApplyMode(false);
     setPage(0);
     setButtonDisable(true);
-  }, [bookingType, endDateValue, monthType, paymentType, selectData, startDateValue]);
+  }, [bookingType, endDateValue, monthType, selectBooking, selectData, selectServiceType, startDateValue]);
 
   const handleDownload = () => {
     const wb = XLSX.utils.book_new();
@@ -367,8 +375,9 @@ export default function BookingListPage() {
     { id: 'endDate', label: 'End Date' },
     { id: 'startTime', label: 'Start Time' },
     { id: 'endTime', label: 'End Time' },
-    { id: 'bookingtype', label: 'Booking Type' },
-    { id: 'userType', label: 'User Type' },
+    // { id: 'bookingtype', label: 'Booking Type' },
+    // { id: 'userType', label: 'User Type' },
+    { id: 'userBookingType', label: 'Booking Type' },
     { id: 'cashPayment', label: 'Cash Payment' },
     { id: 'onlinePayment', label: 'Online Payment' },
     { id: 'total', label: 'Total' },
@@ -449,6 +458,7 @@ export default function BookingListPage() {
                 value={selectServiceType || ''}
                 onChange={handleCourtChange}
                 options={getNumberOptions1(bookingType)}
+                disabled={buttonDisable}
               />
             </Grid>
             <Grid item md={3}>
@@ -472,7 +482,7 @@ export default function BookingListPage() {
                 error={endDateError}
               />
             </Grid>
-            <Grid item md={3}>
+            {/* <Grid item md={3}>
               <Stack spacing={2}>
                 <Typography>Payment Type</Typography>
                 <FormControl fullWidth>
@@ -488,7 +498,7 @@ export default function BookingListPage() {
                   </Select>
                 </FormControl>
               </Stack>
-            </Grid>
+            </Grid> */}
             <Grid item md={3}>
               <DropDownComponent
                 label="Booking Type"
