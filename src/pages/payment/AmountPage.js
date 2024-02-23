@@ -113,6 +113,8 @@ export default function AmountPage() {
     setEditableRowIndex(index);
     setUpdateModal(true);
     setEditedData(index);
+    // setUpdateSuccesstoast('');
+    // setToast('');
   };
 
   const updateModalChange = async () => {
@@ -137,6 +139,7 @@ export default function AmountPage() {
     fetchInfo();
     handleClose();
   };
+  console.log('success', updateSuccesstoast);
 
   const columns = [
     { id: 'No', label: 'No' },

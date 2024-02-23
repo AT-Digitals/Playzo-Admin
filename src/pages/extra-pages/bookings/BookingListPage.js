@@ -18,6 +18,7 @@ import NotificationSuccessToast from 'pages/components-overview/NotificationSucc
 import Select from '@mui/material/Select';
 import dayjs from 'dayjs';
 import moment from 'moment';
+import NotificationToast from 'pages/components-overview/NotificationToast';
 
 const Data = [
   {
@@ -100,6 +101,7 @@ export default function BookingListPage() {
   const [refundCheck, setRefundCheck] = useState(false);
   const [selectBooking, setSelectBooking] = useState('');
   const [selectServiceType, setSelectServiceType] = useState('');
+  const [errorToast, setErrorToast] = useState('');
 
   const handleRefundChange = (event) => {
     setRefundCheck(event.target.checked);
@@ -157,16 +159,15 @@ export default function BookingListPage() {
   //   setPaymentType(event.target.value);
   // };
 
-  const handleModalChange = (index) => {
-    setEditableRowIndex(index);
-    setUpdateModal(true);
-  };
-
   const handleAmountChange = (event) => {
     setPayAmount(event.target.value);
     setPayError(false);
   };
 
+  const handleModalChange = (index) => {
+    setEditableRowIndex(index);
+    setUpdateModal(true);
+  };
   const handleClose = () => {
     setUpdateModal(false);
     setPayError(false);
@@ -338,8 +339,7 @@ export default function BookingListPage() {
           endDate: moment(item.endDate).format('DD-MM-YYYY'),
           startTime: DateUtils.formatMillisecondsToTime(item.startTime),
           endTime: DateUtils.formatMillisecondsToTime(item.endTime),
-          bookingType: item.bookingtype,
-          userType: userData.userType,
+          bookingType: item.userBookingType,
           email: userData.email,
           dateOfBooking: moment(item.dateOfBooking).format('DD-MM-YYYY'),
           duration: item.duration,
@@ -389,24 +389,27 @@ export default function BookingListPage() {
       label: 'Action'
     });
   }
+  console.log('edit', editableRowIndex);
   const UpdateChange = async (event) => {
     event.preventDefault();
     if (!payAmount) {
       setPayError(true);
     } else {
       setPayError(false);
-      setUpdateModal(false);
+      // setUpdateModal(false);
       setEditableRowIndex(null);
       setPayAmount('');
     }
+
     const idToUpdate = filteredData[editableRowIndex].id;
+    console.log('id', idToUpdate);
     const value = {
       amount: payAmount,
       id: idToUpdate,
       refund: refundCheck
     };
     try {
-      await BookingApi.updateAmount(value.id, {
+      const response = await BookingApi.updateAmount(value.id, {
         bookingAmount: {
           online: 0,
           cash: value.refund ? 0 : value.amount,
@@ -415,11 +418,17 @@ export default function BookingListPage() {
         },
         isRefund: value.refund
       });
-      setUpdateToast('Your Amount is updated successfully!');
+      console.log('error', response);
+      if (response) {
+        setUpdateToast('Your Amount is updated successfully!');
+        handleClose();
+      } else {
+        setErrorToast(response.message);
+      }
     } catch (error) {
+      //setErrorToast(error.message);
       console.log('please provide valid amount', error);
     }
-    console.log('value', value);
 
     fetchInfo();
     setRefundCheck(false);
@@ -516,7 +525,6 @@ export default function BookingListPage() {
                 options={monthData}
                 disabled={buttonDisable}
               />
-              {/* <ToggleButtonComponent value={monthType} setValue={buttonhandleChange} disableprop={buttonDisable} /> */}
             </Grid>
             <Grid item md={3}>
               <DropDownComponent
@@ -560,6 +568,7 @@ export default function BookingListPage() {
           </Grid>
         </Stack>
       </MainCard>
+      {errorToast !== '' ? <NotificationToast error={errorToast} /> : <></>}
       {updateToast !== '' ? <NotificationSuccessToast success={updateToast} /> : <></>}
       <MainCard sx={{ marginTop: '30px' }}>
         <CommonTable

@@ -41,7 +41,7 @@ export default function AmountTable({
             {data.slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage).map((rowData, index) => (
               <TableRow key={index} sx={{ '&:last-child td, &:last-child th': { border: 0 } }}>
                 {columns.map((column) => (
-                  <TableCell key={column.id}>
+                  <TableCell key={column.id} sx={{ textTransform: 'capitalize' }}>
                     {column.id === 'action' ? (
                       <IconButton aria-label="edit" color="primary" onClick={() => handleClick(rowData)}>
                         <EditIcon />

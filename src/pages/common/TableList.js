@@ -23,7 +23,11 @@ export default function TableList({
   setConfirm,
   handleClick,
   error,
-  error1
+  error1,
+  handleClickShowPassword,
+  showPassword,
+  showConfirmPassword,
+  handleClickShowConfirmPassword
 }) {
   const renderCellContent = (column, rowData) => {
     const { id, label } = column;
@@ -63,7 +67,7 @@ export default function TableList({
             {data.map((rowData, index) => (
               <TableRow key={index} sx={{ '&:last-child td, &:last-child th': { border: 0 } }}>
                 {columns.map((column) => (
-                  <TableCell key={column.id}>
+                  <TableCell key={column.id} sx={{ textTransform: 'capitalize' }}>
                     {column.id === 'action' ? (
                       <IconButton aria-label="edit" color="primary" onClick={() => handleClick(rowData)}>
                         <EditIcon />
@@ -98,6 +102,10 @@ export default function TableList({
         setConfirm={setConfirm}
         error={error}
         error1={error1}
+        handleClickShowPassword={handleClickShowPassword}
+        showPassword={showPassword}
+        showConfirmPassword={showConfirmPassword}
+        handleClickShowConfirmPassword={handleClickShowConfirmPassword}
       />
     </>
   );
