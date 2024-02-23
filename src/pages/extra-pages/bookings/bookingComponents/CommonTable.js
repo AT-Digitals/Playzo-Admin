@@ -62,10 +62,13 @@ const CommonTable = ({
     } else if (id === 'onlinePayment' && label === 'Online Payment') {
       const data = rowData['bookingAmount'].online;
       return data;
-    } else if (id === 'total' && label === 'Total Amount') {
+    } else if (id === 'total' && label === 'Total') {
       const data = rowData['bookingAmount'].total;
       return data;
-    } else if (id === 'court' && label === 'Service Type') {
+    } else if (id === 'refund' && label === 'Refund') {
+      const data = rowData['bookingAmount'].refund;
+      return data;
+    }else if (id === 'court' && label === 'Service Type') {
       const data = BookingSubTypes[rowData['type']][rowData['court']];
       return data;
     } else {

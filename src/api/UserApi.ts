@@ -12,6 +12,15 @@ export default class UserApi {
     }
   }
 
+  static async updatePassword(userId: string, request: any) {
+    try {
+      const user = await axiosInstance.put<any>(`/adminUsers/${userId}`, request);
+      return user.data;
+    } catch (e) {
+      throw handleApiError(e, 'Failed to update password');
+    }
+  }
+
   public static async userList(request: any) {
     try {
       const datails = await axiosInstance.get<any[]>(`/userList/users` + FilterUtils.getQueryString(request));

@@ -370,7 +370,9 @@ export default function BookingListPage() {
     { id: 'bookingtype', label: 'Booking Type' },
     { id: 'userType', label: 'User Type' },
     { id: 'cashPayment', label: 'Cash Payment' },
-    { id: 'onlinePayment', label: 'Online Payment' }
+    { id: 'onlinePayment', label: 'Online Payment' },
+    { id: 'total', label: 'Total' },
+    { id: 'refund', label: 'Refund' }
   ];
   if (userData.accessType !== AccessType.READ) {
     columns.push({

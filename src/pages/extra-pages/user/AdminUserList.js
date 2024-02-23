@@ -1,10 +1,10 @@
 import { useCallback, useEffect, useState } from 'react';
 
 import MainCard from 'components/MainCard';
+import NotificationSuccessToast from 'pages/components-overview/NotificationSuccessToast';
 import { Stack } from '@mui/material';
 import TableList from 'pages/common/TableList';
 import UserApi from 'api/UserApi';
-import NotificationSuccessToast from 'pages/components-overview/NotificationSuccessToast';
 
 const columns = [
   { id: 'No', label: 'No' },
@@ -58,6 +58,7 @@ export default function AdminUserList() {
       password: password,
       confirmPassword: confirmPassword
     };
+    UserApi.updatePassword('id', { password: data.password });
     setUpdatePasswordModal(false);
     setPassword('');
     setConfirmPassword('');
