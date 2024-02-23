@@ -1,7 +1,8 @@
-import { Button, Stack, Grid } from '@mui/material';
+import { Button, Grid, Stack } from '@mui/material';
 import { useEffect, useState } from 'react';
 
 import BookingApi from 'api/BookingApi';
+import { BookingLength } from './BookingLength';
 import BookingModal from './BookingModal';
 import { BookingSubTypes } from './BookingSubTypes';
 import CustomDatePicker from './bookingComponents/CustomDatePicker';
@@ -17,7 +18,6 @@ import TimeSlotModal from './bookingComponents/TimeSlotModal';
 import TypeDropdown from './bookingComponents/TypeDropdown';
 import dayjs from 'dayjs';
 import moment from 'moment';
-import { BookingLength } from './BookingLength';
 
 export default function AddBooking() {
   const [date, setDate] = useState('');
@@ -181,23 +181,24 @@ export default function AddBooking() {
     const data = {
       payment: paymentType
     };
-    if (data.payment === PaymentType.Cash) {
-      bookingApiCall({
-        type: bookingType,
-        bookingtype: paymentType,
-        startTime: parseInt(startTime),
-        endTime: parseInt(endTime),
-        user: userData.id,
-        startDate: date,
-        endDate: endDateValue,
-        court: selectedNumber,
-        bookingAmount: {
-          cash: bulkAmount
-        }
-      });
-    } else {
-      await paymentMethod();
-    }
+    // if (data.payment === PaymentType.Cash) {
+    bookingApiCall({
+      type: bookingType,
+      bookingtype: PaymentType.Online,
+      startTime: parseInt(startTime),
+      endTime: parseInt(endTime),
+      user: userData.id,
+      startDate: date,
+      endDate: endDateValue,
+      court: selectedNumber,
+      userBookingType: 'manual',
+      bookingAmount: {
+        online: bulkAmount ?? 0
+      }
+    });
+    // } else {
+    //   await paymentMethod();
+    // }
     console.log(data);
   };
 
@@ -223,7 +224,7 @@ export default function AddBooking() {
           });
           bookingApiCall({
             type: bookingType,
-            bookingtype: paymentType,
+            bookingtype: PaymentType.Online,
             startTime: parseInt(startTime),
             endTime: parseInt(endTime),
             user: userData.id,
@@ -231,8 +232,9 @@ export default function AddBooking() {
             endDate: endDateValue,
             bookingId: response.razorpay_payment_id,
             court: selectedNumber,
+            userBookingType: 'manual',
             bookingAmount: {
-              cash: bulkAmount
+              online: bulkAmount ?? 0
             }
           });
         },
