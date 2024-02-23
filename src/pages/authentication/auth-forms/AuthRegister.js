@@ -27,7 +27,7 @@ import { useNavigate } from 'react-router-dom';
 
 const userType = [
   { value: 'admin', label: 'Admin' },
-  { value: 'user', label: 'User' }
+  { value: 'customer', label: 'Customer' }
 ];
 
 // ============================|| FIREBASE - REGISTER ||============================ //
@@ -60,7 +60,7 @@ const AuthRegister = () => {
           email: '',
           phoneNumber: '',
           password: '',
-          user: '',
+          userType: '',
           access: '',
           submit: null
         }}
@@ -69,11 +69,11 @@ const AuthRegister = () => {
           email: Yup.string().email('Must be a valid email').max(255).required('Email is required'),
           password: Yup.string().max(255).required('Password is required'),
           phoneNumber: Yup.string().max(10).required('Phone Number is required'),
-          user: Yup.string().max(255).required('User is required')
+          userType: Yup.string().max(255).required('User Type is required')
         })}
         onSubmit={async (values, { setErrors, setStatus, setSubmitting }) => {
           try {
-            if (values.user === 'admin') {
+            if (values.userType === 'admin') {
               const response = await RegisterApi.createAdmin({
                 email: values.email,
 
@@ -184,16 +184,16 @@ const AuthRegister = () => {
               </Grid>
               <Grid item xs={12}>
                 <DropDownComponent
-                  name="user"
-                  label="User"
+                  name="userType"
+                  label="User Type"
                   options={userType}
-                  value={values.user || ''}
+                  value={values.userType || ''}
                   onChange={handleChange}
                   onBlur={handleBlur}
-                  error={Boolean(touched.user && errors.user)}
+                  error={Boolean(touched.userType && errors.userType)}
                 />
               </Grid>
-              {values.user === 'admin' && (
+              {values.userType === 'admin' && (
                 <Grid item xs={12}>
                   <FormControl>
                     <FormLabel id="demo-row-radio-buttons-group-label">Access</FormLabel>

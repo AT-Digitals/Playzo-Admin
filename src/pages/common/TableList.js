@@ -2,13 +2,48 @@ import { Table, TableBody, TableCell, TableContainer, TableHead, TablePagination
 
 import Paper from '@mui/material/Paper';
 import moment from 'moment';
+import EditIcon from '@mui/icons-material/Edit';
+import IconButton from '@mui/material/IconButton';
+import UpdatePasswordModal from 'pages/extra-pages/user/UpdatePasswordModal';
 
-export default function TableList({ columns, data, rowsPerPage, page, handleChangeRowsPerPage, count, handleChangePage }) {
+export default function TableList({
+  columns,
+  data,
+  rowsPerPage,
+  page,
+  handleChangeRowsPerPage,
+  count,
+  handleChangePage,
+  onSubmit,
+  onClose,
+  isOpen,
+  password,
+  setPassword,
+  confirmPassword,
+  setConfirm,
+  handleClick,
+  error,
+  error1
+}) {
   const renderCellContent = (column, rowData) => {
     const { id, label } = column;
 
     if (id === 'dateOfEnquiry') {
       return moment(rowData[id]).format('DD-MM-yyyy');
+    } else if (id === 'userType') {
+      if (rowData[id] === 'user') {
+        return 'Customer';
+      } else {
+        return 'Admin';
+      }
+    } else if (id === 'accessType') {
+      if (rowData[id] === 'read') {
+        return 'Read';
+      } else if (rowData[id] === 'write') {
+        return 'Read/Write';
+      } else {
+        return 'All';
+      }
     } else {
       return rowData[id];
     }
@@ -28,7 +63,17 @@ export default function TableList({ columns, data, rowsPerPage, page, handleChan
             {data.map((rowData, index) => (
               <TableRow key={index} sx={{ '&:last-child td, &:last-child th': { border: 0 } }}>
                 {columns.map((column) => (
-                  <TableCell key={column.id}>{column.id === 'No' ? index + 1 : renderCellContent(column, rowData)}</TableCell>
+                  <TableCell key={column.id}>
+                    {column.id === 'action' ? (
+                      <IconButton aria-label="edit" color="primary" onClick={() => handleClick(rowData)}>
+                        <EditIcon />
+                      </IconButton>
+                    ) : column.id === 'No' ? (
+                      index + 1
+                    ) : (
+                      renderCellContent(column, rowData)
+                    )}
+                  </TableCell>
                 ))}
               </TableRow>
             ))}
@@ -42,6 +87,17 @@ export default function TableList({ columns, data, rowsPerPage, page, handleChan
         page={page}
         onPageChange={handleChangePage}
         onRowsPerPageChange={handleChangeRowsPerPage}
+      />
+      <UpdatePasswordModal
+        onSubmit={onSubmit}
+        onClose={onClose}
+        isOpen={isOpen}
+        password={password}
+        setPassword={setPassword}
+        confirmPassword={confirmPassword}
+        setConfirm={setConfirm}
+        error={error}
+        error1={error1}
       />
     </>
   );

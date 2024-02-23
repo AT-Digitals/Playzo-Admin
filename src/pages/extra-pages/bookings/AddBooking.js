@@ -41,6 +41,7 @@ export default function AddBooking() {
   const [paymentType, setPaymentType] = useState(PaymentType.Cash);
   const [bookingModalOpen, setBookingModalOpen] = useState(false);
   const [selectedNumber, setSelectedNumber] = useState('');
+  const [selectNumberError, setSelectNumberError] = useState(false);
   const [bulkAmount, setBulkAmount] = useState(0);
   const user = localStorage.getItem('user');
   const userData = JSON.parse(user);
@@ -58,6 +59,7 @@ export default function AddBooking() {
 
   const handleNumberChange = (event) => {
     setSelectedNumber(event.target.value);
+    setSelectNumberError(false);
   };
 
   const handleAmountChange = (event) => {
@@ -109,7 +111,8 @@ export default function AddBooking() {
       const response = await BookingApi.filter({
         startDate: date,
         type: bookingType,
-        endDate: endData
+        endDate: endData,
+        court: selectedNumber
       });
       setDisableData(response);
       setIsModalOpen(true);
@@ -131,7 +134,7 @@ export default function AddBooking() {
   };
 
   const bookingApiCall = (bookingData) => {
-    if (date && startTime && endTime && endDateValue) {
+    if (date && startTime && endTime && endDateValue && selectedNumber) {
       setBookingModalOpen(true);
       const booking = async () => {
         try {
@@ -148,6 +151,7 @@ export default function AddBooking() {
           setBookingType('');
           setToast('');
           setEndDateValue('');
+          setBulkAmount();
           setEndError(false);
           setStartError(false);
         } catch (error) {
@@ -161,6 +165,7 @@ export default function AddBooking() {
             setIsModalOpen(false);
             setSuccesstoast('');
             setEndDateValue('');
+            setBulkAmount();
             setEndError(false);
             setStartError(false);
           } else {
@@ -314,8 +319,11 @@ export default function AddBooking() {
     if (!endTime) {
       setEndError(true);
     }
+    if (!selectedNumber) {
+      setSelectNumberError(true);
+    }
 
-    if (date && endDateValue && bookingType && startTime && endTime) {
+    if (date && endDateValue && bookingType && startTime && endTime && selectedNumber) {
       setBookingModalOpen(true);
       isDurationGreaterThanOneMonth(date, endDateValue);
     }
@@ -433,10 +441,19 @@ export default function AddBooking() {
         <Stack direction="row" spacing={2}>
           <Grid container spacing={3} alignItems="center">
             <Grid item md={3}>
-              <TypeDropdown label="Select Booking Type" type={bookingType} onChange={handleChange} error={bookingTypeError} />
+              <TypeDropdown label="Select Service" type={bookingType} onChange={handleChange} error={bookingTypeError} />
             </Grid>
             <Grid item md={3}>
-              <CustomDatePicker date={date} setDate={dateHandler} error={dateError} label={'Start Date'} disablePast={false} />
+              <DropDownComponent
+                value={selectedNumber || ''}
+                onChange={handleNumberChange}
+                label="Select Service Type"
+                options={getNumberOptions1(bookingType)}
+                error={selectNumberError}
+              />
+            </Grid>
+            <Grid item md={3}>
+              <CustomDatePicker date={date} setDate={dateHandler} error={dateError} label={'Start Date'} disablePast={true} />
             </Grid>
             <Grid item md={3}>
               <CustomDatePicker
@@ -476,14 +493,7 @@ export default function AddBooking() {
               startValue={startTime}
               endValue={endTime}
             />
-            <Grid item md={3}>
-              <DropDownComponent
-                value={selectedNumber || ''}
-                onChange={handleNumberChange}
-                label="Select Court"
-                options={getNumberOptions1(bookingType)}
-              />
-            </Grid>
+
             <Grid item md={3} mt={4.2}>
               <Button
                 variant="outlined"

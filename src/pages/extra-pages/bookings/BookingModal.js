@@ -29,7 +29,10 @@ export default function BookingModal({ onChange, value, isOpen, onClose, onSubmi
     <div>
       <Modal open={isOpen} onClose={onClose} aria-labelledby="modal-modal-title" aria-describedby="modal-modal-description">
         <Box sx={style}>
-          <Stack direction="row" justifyContent="end">
+          <Stack direction="row" alignItems="center" justifyContent="space-between">
+            <Typography variant="h4" marginY={2}>
+              Bookings
+            </Typography>
             <IconButton onClick={onClose}>
               <CloseIcon />
             </IconButton>
@@ -37,10 +40,8 @@ export default function BookingModal({ onChange, value, isOpen, onClose, onSubmi
           <Stack direction="column" spacing={3}>
             <Stack direction="row" spacing={2}>
               <FormControl>
-                <Typography variant="h4" marginY={2}>
-                  Payment Method
-                </Typography>
                 {/* <RadioGroup row value={value} onChange={onChange}>
+
                   <FormControlLabel value={PaymentType.Cash} control={<Radio />} label="Cash" />
                   <FormControlLabel value={PaymentType.Online} control={<Radio />} label="Online" />
                 </RadioGroup> */}
@@ -57,7 +58,7 @@ export default function BookingModal({ onChange, value, isOpen, onClose, onSubmi
             />
             {/* )} */}
             <Button variant="outlined" onClick={onSubmit} sx={{ width: '100%' }}>
-              Next
+              Add
             </Button>
           </Stack>
         </Box>
