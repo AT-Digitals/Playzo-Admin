@@ -388,7 +388,10 @@ export default function BookingListPage() {
       refund: refundCheck
     };
 
-    const dataChange = async () => {
+    if (!payAmount) {
+      setPayError(true);
+    } else {
+      setPayError(false);
       try {
         const response = await BookingApi.updateAmount(value.id, {
           bookingAmount: {
@@ -404,13 +407,6 @@ export default function BookingListPage() {
       } catch (error) {
         setErrorToast(error.message);
       }
-    };
-
-    if (!payAmount) {
-      setPayError(true);
-    } else {
-      setPayError(false);
-      dataChange();
     }
     fetchInfo();
   };

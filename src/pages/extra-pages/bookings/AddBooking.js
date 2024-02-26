@@ -276,6 +276,7 @@ export default function AddBooking() {
     const joinDateandTime = DateUtils.joinDate(new Date(date), new Date(start));
     const milliseconds = joinDateandTime.valueOf();
     setStartTime(milliseconds || 0);
+    setEndTime('');
   };
 
   const handleDialogEndTimeChange = (newValue) => {
