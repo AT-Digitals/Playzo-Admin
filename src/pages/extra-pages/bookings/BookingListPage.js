@@ -23,7 +23,7 @@ import NotificationToast from 'pages/components-overview/NotificationToast';
 const Data = [
   {
     value: 'previous',
-    label: 'Yesterday'
+    label: 'Previous'
   },
   {
     value: 'today',
@@ -31,7 +31,7 @@ const Data = [
   },
   {
     value: 'future',
-    label: 'Tomorrow'
+    label: 'Future'
   }
 ];
 
