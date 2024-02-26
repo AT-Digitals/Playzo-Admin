@@ -42,7 +42,7 @@ export default function AddBooking() {
   const [bookingModalOpen, setBookingModalOpen] = useState(false);
   const [selectedNumber, setSelectedNumber] = useState('');
   const [selectNumberError, setSelectNumberError] = useState(false);
-  const [bulkAmount, setBulkAmount] = useState(0);
+  const [bulkAmount, setBulkAmount] = useState();
   const user = localStorage.getItem('user');
   const userData = JSON.parse(user);
   const bookingObject = localStorage.getItem('bookingData');
@@ -204,7 +204,7 @@ export default function AddBooking() {
     // } else {
     //   await paymentMethod();
     // }
-    console.log(data);
+    // console.log(data);
   };
 
   const paymentMethod = async () => {

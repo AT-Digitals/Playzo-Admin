@@ -100,10 +100,7 @@ export default function AdminUserList() {
     updatePasswordChange();
   };
 
-  console.log('updateToast', updateSuccessToast);
-
   const handleClickChange = (index) => {
-    console.log('index', index);
     setEditData(index);
     setUpdatePasswordModal(true);
     setUpdateSuccessToast('');

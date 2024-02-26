@@ -12,13 +12,6 @@ import NotificationSuccessToast from 'pages/components-overview/NotificationSucc
 import NotificationToast from 'pages/components-overview/NotificationToast';
 import TypeDropdown from 'pages/extra-pages/bookings/bookingComponents/TypeDropdown';
 
-// const Data = [
-//   { value: 1, label: 1 },
-//   { value: 2, label: 2 },
-//   { value: 3, label: 3 },
-//   { value: 4, label: 4 },
-//   { value: 5, label: 5 }
-// ];
 const getNumberOptions1 = (Type) => {
   const length = BookingLength[Type] || 0;
   return Array.from({ length }, (_, index) => ({
@@ -40,6 +33,7 @@ export default function AmountPage() {
   const [page, setPage] = useState(0);
   const [rowsPerPage, setRowsPerPage] = useState(10);
   const [toast, setToast] = useState('');
+  const [amountErrorModal, setAmountErrorModal] = useState(false);
 
   const handleChangePage = (event, newPage) => {
     setPage(newPage);
@@ -69,6 +63,7 @@ export default function AmountPage() {
   const handleClose = () => {
     setUpdateModal(false);
     setEditableRowIndex(null);
+    setAmountErrorModal(false);
   };
 
   const addAmount = () => {
@@ -113,33 +108,37 @@ export default function AmountPage() {
     setEditableRowIndex(index);
     setUpdateModal(true);
     setEditedData(index);
-    // setUpdateSuccesstoast('');
-    // setToast('');
+    setUpdateSuccesstoast('');
   };
 
   const updateModalChange = async () => {
     const idToUpdate = editedData.id;
+
     const details = {
       bookingtype: editedData.bookingType,
       bookingAmount: editedData.bookingAmount,
       court: editedData.court,
       id: idToUpdate
     };
-    try {
-      const res = await AmountApi.updateAmount(details.id, {
-        bookingtype: details.bookingtype,
-        bookingAmount: details.bookingAmount,
-        court: details.court
-      });
-      setUpdateSuccesstoast('Your Amount is updated successfully!');
-    } catch (error) {
-      console.log('please provide valid data', error);
-    }
+    if (!editedData.bookingAmount) {
+      setAmountErrorModal(true);
+    } else {
+      setAmountErrorModal(false);
+      try {
+        const res = await AmountApi.updateAmount(details.id, {
+          bookingtype: details.bookingtype,
+          bookingAmount: details.bookingAmount,
+          court: details.court
+        });
+        setUpdateSuccesstoast('Your Amount is updated successfully!');
+      } catch (error) {
+        console.log('please provide valid data', error);
+      }
 
-    fetchInfo();
-    handleClose();
+      fetchInfo();
+      handleClose();
+    }
   };
-  console.log('success', updateSuccesstoast);
 
   const columns = [
     { id: 'No', label: 'No' },
@@ -219,6 +218,7 @@ export default function AmountPage() {
           page={page}
           handleChangePage={handleChangePage}
           handleChangeRowsPerPage={handleChangeRowsPerPage}
+          error={amountErrorModal}
         />
         {updateSuccesstoast !== '' ? <NotificationSuccessToast success={updateSuccesstoast} /> : <></>}
       </MainCard>
