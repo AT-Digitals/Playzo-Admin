@@ -42,22 +42,22 @@ const DashboardDefault = () => {
   }, []);
 
   const calculateBookings = (data) => {
-    const cashBooking = data.filter((item) => item.bookingtype === 'cash');
-    const onlineBooking = data.filter((item) => item.bookingtype === 'online');
-    const cash = cashBooking.length;
+    const manualBooking = data.filter((item) => item.userBookingType === 'manual');
+    const onlineBooking = data.filter((item) => item.userBookingType === 'online');
+    const manual = manualBooking.length;
     const online = onlineBooking.length;
-    const totalBooking = cash + online;
-    return { cash, online, totalBooking };
+    const totalBooking = manual + online;
+    return { manual, online, totalBooking };
   };
 
   const calculateBookingTypes = (data, name) => {
     const BookingType = data.filter((item) => item.type === name);
-    const cashBooking = BookingType.filter((item) => item.bookingtype === 'cash');
-    const onlineBooking = BookingType.filter((item) => item.bookingtype === 'online');
-    const cash = cashBooking.length;
+    const manualBooking = BookingType.filter((item) => item.userBookingType === 'manual');
+    const onlineBooking = BookingType.filter((item) => item.userBookingType === 'online');
+    const manual = manualBooking.length;
     const online = onlineBooking.length;
-    const totalBooking = cash + online;
-    return { cash, online, totalBooking };
+    const totalBooking = manual + online;
+    return { manual, online, totalBooking };
   };
 
   const bookingTypeInfo = calculateBookingTypes(data, 'turf');
@@ -75,29 +75,29 @@ const DashboardDefault = () => {
   }, []);
 
   const allChartData = {
-    'All Services': { onlineBooking: bookingInfo.online, cashBooking: bookingInfo.cash, totalBooking: bookingInfo.totalBooking },
-    Turf: { onlineBooking: bookingTypeInfo.online, cashBooking: bookingTypeInfo.cash, totalBooking: bookingTypeInfo.totalBooking },
+    'All Services': { onlineBooking: bookingInfo.online, cashBooking: bookingInfo.manual, totalBooking: bookingInfo.totalBooking },
+    Turf: { onlineBooking: bookingTypeInfo.online, cashBooking: bookingTypeInfo.manual, totalBooking: bookingTypeInfo.totalBooking },
     'Board Game': {
       onlineBooking: bookingType2Info.online,
-      cashBooking: bookingType2Info.cash,
+      cashBooking: bookingType2Info.manual,
       totalBooking: bookingType2Info.totalBooking
     },
     'Play Station': {
       onlineBooking: bookingType3Info.online,
-      cashBooking: bookingType3Info.cash,
+      cashBooking: bookingType3Info.manual,
       totalBooking: bookingType3Info.totalBooking
     },
     'Cricket Net': {
       onlineBooking: bookingType4Info.online,
-      cashBooking: bookingType4Info.cash,
+      cashBooking: bookingType4Info.manual,
       totalBooking: bookingType4Info.totalBooking
     },
     'Bowling Machine': {
       onlineBooking: bookingType5Info.online,
-      cashBooking: bookingType5Info.cash,
+      cashBooking: bookingType5Info.manual,
       totalBooking: bookingType5Info.totalBooking
     },
-    Badminton: { onlineBooking: bookingType6Info.online, cashBooking: bookingType6Info.cash, totalBooking: bookingType6Info.totalBooking }
+    Badminton: { onlineBooking: bookingType6Info.online, cashBooking: bookingType6Info.manual, totalBooking: bookingType6Info.totalBooking }
   };
 
   const updateChartData = (category) => {
@@ -125,7 +125,7 @@ const DashboardDefault = () => {
         <AnalyticEcommerce title="Total Bookings" count={bookingInfo.totalBooking.toString()} percentage={59.3} />
       </Grid>
       <Grid item xs={12} sm={6} md={4} lg={3}>
-        <AnalyticEcommerce title="Manual Bookings" count={bookingInfo.cash.toString()} percentage={70.5} />
+        <AnalyticEcommerce title="Manual Bookings" count={bookingInfo.manual.toString()} percentage={70.5} />
       </Grid>
       <Grid item xs={12} sm={6} md={4} lg={3}>
         <AnalyticEcommerce title="Online Bookings" count={bookingInfo.online.toString()} percentage={27.4} isLoss color="warning" />

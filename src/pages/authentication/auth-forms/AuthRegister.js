@@ -16,6 +16,7 @@ import RadioGroup from '@mui/material/RadioGroup';
 import RegisterApi from 'api/RegisterApi';
 import { strengthIndicator } from 'utils/password-strength';
 import { useNavigate } from 'react-router-dom';
+import NotificationSuccessToast from 'pages/components-overview/NotificationSuccessToast';
 
 // material-ui
 
@@ -34,6 +35,7 @@ const userType = [
 
 const AuthRegister = () => {
   const [showPassword, setShowPassword] = useState(false);
+  // const [successtoast, setSuccesstoast] = useState('');
   const handleClickShowPassword = () => {
     setShowPassword(!showPassword);
   };
@@ -51,6 +53,7 @@ const AuthRegister = () => {
     changePassword('');
   }, []);
   const navigate = useNavigate();
+  // console.log('success', successtoast);
 
   return (
     <>
@@ -85,6 +88,7 @@ const AuthRegister = () => {
                 accessType: values.access ?? ''
               });
               if (response) {
+                // setSuccesstoast('New admin added successfully');
                 navigate('/dashboard/default');
                 setStatus({ success: true });
                 setSubmitting(true);
@@ -101,6 +105,7 @@ const AuthRegister = () => {
                 phone: values.phoneNumber
               });
               if (data) {
+                // setSuccesstoast('New customer added successfully');
                 navigate('/dashboard/default');
                 setStatus({ success: true });
                 setSubmitting(true);
@@ -262,6 +267,7 @@ const AuthRegister = () => {
                 </AnimateButton>
               </Grid>
             </Grid>
+            {/* {successtoast !== '' ? <NotificationSuccessToast success={successtoast} /> : <></>} */}
           </form>
         )}
       </Formik>

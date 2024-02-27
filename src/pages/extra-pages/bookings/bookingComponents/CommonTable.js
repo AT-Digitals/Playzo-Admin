@@ -91,7 +91,7 @@ const CommonTable = ({
                 {columns.map((column) => (
                   <TableCell key={column.id} sx={{ textTransform: 'capitalize' }}>
                     {column.id === 'action' ? (
-                      <IconButton aria-label="edit" color="primary" onClick={() => handleModalChange(index)}>
+                      <IconButton aria-label="edit" color="primary" onClick={() => handleModalChange(rowData)}>
                         <EditIcon />
                       </IconButton>
                     ) : column.id === 'No' ? (

@@ -24,7 +24,8 @@ export default function AmountTable({
   rowsPerPage,
   page,
   handleChangePage,
-  handleChangeRowsPerPage
+  handleChangeRowsPerPage,
+  error
 }) {
   return (
     <>
@@ -76,6 +77,7 @@ export default function AmountTable({
         onSubmit={onSubmit}
         onClose={onClose}
         isOpen={isOpen}
+        error={error}
       />
     </>
   );

@@ -23,7 +23,7 @@ import NotificationToast from 'pages/components-overview/NotificationToast';
 const Data = [
   {
     value: 'previous',
-    label: 'Yesterday'
+    label: 'Previous'
   },
   {
     value: 'today',
@@ -31,7 +31,7 @@ const Data = [
   },
   {
     value: 'future',
-    label: 'Tomorrow'
+    label: 'Future'
   }
 ];
 
@@ -86,7 +86,6 @@ export default function BookingListPage() {
 
   const [isApplyMode, setIsApplyMode] = useState(true);
   const [buttonDisable, setButtonDisable] = useState(false);
-  // const [paymentType, setPaymentType] = useState('');
   const [filterData, setFilterData] = useState();
   const [bool, setBool] = useState(false);
 
@@ -128,6 +127,7 @@ export default function BookingListPage() {
     setBool(false);
     setStartDateError(false);
     setEndDateError(false);
+    setSelectServiceType('');
     await BookingApi.getAll({}).then((data) => {
       setCount(data.length);
       setData(data);
@@ -155,18 +155,16 @@ export default function BookingListPage() {
     setEndDateValue('');
   };
 
-  // const handlePaymentChange = (event) => {
-  //   setPaymentType(event.target.value);
-  // };
-
   const handleAmountChange = (event) => {
     setPayAmount(event.target.value);
     setPayError(false);
+    setErrorToast('');
   };
 
   const handleModalChange = (index) => {
     setEditableRowIndex(index);
     setUpdateModal(true);
+    setUpdateToast('');
   };
   const handleClose = () => {
     setUpdateModal(false);
@@ -268,7 +266,6 @@ export default function BookingListPage() {
         // day: selectData
       };
 
-      console.log('selectServiceType', selectServiceType);
       let dateFilter = '';
       if (monthType === 'oneMonth') {
         dateFilter = DateUtils.subtract(new Date(), 1, 'month', 'yyyy-MM-DD');
@@ -308,7 +305,6 @@ export default function BookingListPage() {
         details['court'] = selectServiceType.toString();
       }
       if (selectBooking) {
-        console.log('selectBooking', selectBooking);
         details['userBookingType'] = selectBooking;
       }
       setFilterData(details);
@@ -326,10 +322,8 @@ export default function BookingListPage() {
     const wb = XLSX.utils.book_new();
 
     const ModifiedData = data.map((item, index) => {
-      console.log(item.user);
-      const userData = JSON.parse(item.user !== null);
-      console.log('userData', userData);
-      if (userData) {
+      const userData = JSON.parse(item.user);
+      if (userData !== null) {
         return {
           No: index + 1,
           userName: userData.name,
@@ -367,7 +361,6 @@ export default function BookingListPage() {
   const userData = JSON.parse(user);
   const columns = [
     { id: 'No', label: 'No' },
-    //{ id: 'id', label: 'Id' },
     { id: 'user', label: 'User Name' },
     { id: 'type', label: 'Services' },
     { id: 'court', label: 'Service Type' },
@@ -375,8 +368,6 @@ export default function BookingListPage() {
     { id: 'endDate', label: 'End Date' },
     { id: 'startTime', label: 'Start Time' },
     { id: 'endTime', label: 'End Time' },
-    // { id: 'bookingtype', label: 'Booking Type' },
-    // { id: 'userType', label: 'User Type' },
     { id: 'userBookingType', label: 'Booking Type' },
     { id: 'cashPayment', label: 'Cash Payment' },
     { id: 'onlinePayment', label: 'Online Payment' },
@@ -389,49 +380,35 @@ export default function BookingListPage() {
       label: 'Action'
     });
   }
-  console.log('edit', editableRowIndex);
-  const UpdateChange = async (event) => {
-    event.preventDefault();
-    if (!payAmount) {
-      setPayError(true);
-    } else {
-      setPayError(false);
-      // setUpdateModal(false);
-      setEditableRowIndex(null);
-      setPayAmount('');
-    }
-
-    const idToUpdate = filteredData[editableRowIndex].id;
-    console.log('id', idToUpdate);
+  const UpdateChange = async () => {
+    const idToUpdate = editableRowIndex.id;
     const value = {
       amount: payAmount,
       id: idToUpdate,
       refund: refundCheck
     };
-    try {
-      const response = await BookingApi.updateAmount(value.id, {
-        bookingAmount: {
-          online: 0,
-          cash: value.refund ? 0 : value.amount,
-          total: value.refund ? 0 : value.amount,
-          refund: value.refund ? value.amount : 0
-        },
-        isRefund: value.refund
-      });
-      console.log('error', response);
-      if (response) {
+
+    if (!payAmount) {
+      setPayError(true);
+    } else {
+      setPayError(false);
+      try {
+        const response = await BookingApi.updateAmount(value.id, {
+          bookingAmount: {
+            online: 0,
+            cash: value.refund ? 0 : value.amount,
+            total: value.refund ? 0 : value.amount,
+            refund: value.refund ? value.amount : 0
+          },
+          isRefund: value.refund
+        });
         setUpdateToast('Your Amount is updated successfully!');
         handleClose();
-      } else {
-        setErrorToast(response.message);
+      } catch (error) {
+        setErrorToast(error.message);
       }
-    } catch (error) {
-      //setErrorToast(error.message);
-      console.log('please provide valid amount', error);
     }
-
     fetchInfo();
-    setRefundCheck(false);
   };
 
   return (
@@ -491,23 +468,6 @@ export default function BookingListPage() {
                 error={endDateError}
               />
             </Grid>
-            {/* <Grid item md={3}>
-              <Stack spacing={2}>
-                <Typography>Payment Type</Typography>
-                <FormControl fullWidth>
-                  <Select
-                    labelId="demo-simple-select-label"
-                    id="demo-simple-select"
-                    value={paymentType}
-                    onChange={handlePaymentChange}
-                    disabled={buttonDisable}
-                  >
-                    <MenuItem value="cash">Cash</MenuItem>
-                    <MenuItem value="online">Online</MenuItem>
-                  </Select>
-                </FormControl>
-              </Stack>
-            </Grid> */}
             <Grid item md={3}>
               <DropDownComponent
                 label="Booking Type"
