@@ -25,6 +25,16 @@ const CalendarComponent = ({ data }) => {
     setEventModal(false);
   };
 
+  const eventStyleGetter = (event, start, end, isSelected) => {
+    const style = {
+      textTransform: 'capitalize' // Example background color
+    };
+
+    return {
+      style: style
+    };
+  };
+
   return (
     <div style={{ height: '900px' }}>
       <Calendar
@@ -38,6 +48,7 @@ const CalendarComponent = ({ data }) => {
         defaultDate={moment().toDate()}
         toolbar
         timeslots={3}
+        eventPropGetter={eventStyleGetter}
       />
       <CalendarModalComponent isOpen={eventModal} onClose={handleClose} data={selectedEvent} />
     </div>

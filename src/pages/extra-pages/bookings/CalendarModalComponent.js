@@ -77,7 +77,7 @@ export default function CalendarModalComponent({ onClose, isOpen, data }) {
               </Typography>
             </Grid>
             <Grid item md={6} mb={2}>
-              <Typography variant="h6">{title}</Typography>
+              <Typography variant="h6">{title.charAt(0).toUpperCase() + title.slice(1)}</Typography>
             </Grid>
             <Grid item md={6} mb={2}>
               <Typography variant="h5" fontWeight={600}>
