@@ -135,7 +135,7 @@ export default function EnquiriesPage() {
         setBool(false);
       }
       setButtonDisable(true);
-
+      setPage(0);
       setIsApplyMode(false);
     },
     [endDate, startDate]

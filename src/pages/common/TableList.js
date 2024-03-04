@@ -1,10 +1,10 @@
 import { Table, TableBody, TableCell, TableContainer, TableHead, TablePagination, TableRow } from '@mui/material';
 
-import Paper from '@mui/material/Paper';
-import moment from 'moment';
 import EditIcon from '@mui/icons-material/Edit';
 import IconButton from '@mui/material/IconButton';
+import Paper from '@mui/material/Paper';
 import UpdatePasswordModal from 'pages/extra-pages/user/UpdatePasswordModal';
+import moment from 'moment';
 
 export default function TableList({
   columns,
@@ -67,7 +67,10 @@ export default function TableList({
             {data.map((rowData, index) => (
               <TableRow key={index} sx={{ '&:last-child td, &:last-child th': { border: 0 } }}>
                 {columns.map((column) => (
-                  <TableCell key={column.id} sx={{ textTransform: 'capitalize' }}>
+                  <TableCell
+                    key={column.id}
+                    sx={{ textTransform: column.id === 'email' || column.id === 'userEmail' ? 'normal' : 'capitalize' }}
+                  >
                     {column.id === 'action' ? (
                       <IconButton aria-label="edit" color="primary" onClick={() => handleClick(rowData)}>
                         <EditIcon />

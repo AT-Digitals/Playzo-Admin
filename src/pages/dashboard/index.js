@@ -1,14 +1,13 @@
-import { useState, useEffect, useCallback } from 'react';
+import { Box, Button, Grid, Stack, Typography } from '@mui/material';
+import { useCallback, useEffect, useState } from 'react';
+
+import AnalyticEcommerce from 'components/cards/statistics/AnalyticEcommerce';
+import BookingApi from 'api/BookingApi';
+import EnquiryApi from 'api/EnquiryApi';
+import MainCard from 'components/MainCard';
+import PieChart from './PieChart';
 
 // material-ui
-import { Box, Button, Grid, Stack, Typography } from '@mui/material';
-
-import MainCard from 'components/MainCard';
-import AnalyticEcommerce from 'components/cards/statistics/AnalyticEcommerce';
-
-import BookingApi from 'api/BookingApi';
-import PieChart from './PieChart';
-import EnquiryApi from 'api/EnquiryApi';
 
 // ==============================|| DASHBOARD - DEFAULT ||============================== //
 
@@ -122,23 +121,16 @@ const DashboardDefault = () => {
         <Typography variant="h5">Dashboard</Typography>
       </Grid>
       <Grid item xs={12} sm={6} md={4} lg={3}>
-        <AnalyticEcommerce title="Total Bookings" count={bookingInfo.totalBooking.toString()} percentage={59.3} />
+        <AnalyticEcommerce title="Total Bookings" count={bookingInfo.totalBooking.toString()} />
       </Grid>
       <Grid item xs={12} sm={6} md={4} lg={3}>
-        <AnalyticEcommerce title="Manual Bookings" count={bookingInfo.manual.toString()} percentage={70.5} />
+        <AnalyticEcommerce title="Manual Bookings" count={bookingInfo.manual.toString()} />
       </Grid>
       <Grid item xs={12} sm={6} md={4} lg={3}>
-        <AnalyticEcommerce title="Online Bookings" count={bookingInfo.online.toString()} percentage={27.4} isLoss color="warning" />
+        <AnalyticEcommerce title="Online Bookings" count={bookingInfo.online.toString()} isLoss color="warning" />
       </Grid>
       <Grid item xs={12} sm={6} md={4} lg={3}>
-        <AnalyticEcommerce
-          title="Enquiries"
-          count={enquiryData.length.toString()}
-          percentage={27.4}
-          isLoss
-          color="warning"
-          extra="$20,395"
-        />
+        <AnalyticEcommerce title="Enquiries" count={enquiryData.length.toString()} isLoss color="warning" extra="$20,395" />
       </Grid>
 
       {/* row 2 */}
