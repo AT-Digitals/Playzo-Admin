@@ -185,6 +185,7 @@ export default function AmountPage() {
                 value={amount || ''}
                 setValue={handleAmountChange}
                 error={amountError}
+                type="number"
                 errorText="Please Enter a valid Amount"
               />
             </Grid>
