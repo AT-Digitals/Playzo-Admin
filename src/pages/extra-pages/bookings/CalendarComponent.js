@@ -26,8 +26,32 @@ const CalendarComponent = ({ data }) => {
   };
 
   const eventStyleGetter = (event, start, end, isSelected) => {
+    let backgroundColor = '';
+    switch (event.title) {
+      case 'turf':
+        backgroundColor = '#62BF53';
+        break;
+      case 'playstation':
+        backgroundColor = '#EA7DD4';
+        break;
+      case 'boardGame':
+        backgroundColor = '#63C0E1';
+        break;
+      case 'cricketNet':
+        backgroundColor = '#FAD26F';
+        break;
+      case 'bowlingMachine':
+        backgroundColor = '#C698F9';
+        break;
+      case 'badminton':
+        backgroundColor = '#E1876D';
+        break;
+      default:
+        backgroundColor = '#3174ad';
+    }
     const style = {
-      textTransform: 'capitalize' // Example background color
+      textTransform: 'capitalize',
+      backgroundColor: backgroundColor // Example background color
     };
 
     return {

@@ -38,6 +38,20 @@ export const bookingAll = {
       type: 'item',
       url: '/addBookings',
       icon: icons.AddBoxIcon
+    },
+    {
+      id: 'Bulk Bookings',
+      title: 'Bulk Bookings',
+      type: 'item',
+      url: '/bulkBookings',
+      icon: icons.AddBoxIcon
+    },
+    {
+      id: 'MemberShip Bookings',
+      title: 'MemberShip Bookings',
+      type: 'item',
+      url: '/memberShipBookings',
+      icon: icons.AddBoxIcon
     }
   ]
 };

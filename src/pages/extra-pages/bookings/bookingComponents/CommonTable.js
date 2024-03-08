@@ -13,6 +13,7 @@ import { TablePagination } from '@mui/material';
 import TableRow from '@mui/material/TableRow';
 import UpdateModalComponent from '../UpdateModalComponent';
 import moment from 'moment';
+import AddCircleIcon from '@mui/icons-material/AddCircle';
 
 const CommonTable = ({
   columns,
@@ -40,7 +41,10 @@ const CommonTable = ({
   UpiAmount,
   showUpi,
   showCash,
-  UpiError
+  UpiError,
+  handleEditModal,
+  editModal,
+  onCloseEdit
 }) => {
   const renderCellContent = (column, rowData, rowIndex) => {
     const { id, label } = column;
@@ -101,6 +105,10 @@ const CommonTable = ({
                   <TableCell key={column.id} sx={{ textTransform: 'capitalize' }}>
                     {column.id === 'action' ? (
                       <IconButton aria-label="edit" color="primary" onClick={() => handleModalChange(rowData)}>
+                        <AddCircleIcon />
+                      </IconButton>
+                    ) : column.id === 'edit' ? (
+                      <IconButton aria-label="edit" color="primary" onClick={() => handleEditModal(rowData)}>
                         <EditIcon />
                       </IconButton>
                     ) : column.id === 'No' ? (
@@ -143,6 +151,29 @@ const CommonTable = ({
         showUpi={showUpi}
         showCash={showCash}
         UpiError={UpiError}
+        showRefund={true}
+        title="Add Payment Amount"
+      />
+      <UpdateModalComponent
+        onChange={onChange}
+        value={payAmount}
+        isOpen={editModal}
+        onClose={onCloseEdit}
+        label="Enter Cash Amount"
+        label1="Enter UPI Amount"
+        onSubmit={UpdateChange}
+        error={error}
+        Upichecked={Upichecked}
+        handleUPIChange={handleUPIChange}
+        Cashchecked={Cashchecked}
+        handleCashChange={handleCashChange}
+        handleUpiAmountChange={handleUpiAmountChange}
+        UpiAmount={UpiAmount}
+        showUpi={showUpi}
+        showCash={showCash}
+        UpiError={UpiError}
+        showRefund={false}
+        title="Update Payment Amount"
       />
     </>
   );

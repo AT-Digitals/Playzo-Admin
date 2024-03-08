@@ -127,6 +127,8 @@ export default function BookingListPage() {
   const [showUpiField, setShowUpiField] = useState(false);
   const [paymentType, setPaymentType] = useState('');
 
+  const [editModal, setEditModal] = useState(false);
+
   const handleRefundChange = (event) => {
     setRefundCheck(event.target.checked);
   };
@@ -220,6 +222,11 @@ export default function BookingListPage() {
     setUpdateModal(true);
     setUpdateToast('');
   };
+  const handleEditModalChange = (index) => {
+    setEditableRowIndex(index);
+    setEditModal(true);
+    setUpdateToast('');
+  };
   const handleClose = () => {
     setUpdateModal(false);
     setPayError(false);
@@ -231,6 +238,10 @@ export default function BookingListPage() {
     setUpiChecked(false);
     setShowCashField(false);
     setShowUpiField(false);
+  };
+
+  const handleEditClose = () => {
+    setEditModal(false);
   };
 
   const handleChangePage = (_event, newPage) => {
@@ -435,10 +446,13 @@ export default function BookingListPage() {
     { id: 'refund', label: 'Refund' }
   ];
   if (userData.accessType !== AccessType.READ) {
-    columns.push({
-      id: 'action',
-      label: 'Action'
-    });
+    columns.push(
+      {
+        id: 'action',
+        label: 'Action'
+      },
+      { id: 'edit', label: 'Edit' }
+    );
   }
   const UpdateChange = async () => {
     const idToUpdate = editableRowIndex.id;
@@ -639,6 +653,9 @@ export default function BookingListPage() {
           showUpi={showUpiField}
           showCash={showCashField}
           UpiError={UpiError}
+          handleEditModal={handleEditModalChange}
+          editModal={editModal}
+          onCloseEdit={handleEditClose}
         />
       </MainCard>
     </>
