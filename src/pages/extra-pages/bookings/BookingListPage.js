@@ -65,6 +65,24 @@ const monthData = [
   }
 ];
 
+const paymentData = [
+  {
+    value: 'cash',
+    label: 'Cash'
+  },
+  {
+    value: 'online',
+    label: 'Online'
+  },
+  {
+    value: 'upi',
+    label: 'UPI'
+  },
+  {
+    value: 'refund',
+    label: 'Refund'
+  }
+];
 const getNumberOptions1 = (Type) => {
   const length = BookingLength[Type] || 0;
   return Array.from({ length }, (_, index) => ({
@@ -95,12 +113,19 @@ export default function BookingListPage() {
   const [updateModal, setUpdateModal] = useState(false);
   const [payAmount, setPayAmount] = useState('');
   const [payError, setPayError] = useState(false);
+  const [UpiError, setUpiError] = useState(false);
   const [editableRowIndex, setEditableRowIndex] = useState(null);
   const [updateToast, setUpdateToast] = useState('');
   const [refundCheck, setRefundCheck] = useState(false);
   const [selectBooking, setSelectBooking] = useState('');
   const [selectServiceType, setSelectServiceType] = useState('');
   const [errorToast, setErrorToast] = useState('');
+  const [upiAmount, setUpiAmount] = useState('');
+  const [cashChecked, setCashChecked] = useState(false);
+  const [upiChecked, setUpiChecked] = useState(false);
+  const [showCashField, setShowCashField] = useState(false);
+  const [showUpiField, setShowUpiField] = useState(false);
+  const [paymentType, setPaymentType] = useState('');
 
   const handleRefundChange = (event) => {
     setRefundCheck(event.target.checked);
@@ -112,6 +137,24 @@ export default function BookingListPage() {
 
   const handleCourtChange = (event) => {
     setSelectServiceType(event.target.value);
+  };
+
+  const handleUpiChange = (event) => {
+    setUpiChecked(event.target.checked);
+    if (event.target.checked) {
+      setShowUpiField(true);
+    } else {
+      setShowUpiField(false);
+    }
+  };
+
+  const handleCashChange = (event) => {
+    setCashChecked(event.target.checked);
+    if (event.target.checked) {
+      setShowCashField(true);
+    } else {
+      setShowCashField(false);
+    }
   };
 
   const handleButtonClick = async () => {
@@ -128,6 +171,7 @@ export default function BookingListPage() {
     setStartDateError(false);
     setEndDateError(false);
     setSelectServiceType('');
+    setPaymentType('');
     await BookingApi.getAll({}).then((data) => {
       setCount(data.length);
       setData(data);
@@ -145,6 +189,10 @@ export default function BookingListPage() {
     setSelectData('');
   };
 
+  const PaymenthandleChange = (event) => {
+    setPaymentType(event.target.value);
+  };
+
   const handleChange = (event) => {
     setBookingType(event.target.value);
   };
@@ -153,6 +201,12 @@ export default function BookingListPage() {
     setMonthType('');
     setStartDateValue('');
     setEndDateValue('');
+  };
+
+  const handleUpiAmountChange = (event) => {
+    setUpiAmount(event.target.value);
+    setUpiError(false);
+    setErrorToast('');
   };
 
   const handleAmountChange = (event) => {
@@ -171,6 +225,12 @@ export default function BookingListPage() {
     setPayError(false);
     setRefundCheck(false);
     setPayAmount('');
+    setUpiError(false);
+    setUpiAmount('');
+    setCashChecked(false);
+    setUpiChecked(false);
+    setShowCashField(false);
+    setShowUpiField(false);
   };
 
   const handleChangePage = (_event, newPage) => {
@@ -316,7 +376,7 @@ export default function BookingListPage() {
     setIsApplyMode(false);
     setPage(0);
     setButtonDisable(true);
-  }, [bookingType, endDateValue, monthType, selectBooking, selectData, selectServiceType, startDateValue]);
+  }, [bookingType, endDateValue, monthType, selectBooking, selectData, selectServiceType, startDateValue, paymentType]);
 
   const handleDownload = () => {
     const wb = XLSX.utils.book_new();
@@ -385,13 +445,24 @@ export default function BookingListPage() {
     const value = {
       amount: payAmount,
       id: idToUpdate,
-      refund: refundCheck
+      refund: refundCheck,
+      upiamount: upiAmount
     };
+    console.log('valuedetails', value);
 
-    if (!payAmount) {
+    if (!upiChecked && !cashChecked) {
+      setErrorToast('Please select any one payment option');
+    } else if (cashChecked && !payAmount) {
       setPayError(true);
+    } else if (upiChecked && !upiAmount) {
+      setUpiError(true);
+      // if (!payAmount) {
+      //   setPayError(true);
+      // } else if (upiChecked && upiAmount) {
+      //   setUpiError(false);
     } else {
       setPayError(false);
+      setUpiError(false);
       try {
         const response = await BookingApi.updateAmount(value.id, {
           bookingAmount: {
@@ -406,6 +477,7 @@ export default function BookingListPage() {
         handleClose();
       } catch (error) {
         setErrorToast(error.message);
+        console.log('error', error.message);
       }
     }
     fetchInfo();
@@ -495,6 +567,15 @@ export default function BookingListPage() {
                 disabled={(startDateValue && endDateValue) || monthType ? true : buttonDisable}
               />
             </Grid>
+            <Grid item md={3}>
+              <DropDownComponent
+                label="Payment Type"
+                value={paymentType}
+                onChange={PaymenthandleChange}
+                options={paymentData}
+                disabled={buttonDisable}
+              />
+            </Grid>
 
             <Grid item md={5}>
               <Stack direction="row" spacing={2}>
@@ -549,6 +630,15 @@ export default function BookingListPage() {
           editableRowIndex={editableRowIndex}
           handleRefundChange={handleRefundChange}
           refund={refundCheck}
+          Upichecked={upiChecked}
+          handleUPIChange={handleUpiChange}
+          Cashchecked={cashChecked}
+          handleCashChange={handleCashChange}
+          handleUpiAmountChange={handleUpiAmountChange}
+          UpiAmount={upiAmount}
+          showUpi={showUpiField}
+          showCash={showCashField}
+          UpiError={UpiError}
         />
       </MainCard>
     </>

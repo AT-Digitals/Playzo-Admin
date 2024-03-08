@@ -31,7 +31,16 @@ const CommonTable = ({
   editableRowIndex,
   error,
   handleRefundChange,
-  refund
+  refund,
+  Upichecked,
+  handleUPIChange,
+  Cashchecked,
+  handleCashChange,
+  handleUpiAmountChange,
+  UpiAmount,
+  showUpi,
+  showCash,
+  UpiError
 }) => {
   const renderCellContent = (column, rowData, rowIndex) => {
     const { id, label } = column;
@@ -119,11 +128,21 @@ const CommonTable = ({
         value={payAmount}
         isOpen={updateModal}
         onClose={onClose}
-        label="Enter Payment Amount"
+        label="Enter Cash Amount"
+        label1="Enter UPI Amount"
         onSubmit={UpdateChange}
         error={error}
         handleRefundChange={handleRefundChange}
         refund={refund}
+        Upichecked={Upichecked}
+        handleUPIChange={handleUPIChange}
+        Cashchecked={Cashchecked}
+        handleCashChange={handleCashChange}
+        handleUpiAmountChange={handleUpiAmountChange}
+        UpiAmount={UpiAmount}
+        showUpi={showUpi}
+        showCash={showCash}
+        UpiError={UpiError}
       />
     </>
   );

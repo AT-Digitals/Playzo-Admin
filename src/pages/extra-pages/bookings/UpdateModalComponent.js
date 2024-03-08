@@ -16,13 +16,33 @@ const style = {
   top: '50%',
   left: '50%',
   transform: 'translate(-50%, -50%)',
-  width: 380,
+  width: 450,
   bgcolor: 'background.paper',
   boxShadow: 24,
   p: 4
 };
 
-export default function BookingModal({ onChange, value, isOpen, onClose, onSubmit, label, error, refund, handleRefundChange }) {
+export default function BookingModal({
+  onChange,
+  value,
+  isOpen,
+  onClose,
+  onSubmit,
+  label,
+  error,
+  refund,
+  handleRefundChange,
+  Upichecked,
+  handleUPIChange,
+  Cashchecked,
+  handleCashChange,
+  handleUpiAmountChange,
+  UpiAmount,
+  label1,
+  showUpi,
+  showCash,
+  UpiError
+}) {
   return (
     <div>
       <Modal open={isOpen} onClose={onClose} aria-labelledby="modal-modal-title" aria-describedby="modal-modal-description">
@@ -34,14 +54,38 @@ export default function BookingModal({ onChange, value, isOpen, onClose, onSubmi
             </IconButton>
           </Stack>
           <Stack direction="column" spacing={3}>
-            <CustomTextField
-              label={label}
-              value={value}
-              setValue={onChange}
-              error={error}
-              type="number"
-              errorText="please Enter a valid Amount"
-            />
+            <Stack direction="column" spacing={2}>
+              <Typography>Select Payment Type</Typography>
+              <Stack direction="row" spacing={3}>
+                <Stack direction="column" spacing={2}>
+                  <FormControlLabel control={<Checkbox checked={Cashchecked} onChange={handleCashChange} />} label="Cash" />
+                  {showCash && (
+                    <CustomTextField
+                      label={label}
+                      value={value}
+                      setValue={onChange}
+                      error={error}
+                      type="number"
+                      errorText="please Enter a Cash Amount"
+                    />
+                  )}
+                </Stack>
+                <Stack direction="column" spacing={2}>
+                  <FormControlLabel control={<Checkbox checked={Upichecked} onChange={handleUPIChange} />} label="UPI" />
+                  {showUpi && (
+                    <CustomTextField
+                      label={label1}
+                      value={UpiAmount}
+                      setValue={handleUpiAmountChange}
+                      error={UpiError}
+                      type="number"
+                      errorText="please Enter a UPI Amount"
+                    />
+                  )}
+                </Stack>
+              </Stack>
+            </Stack>
+
             <FormGroup>
               <FormControlLabel control={<Checkbox checked={refund} onChange={handleRefundChange} />} label="Refund" />
             </FormGroup>
