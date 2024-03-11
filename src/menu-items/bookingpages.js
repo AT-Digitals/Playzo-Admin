@@ -52,6 +52,13 @@ export const bookingAll = {
       type: 'item',
       url: '/memberShipBookings',
       icon: icons.AddBoxIcon
+    },
+    {
+      id: 'Calendar Bulk Bookings',
+      title: 'Calendar Bulk Bookings',
+      type: 'item',
+      url: '/calendar-bulk-Bookings',
+      icon: icons.CalendarMonthIcon
     }
   ]
 };

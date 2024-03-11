@@ -12,6 +12,7 @@ import { lazy } from 'react';
 import { useRoutes } from 'react-router-dom';
 import BulkBookingComponent from 'pages/extra-pages/bookings/bulkBooking/BulkBookingComponent';
 import MemberShipBooking from 'pages/extra-pages/bookings/membershipBookings/MemberShipBooking';
+import CalendarBulkBooking from 'pages/extra-pages/bookings/CalendarBulkBooking';
 
 // project import
 
@@ -108,6 +109,10 @@ export default function ThemeRoutes() {
         {
           path: 'memberShipBookings',
           element: <MemberShipBooking />
+        },
+        {
+          path: 'calendar-bulk-Bookings',
+          element: <CalendarBulkBooking />
         }
       ]
     }
