@@ -28,42 +28,44 @@ const CalendarBooking = () => {
     try {
       await BookingApi.getAll().then((dataList) => {
         dataList.map((list) => {
-          const dateObject = new Date(list.startDate);
+          if (list.startDate === list.endDate) {
+            const dateObject = new Date(list.startDate);
 
-          const day = dateObject.getDate();
-          const month = dateObject.getMonth();
-          const year = dateObject.getFullYear();
+            const day = dateObject.getDate();
+            const month = dateObject.getMonth();
+            const year = dateObject.getFullYear();
 
-          const endDate = new Date(list.endDate);
-          const endday = endDate.getDate();
-          const endmonth = endDate.getMonth();
-          const endyear = endDate.getFullYear();
+            const endDate = new Date(list.endDate);
+            const endday = endDate.getDate();
+            const endmonth = endDate.getMonth();
+            const endyear = endDate.getFullYear();
 
-          const startMilliseconds = parseInt(list.startTime);
-          const endMilliseconds = parseInt(list.endTime);
+            const startMilliseconds = parseInt(list.startTime);
+            const endMilliseconds = parseInt(list.endTime);
 
-          const startTime = DateUtils.formatMillisecondsToTime(startMilliseconds);
-          const endTime = DateUtils.formatMillisecondsToTime(endMilliseconds);
+            const startTime = DateUtils.formatMillisecondsToTime(startMilliseconds);
+            const endTime = DateUtils.formatMillisecondsToTime(endMilliseconds);
 
-          const startTime24 = DateUtils.convertTo24HourFormat(startTime);
-          const endTime24 = DateUtils.convertTo24HourFormat(endTime);
+            const startTime24 = DateUtils.convertTo24HourFormat(startTime);
+            const endTime24 = DateUtils.convertTo24HourFormat(endTime);
 
-          const startHour = parseInt(startTime24.split(':')[0], 10);
-          const startMinute = parseInt(startTime24.split(':')[1], 10);
-          const endHour = parseInt(endTime24.split(':')[0], 10);
-          const endMinute = parseInt(endTime24.split(':')[1], 10);
-          const name = JSON.parse(list.user).name;
-          const emailaddress = JSON.parse(list.user).email;
+            const startHour = parseInt(startTime24.split(':')[0], 10);
+            const startMinute = parseInt(startTime24.split(':')[1], 10);
+            const endHour = parseInt(endTime24.split(':')[0], 10);
+            const endMinute = parseInt(endTime24.split(':')[1], 10);
+            const name = JSON.parse(list.user).name;
+            const emailaddress = JSON.parse(list.user).email;
 
-          const calendarDataList = {
-            userName: name,
-            email: emailaddress,
-            title: list.type,
-            court: list.court,
-            start: new Date(year, month, day, startHour, startMinute, 0, 0),
-            end: new Date(endyear, endmonth, endday, endHour, endMinute, 0, 0)
-          };
-          listDate.push(calendarDataList);
+            const calendarDataList = {
+              userName: name,
+              email: emailaddress,
+              title: list.type,
+              court: list.court,
+              start: new Date(year, month, day, startHour, startMinute, 0, 0),
+              end: new Date(endyear, endmonth, endday, endHour, endMinute, 0, 0)
+            };
+            listDate.push(calendarDataList);
+          }
         });
 
         setData(listDate);
@@ -79,35 +81,37 @@ const CalendarBooking = () => {
       await BookingApi.filterBook({ type: bookingType }).then((dataList) => {
         setData(dataList);
         dataList.map((list) => {
-          const dateObject = new Date(list.startDate);
-          const day = dateObject.getDate();
-          const month = dateObject.getMonth();
-          const year = dateObject.getFullYear();
-          const endDate = new Date(list.endDate);
-          const endday = endDate.getDate();
-          const endmonth = endDate.getMonth();
-          const endyear = endDate.getFullYear();
-          const startMilliseconds = parseInt(list.startTime);
-          const endMilliseconds = parseInt(list.endTime);
-          const startTime = DateUtils.formatMillisecondsToTime(startMilliseconds);
-          const endTime = DateUtils.formatMillisecondsToTime(endMilliseconds);
-          const startTime24 = DateUtils.convertTo24HourFormat(startTime);
-          const endTime24 = DateUtils.convertTo24HourFormat(endTime);
-          const startHour = parseInt(startTime24.split(':')[0], 10);
-          const startMinute = parseInt(startTime24.split(':')[1], 10);
-          const endHour = parseInt(endTime24.split(':')[0], 10);
-          const endMinute = parseInt(endTime24.split(':')[1], 10);
-          const name = JSON.parse(list.user).name;
-          const emailaddress = JSON.parse(list.user).email;
-          const calendarDataList = {
-            userName: name,
-            email: emailaddress,
-            title: list.type,
-            court: list.court,
-            start: new Date(year, month, day, startHour, startMinute, 0, 0),
-            end: new Date(endyear, endmonth, endday, endHour, endMinute, 0, 0)
-          };
-          listDate.push(calendarDataList);
+          if (list.startDate === list.endDate) {
+            const dateObject = new Date(list.startDate);
+            const day = dateObject.getDate();
+            const month = dateObject.getMonth();
+            const year = dateObject.getFullYear();
+            const endDate = new Date(list.endDate);
+            const endday = endDate.getDate();
+            const endmonth = endDate.getMonth();
+            const endyear = endDate.getFullYear();
+            const startMilliseconds = parseInt(list.startTime);
+            const endMilliseconds = parseInt(list.endTime);
+            const startTime = DateUtils.formatMillisecondsToTime(startMilliseconds);
+            const endTime = DateUtils.formatMillisecondsToTime(endMilliseconds);
+            const startTime24 = DateUtils.convertTo24HourFormat(startTime);
+            const endTime24 = DateUtils.convertTo24HourFormat(endTime);
+            const startHour = parseInt(startTime24.split(':')[0], 10);
+            const startMinute = parseInt(startTime24.split(':')[1], 10);
+            const endHour = parseInt(endTime24.split(':')[0], 10);
+            const endMinute = parseInt(endTime24.split(':')[1], 10);
+            const name = JSON.parse(list.user).name;
+            const emailaddress = JSON.parse(list.user).email;
+            const calendarDataList = {
+              userName: name,
+              email: emailaddress,
+              title: list.type,
+              court: list.court,
+              start: new Date(year, month, day, startHour, startMinute, 0, 0),
+              end: new Date(endyear, endmonth, endday, endHour, endMinute, 0, 0)
+            };
+            listDate.push(calendarDataList);
+          }
         });
         setData(listDate);
       });
@@ -171,7 +175,7 @@ const CalendarBooking = () => {
                 <Button
                   variant="outlined"
                   onClick={applyFilters}
-                  sx={{ padding: '7px 15px', width: '150px', fontWeight: 600, fontSize: '15px', marginTop: '38px' }}
+                  sx={{ padding: '7px 15px', width: '100%', fontWeight: 600, fontSize: '15px', marginTop: '38px' }}
                 >
                   Apply
                 </Button>
@@ -179,7 +183,7 @@ const CalendarBooking = () => {
                 <Button
                   variant="outlined"
                   onClick={handleButtonClick}
-                  sx={{ padding: '7px 15px', width: '150px', fontWeight: 600, fontSize: '15px', marginTop: '38px' }}
+                  sx={{ padding: '7px 15px', width: '100%', fontWeight: 600, fontSize: '15px', marginTop: '38px' }}
                 >
                   Clear
                 </Button>

@@ -127,9 +127,6 @@ export default function BulkBookingComponent() {
     setEndDateError(false);
     setStartTime('');
     setEndTime('');
-
-    const days = getDatesInRange(date, formattedDate);
-    console.log(days, 'helo');
   };
 
   const ApiCall = async (endData) => {

@@ -18,20 +18,20 @@ export const bookingAll = {
   title: 'Bookings',
   type: 'group',
   children: [
-    {
-      id: 'booking list',
-      title: 'Booking List',
-      type: 'item',
-      url: '/bookingList',
-      icon: icons.FormatListBulletedIcon
-    },
-    {
-      id: 'calendar booking',
-      title: 'Calendar Booking',
-      type: 'item',
-      url: '/calendarBooking',
-      icon: icons.CalendarMonthIcon
-    },
+    // {
+    //   id: 'booking list',
+    //   title: 'Booking List',
+    //   type: 'item',
+    //   url: '/bookingList',
+    //   icon: icons.FormatListBulletedIcon
+    // },
+    // {
+    //   id: 'calendar booking',
+    //   title: 'Calendar Booking',
+    //   type: 'item',
+    //   url: '/calendarBooking',
+    //   icon: icons.CalendarMonthIcon
+    // },
     {
       id: 'Add Bookings',
       title: 'Add Bookings',
@@ -52,14 +52,14 @@ export const bookingAll = {
       type: 'item',
       url: '/memberShipBookings',
       icon: icons.AddBoxIcon
-    },
-    {
-      id: 'Calendar Bulk Bookings',
-      title: 'Calendar Bulk Bookings',
-      type: 'item',
-      url: '/calendar-bulk-Bookings',
-      icon: icons.CalendarMonthIcon
     }
+    // {
+    //   id: 'Calendar Bulk Bookings',
+    //   title: 'Calendar Bulk Bookings',
+    //   type: 'item',
+    //   url: '/calendar-bulk-Bookings',
+    //   icon: icons.CalendarMonthIcon
+    // }
   ]
 };
 

@@ -179,7 +179,7 @@ export default function EnquiriesPage() {
                 <Button
                   variant="outlined"
                   onClick={ApplyFilter}
-                  sx={{ padding: '7px 15px', width: '150px', fontWeight: 600, fontSize: '15px', marginTop: '35px' }}
+                  sx={{ padding: '7px 15px', width: '100%', fontWeight: 600, fontSize: '15px', marginTop: '35px' }}
                 >
                   Apply
                 </Button>
@@ -187,7 +187,7 @@ export default function EnquiriesPage() {
                 <Button
                   variant="outlined"
                   onClick={handleButtonClick}
-                  sx={{ padding: '7px 15px', width: '150px', fontWeight: 600, fontSize: '15px', marginTop: '35px' }}
+                  sx={{ padding: '7px 15px', width: '100%', fontWeight: 600, fontSize: '15px', marginTop: '35px' }}
                 >
                   Clear
                 </Button>

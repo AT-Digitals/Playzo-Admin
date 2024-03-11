@@ -599,36 +599,41 @@ export default function BookingListPage() {
               />
             </Grid>
 
-            <Grid item md={5}>
-              <Stack direction="row" spacing={2}>
-                {isApplyMode ? (
-                  <Button
-                    variant="outlined"
-                    onClick={applyFilters}
-                    sx={{ padding: '7px 15px', width: '150px', height: '43px', fontWeight: 600, fontSize: '15px' }}
-                  >
-                    Apply
-                  </Button>
-                ) : (
-                  <Button
-                    variant="outlined"
-                    onClick={handleButtonClick}
-                    sx={{ padding: '7px 15px', width: '150px', height: '43px', fontWeight: 600, fontSize: '15px' }}
-                  >
-                    Clear
-                  </Button>
-                )}
-
+            {/* <Grid item md={3}> */}
+            {/* <Stack direction="row" spacing={2}> */}
+            {isApplyMode ? (
+              <Grid item md={3}>
                 <Button
                   variant="outlined"
-                  onClick={handleDownload}
-                  sx={{ padding: '7px 15px', width: '200px', height: '43px', fontWeight: 600, fontSize: '15px' }}
+                  onClick={applyFilters}
+                  sx={{ padding: '7px 15px', width: '100%', height: '43px', fontWeight: 600, fontSize: '15px' }}
                 >
-                  Download Report
+                  Apply
                 </Button>
-              </Stack>
+              </Grid>
+            ) : (
+              <Grid item md={3}>
+                <Button
+                  variant="outlined"
+                  onClick={handleButtonClick}
+                  sx={{ padding: '7px 15px', width: '100%', height: '43px', fontWeight: 600, fontSize: '15px' }}
+                >
+                  Clear
+                </Button>
+              </Grid>
+            )}
+            <Grid item md={3}>
+              <Button
+                variant="outlined"
+                onClick={handleDownload}
+                sx={{ padding: '7px 15px', width: '100%', height: '43px', fontWeight: 600, fontSize: '15px' }}
+              >
+                Download Report
+              </Button>
             </Grid>
+            {/* </Stack> */}
           </Grid>
+          {/* </Grid> */}
         </Stack>
       </MainCard>
       {errorToast !== '' ? <NotificationToast error={errorToast} /> : <></>}
