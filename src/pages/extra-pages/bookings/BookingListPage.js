@@ -242,6 +242,14 @@ export default function BookingListPage() {
 
   const handleEditClose = () => {
     setEditModal(false);
+    setPayAmount('');
+    setUpiError(false);
+    setUpiAmount('');
+    setCashChecked(false);
+    setUpiChecked(false);
+    setShowCashField(false);
+    setShowUpiField(false);
+    setPayError(false);
   };
 
   const handleChangePage = (_event, newPage) => {
