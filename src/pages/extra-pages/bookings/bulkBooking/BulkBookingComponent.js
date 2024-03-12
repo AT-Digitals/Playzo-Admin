@@ -1,31 +1,42 @@
-import { Button, Grid, Stack } from '@mui/material';
+import { Button, Grid, Stack, Typography } from '@mui/material';
 import { useEffect, useState } from 'react';
+import OutlinedInput from '@mui/material/OutlinedInput';
+import MenuItem from '@mui/material/MenuItem';
+import ListItemText from '@mui/material/ListItemText';
+import Select from '@mui/material/Select';
+import Checkbox from '@mui/material/Checkbox';
+import FormHelperText from '@mui/material/FormHelperText';
 
 import BookingApi from 'api/BookingApi';
-import { BookingLength } from './BookingLength';
-import BookingModal from './BookingModal';
-import { BookingSubTypes } from './BookingSubTypes';
-import CustomDatePicker from './bookingComponents/CustomDatePicker';
-import CustomTextField from './bookingComponents/CustomTextField';
+import { BookingLength } from '../BookingLength';
+import BookingModal from '../BookingModal';
+import { BookingSubTypes } from '../BookingSubTypes';
+import CustomDatePicker from '../bookingComponents/CustomDatePicker';
+import CustomTextField from '../bookingComponents/CustomTextField';
 import DateUtils from 'utils/DateUtils';
-import DropDownComponent from '../DropDownComponent';
+import DropDownComponent from '../../DropDownComponent';
 import MainCard from 'components/MainCard';
 import NotificationSuccessToast from 'pages/components-overview/NotificationSuccessToast';
-import NotificationToast from '../../components-overview/NotificationToast';
+import NotificationToast from 'pages/components-overview/NotificationToast';
 import PaymentApi from 'api/PaymentApi';
 import { PaymentType } from 'enum/PaymentType';
-import TimeSlotModal from './bookingComponents/TimeSlotModal';
-import TypeDropdown from './bookingComponents/TypeDropdown';
+import TimeSlotModal from '../bookingComponents/TimeSlotModal';
+import TypeDropdown from '../bookingComponents/TypeDropdown';
 import dayjs from 'dayjs';
 import moment from 'moment';
 
-export default function AddBooking() {
+const daysOfWeek = ['Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday', 'Sunday'];
+
+export default function BulkBookingComponent() {
   const [date, setDate] = useState('');
+  const [endDateValue, setEndDateValue] = useState('');
   const [startTime, setStartTime] = useState('');
   const [endTime, setEndTime] = useState('');
   const [dateError, setDateError] = useState(false);
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [disableData, setDisableData] = useState([]);
+
+  const [endDateError, setEndDateError] = useState(false);
 
   const [bookingType, setBookingType] = useState('');
   const [toast, setToast] = useState('');
@@ -33,6 +44,7 @@ export default function AddBooking() {
   const [startError, setStartError] = useState(false);
   const [endError, setEndError] = useState(false);
   const [showTextField, setShowTextField] = useState(false);
+  const [totalDays, setTotalDays] = useState(0);
 
   const [successtoast, setSuccesstoast] = useState('');
   const [paymentType, setPaymentType] = useState(PaymentType.Cash);
@@ -44,6 +56,20 @@ export default function AddBooking() {
   const userData = JSON.parse(user);
   const bookingObject = localStorage.getItem('bookingData');
   const bookingDetails = JSON.parse(bookingObject);
+
+  const [selectWeekDay, setSelectWeekDay] = useState([]);
+  const [selectWeekError, setSelectWeekError] = useState(false);
+
+  const handleWeekChange = (event) => {
+    const {
+      target: { value }
+    } = event;
+    setSelectWeekDay(
+      // On autofill we get a stringified value.
+      typeof value === 'string' ? value.split(',') : value
+    );
+    setSelectWeekError(false);
+  };
 
   const handleModalChange = (event) => {
     setPaymentType(event.target.value);
@@ -82,8 +108,23 @@ export default function AddBooking() {
     const parsedDate = moment(datedata);
     const formattedDate = parsedDate.format('YYYY-MM-DD');
     setDate(formattedDate);
-    ApiCall(formattedDate);
     setDateError(false);
+    setStartTime('');
+    setEndTime('');
+
+    if (endDateValue && new Date(endDateValue) < new Date(formattedDate)) {
+      setIsModalOpen(false);
+      setEndDateValue('');
+    }
+  };
+  const handleEndDateChange = (newValue) => {
+    let enddatedata = newValue.$d;
+    const parsedDate = moment(enddatedata);
+    const formattedDate = parsedDate.format('YYYY-MM-DD');
+
+    setEndDateValue(formattedDate);
+    ApiCall(formattedDate);
+    setEndDateError(false);
     setStartTime('');
     setEndTime('');
   };
@@ -91,7 +132,7 @@ export default function AddBooking() {
   const ApiCall = async (endData) => {
     try {
       const response = await BookingApi.filter({
-        startDate: endData,
+        startDate: date,
         type: bookingType,
         endDate: endData,
         court: selectedNumber
@@ -116,13 +157,12 @@ export default function AddBooking() {
   };
 
   const bookingApiCall = (bookingData) => {
-    if (date && startTime && endTime && bookingType && selectedNumber) {
+    if (date && startTime && endTime && endDateValue && selectedNumber && selectWeekDay) {
       setBookingModalOpen(true);
       const booking = async () => {
         try {
           const response = await BookingApi.createBooking(bookingData);
           if (response.message) {
-            console.log('response', response.message);
             setToast(response.message);
           }
           setIsModalOpen(false);
@@ -133,9 +173,12 @@ export default function AddBooking() {
           setEndTime('');
           setBookingType('');
           setToast('');
+          setEndDateValue('');
           setBulkAmount();
           setEndError(false);
           setStartError(false);
+          setSelectWeekDay([]);
+          setSelectWeekError(false);
         } catch (error) {
           if (error.message === 'Please choose another date and slot') {
             LocalStorageSaveHandler(bookingData);
@@ -146,14 +189,18 @@ export default function AddBooking() {
             setBookingType('');
             setIsModalOpen(false);
             setSuccesstoast('');
+            setEndDateValue('');
             setBulkAmount();
             setEndError(false);
             setStartError(false);
+            setSelectWeekDay([]);
+            setSelectWeekError(false);
           } else {
-            setBookingModalOpen(true);
             setToast(error.message);
           }
+
           setIsModalOpen(false);
+          setBookingModalOpen(false);
         }
       };
       booking();
@@ -174,7 +221,7 @@ export default function AddBooking() {
       endTime: parseInt(endTime),
       user: userData.id,
       startDate: date,
-      endDate: date,
+      endDate: endDateValue,
       court: selectedNumber,
       userBookingType: 'manual',
       bookingAmount: {
@@ -214,7 +261,7 @@ export default function AddBooking() {
             endTime: parseInt(endTime),
             user: userData.id,
             startDate: date,
-            endDate: date,
+            endDate: endDateValue,
             bookingId: response.razorpay_payment_id,
             court: selectedNumber,
             userBookingType: 'manual',
@@ -261,9 +308,11 @@ export default function AddBooking() {
 
   const handleDialogEndTimeChange = (newValue) => {
     const end = newValue.$d;
-    const joinDateandTime = DateUtils.joinDate(new Date(date), new Date(end));
+    const joinDateandTime = DateUtils.joinDate(new Date(endDateValue), new Date(end));
     const milliseconds = joinDateandTime.valueOf();
     setEndTime(milliseconds || 0);
+    const data = renderDatesArray(getWeekdaysBetween(date, endDateValue));
+    console.log('data', data);
   };
 
   const formatTime = (milliseconds) => {
@@ -287,22 +336,27 @@ export default function AddBooking() {
     if (!date) {
       setDateError(true);
     }
+    if (!endDateValue) {
+      setEndDateError(true);
+    }
     if (!bookingType) {
       setBookingTypeError(true);
     }
     if (!startTime) {
       setStartError(true);
     }
-
     if (!endTime) {
       setEndError(true);
     }
     if (!selectedNumber) {
       setSelectNumberError(true);
     }
-
-    if (date && bookingType && startTime && endTime && selectedNumber) {
+    if (selectWeekDay.length === 0) {
+      setSelectWeekError(true);
+    }
+    if (date && endDateValue && bookingType && startTime && endTime && selectedNumber && selectWeekDay.length > 0) {
       setBookingModalOpen(true);
+      isDurationGreaterThanOneMonth(date, endDateValue);
     }
   };
   const handleCloseModal = () => {
@@ -387,13 +441,80 @@ export default function AddBooking() {
     return false;
   };
 
-  const handleTimeModal = () => {
-    setIsModalOpen(true);
-    ApiCall(date);
+  const shouldDisableDate = (startDateData) => {
+    if (!date) {
+      return false;
+    }
+    return dayjs(startDateData).isBefore(dayjs(date), 'day');
   };
 
+  const isDurationGreaterThanOneMonth = (startDate, endDateV) => {
+    const startDateObject = new Date(startDate);
+    const endDateObject = new Date(endDateV);
+
+    const timeDifference = endDateObject - startDateObject;
+
+    const durationInDays = Math.floor(timeDifference / (1000 * 60 * 60 * 24));
+
+    setShowTextField(durationInDays > 31);
+
+    return durationInDays;
+  };
+
+  const handleTimeModal = () => {
+    setIsModalOpen(true);
+    ApiCall(endDateValue);
+  };
+
+  const countTotalDays = () => {
+    const start = new Date(date); // Convert start date to Date object
+    const end = new Date(endDateValue); // Convert end date to Date object
+    const oneDay = 24 * 60 * 60 * 1000; // Number of milliseconds in one day
+    const totalDays = Math.round(Math.abs((end - start) / oneDay)); // Calculate total days
+    setTotalDays(totalDays);
+  };
+
+  const getWeekdaysBetween = (startDate, endDate) => {
+    console.log('start', startDate, endDate);
+    const weekdays = ['Sunday', 'Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday'];
+    const datesArray = [];
+    let currentDate = new Date(startDate);
+
+    while (currentDate <= endDate) {
+      if (weekdays[currentDate.getDay()] !== 'Saturday' && weekdays[currentDate.getDay()] !== 'Sunday') {
+        datesArray.push(new Date(currentDate));
+      }
+      currentDate.setDate(currentDate.getDate() + 1);
+    }
+    console.log(datesArray);
+    return datesArray;
+  };
+
+  const renderDatesArray = (dates) => {
+    return dates.map((date, index) => <li key={index}>{date.toDateString()}</li>);
+  };
+
+  const getDatesInRange = (startDate, endDate) => {
+    // const dateValue = new Date(startDate);
+
+    const dates = [];
+
+    while (startDate <= endDate) {
+      startDate.push(new Date(startDate));
+      startDate.setDate(startDate.getDate() + 1);
+    }
+
+    return dates;
+  };
+
+  const d1 = new Date('2022-01-18');
+  const d2 = new Date('2022-01-24');
+
+  const data = getWeekdaysBetween(date, endDateValue);
+  //   console.log('start', date, 'end', endDateValue, totalDays);
+
   return (
-    <MainCard title="Add Bookings">
+    <MainCard title="Bulk Bookings">
       <form style={{ height: '240px' }}>
         <Stack direction="row" spacing={2}>
           <Grid container spacing={3} alignItems="center">
@@ -410,7 +531,17 @@ export default function AddBooking() {
               />
             </Grid>
             <Grid item md={3}>
-              <CustomDatePicker date={date} setDate={dateHandler} error={dateError} label={'Select Date'} disablePast={true} />
+              <CustomDatePicker date={date} setDate={dateHandler} error={dateError} label={'Start Date'} disablePast={true} />
+            </Grid>
+            <Grid item md={3}>
+              <CustomDatePicker
+                date={endDateValue}
+                setDate={handleEndDateChange}
+                error={endDateError}
+                label={'End Date'}
+                disablePast={false}
+                shouldDisableDate={shouldDisableDate}
+              />
             </Grid>
             <Grid item md={3}>
               <CustomTextField
@@ -440,6 +571,30 @@ export default function AddBooking() {
               startValue={startTime}
               endValue={endTime}
             />
+            <Grid item md={3}>
+              <Stack direction="column" spacing={2}>
+                <Typography>Select Days</Typography>
+                <Select
+                  labelId="demo-multiple-checkbox-label"
+                  id="demo-multiple-checkbox"
+                  multiple
+                  value={selectWeekDay}
+                  onChange={handleWeekChange}
+                  input={<OutlinedInput label="Tag" />}
+                  renderValue={(selected) => selected.join(', ')}
+                  //   MenuProps={MenuProps}
+                  error={selectWeekError}
+                >
+                  {daysOfWeek.map((name) => (
+                    <MenuItem key={name} value={name}>
+                      <Checkbox checked={selectWeekDay.indexOf(name) > -1} />
+                      <ListItemText primary={name} />
+                    </MenuItem>
+                  ))}
+                </Select>
+                {selectWeekError ? <FormHelperText error>Please select a week days</FormHelperText> : <></>}
+              </Stack>
+            </Grid>
 
             <Grid item md={3} mt={4.2}>
               <Button

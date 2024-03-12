@@ -1,11 +1,14 @@
 import { Box, Button, Grid, Stack, Typography } from '@mui/material';
 import { useCallback, useEffect, useState } from 'react';
+import moment from 'moment';
+import dayjs from 'dayjs';
 
 import AnalyticEcommerce from 'components/cards/statistics/AnalyticEcommerce';
 import BookingApi from 'api/BookingApi';
 import EnquiryApi from 'api/EnquiryApi';
 import MainCard from 'components/MainCard';
 import PieChart from './PieChart';
+import CustomDatePicker from '../extra-pages/bookings/bookingComponents/CustomDatePicker';
 
 // material-ui
 
@@ -15,20 +18,44 @@ const DashboardDefault = () => {
   const [data, setData] = useState([]);
   const [enquiryData, setEnquiryData] = useState([]);
   const [selectedCategory, setSelectedCategory] = useState('All Services');
+  const [filterData, setFilterData] = useState();
+  const [startDate, setStartDate] = useState('');
+  const [endDate, setEndDate] = useState('');
+  const [count, setCount] = useState(0);
+
+  const [isApplyMode, setIsApplyMode] = useState(true);
+  const [buttonDisable, setButtonDisable] = useState(false);
+  const [startDateError, setStartDateError] = useState('');
+  const [endDateError, setEndDateError] = useState(false);
+
+  const [selectPaymentType, setSelectPaymentType] = useState('All Payments');
+
+  const handlePaymentTypeChange = (type) => {
+    setSelectPaymentType(type);
+  };
 
   const handleButtonClick = (category) => {
     setSelectedCategory(category);
   };
 
-  const fetchData = useCallback(async () => {
-    try {
-      const res = await BookingApi.getAll({}).then((data) => {
-        setData(data);
-      });
-    } catch {
-      console.log('data fetching failed');
+  const handleStartDateChange = (newValue) => {
+    let datedata = newValue.$d;
+    const parsedDate = moment(datedata);
+    const formattedDate = parsedDate.format('YYYY-MM-DD');
+    setStartDate(formattedDate);
+    setStartDateError(false);
+    if (endDate && new Date(endDate) < new Date(formattedDate)) {
+      setEndDate('');
     }
-  }, []);
+  };
+
+  const handleEndDateChange = (newValue) => {
+    let enddatedata = newValue.$d;
+    const parsedDate = moment(enddatedata);
+    const formattedDate = parsedDate.format('YYYY-MM-DD');
+    setEndDate(formattedDate);
+    setEndDateError(false);
+  };
 
   const fetchEnquiry = useCallback(async () => {
     try {
@@ -68,35 +95,71 @@ const DashboardDefault = () => {
 
   const bookingInfo = calculateBookings(data);
 
-  useEffect(() => {
-    fetchData();
-    fetchEnquiry();
-  }, []);
+  const getOnlineAmountCount = (dataArray) => {
+    let totalCount = 0;
+    dataArray.forEach((item) => {
+      totalCount += item.bookingAmount.online;
+    });
+
+    return totalCount;
+  };
+
+  const getCashAmountCount = (dataArray) => {
+    let totalCount = 0;
+    dataArray.forEach((item) => {
+      totalCount += item.bookingAmount.cash;
+    });
+
+    return totalCount;
+  };
+
+  const getUpiAmountCount = (dataArray) => {
+    let totalCount = 50;
+    dataArray.forEach((item) => {
+      totalCount += item.bookingAmount.upi;
+    });
+    return totalCount;
+  };
+  const getRefundAmountCount = (dataArray) => {
+    let totalCount = 0;
+    dataArray.forEach((item) => {
+      totalCount += item.bookingAmount.refund;
+    });
+
+    return totalCount;
+  };
+
+  const onlinePayment = getOnlineAmountCount(data);
+  const cashPayment = getCashAmountCount(data);
+  const UpiPayment = getUpiAmountCount(data);
+  const refundPayment = getRefundAmountCount(data);
+
+  const totalPayments = onlinePayment + cashPayment + UpiPayment + refundPayment;
 
   const allChartData = {
     'All Services': { onlineBooking: bookingInfo.online, cashBooking: bookingInfo.manual, totalBooking: bookingInfo.totalBooking },
-    Turf: { onlineBooking: bookingTypeInfo.online, cashBooking: bookingTypeInfo.manual, totalBooking: bookingTypeInfo.totalBooking },
-    'Board Game': {
+    turf: { onlineBooking: bookingTypeInfo.online, cashBooking: bookingTypeInfo.manual, totalBooking: bookingTypeInfo.totalBooking },
+    boardGame: {
       onlineBooking: bookingType2Info.online,
       cashBooking: bookingType2Info.manual,
       totalBooking: bookingType2Info.totalBooking
     },
-    'Play Station': {
+    playstation: {
       onlineBooking: bookingType3Info.online,
       cashBooking: bookingType3Info.manual,
       totalBooking: bookingType3Info.totalBooking
     },
-    'Cricket Net': {
+    cricketNet: {
       onlineBooking: bookingType4Info.online,
       cashBooking: bookingType4Info.manual,
       totalBooking: bookingType4Info.totalBooking
     },
-    'Bowling Machine': {
+    bowlingMachine: {
       onlineBooking: bookingType5Info.online,
       cashBooking: bookingType5Info.manual,
       totalBooking: bookingType5Info.totalBooking
     },
-    Badminton: { onlineBooking: bookingType6Info.online, cashBooking: bookingType6Info.manual, totalBooking: bookingType6Info.totalBooking }
+    badminton: { onlineBooking: bookingType6Info.online, cashBooking: bookingType6Info.manual, totalBooking: bookingType6Info.totalBooking }
   };
 
   const updateChartData = (category) => {
@@ -112,7 +175,111 @@ const DashboardDefault = () => {
     }
   };
 
+  const PaymentChartData = {
+    'All Payments': {
+      BookingCount: totalPayments
+    },
+    Online: {
+      BookingCount: onlinePayment
+    },
+    Cash: {
+      BookingCount: cashPayment
+    },
+    UPI: {
+      BookingCount: UpiPayment
+    },
+    Refund: {
+      BookingCount: refundPayment
+    }
+  };
+
+  const updateChartPaymentData = (category) => {
+    if (category === null) {
+      const labels = Object.keys(PaymentChartData);
+      const series = Object.values(PaymentChartData).map((data) => data.BookingCount);
+      return { labels, series };
+    } else {
+      const data = PaymentChartData[category];
+      const labels = [`${category}`];
+      const series = [data.BookingCount];
+      return { labels, series };
+    }
+  };
+
+  const paymentChartData = updateChartPaymentData(selectPaymentType);
+
   const chartData = updateChartData(selectedCategory);
+
+  const ApplyFilter = useCallback(
+    async (event) => {
+      event.preventDefault();
+      if (!startDate) {
+        setStartDateError(true);
+        return;
+      }
+      if (!endDate) {
+        setEndDateError(true);
+        return;
+      }
+
+      if (selectedCategory !== 'All Services' || startDate !== '' || endDate !== '') {
+        const filter = {
+          type: selectedCategory,
+          startDate: startDate,
+          endDate: endDate
+        };
+        setFilterData(filter);
+      }
+      setButtonDisable(true);
+      setIsApplyMode(false);
+    },
+    [endDate, startDate, selectedCategory]
+  );
+
+  const shouldDisableEndDate = (date) => {
+    if (!startDate) {
+      return false;
+    }
+    return dayjs(date).isBefore(dayjs(startDate), 'day');
+  };
+
+  const handleDisableButtonClick = async () => {
+    setFilterData(data);
+    setIsApplyMode(true);
+    setStartDate('');
+    setEndDate('');
+    setButtonDisable(false);
+    await BookingApi.getAll({}).then((data) => {
+      setCount(data.length);
+      setData(data);
+    });
+  };
+
+  const fetchInfo = useCallback(async () => {
+    try {
+      if (filterData) {
+        if (filterData.type === 'All Services') {
+          filterData.type = '';
+        }
+        await BookingApi.filterBook(filterData).then((data) => {
+          setCount(data.length);
+          setData(data);
+        });
+      } else {
+        await BookingApi.getAll({}).then((data) => {
+          setCount(data.length);
+          setData(data);
+        });
+      }
+    } catch {
+      console.log('Error fetching data');
+    }
+  }, [filterData]);
+
+  useEffect(() => {
+    fetchEnquiry();
+    fetchInfo();
+  }, [fetchInfo]);
 
   return (
     <Grid container rowSpacing={4.5} columnSpacing={2.75}>
@@ -136,10 +303,10 @@ const DashboardDefault = () => {
       {/* row 2 */}
       <Grid item xs={12}>
         <Grid container alignItems="center" justifyContent="space-between">
-          <Grid item>
+          <Grid item marginBottom={3}>
             <Typography variant="h3">Booking Chart</Typography>
           </Grid>
-          <Grid item>
+          <Grid item marginBottom={3}>
             <Stack direction="row" alignItems="center" spacing={2}>
               <Button
                 onClick={() => handleButtonClick('All Services')}
@@ -149,53 +316,142 @@ const DashboardDefault = () => {
                 All Services
               </Button>
               <Button
-                onClick={() => handleButtonClick('Turf')}
-                color={selectedCategory === 'Turf' ? 'primary' : 'secondary'}
-                variant={selectedCategory === 'Turf' ? 'outlined' : 'text'}
+                onClick={() => handleButtonClick('turf')}
+                color={selectedCategory === 'turf' ? 'primary' : 'secondary'}
+                variant={selectedCategory === 'turf' ? 'outlined' : 'text'}
               >
                 Turf
               </Button>
               <Button
-                onClick={() => handleButtonClick('Board Game')}
-                color={selectedCategory === 'Board Game' ? 'primary' : 'secondary'}
-                variant={selectedCategory === 'Board Game' ? 'outlined' : 'text'}
+                onClick={() => handleButtonClick('boardGame')}
+                color={selectedCategory === 'boardGame' ? 'primary' : 'secondary'}
+                variant={selectedCategory === 'boardGame' ? 'outlined' : 'text'}
               >
                 Board Game
               </Button>
               <Button
-                onClick={() => handleButtonClick('Play Station')}
-                color={selectedCategory === 'Play Station' ? 'primary' : 'secondary'}
-                variant={selectedCategory === 'Play Station' ? 'outlined' : 'text'}
+                onClick={() => handleButtonClick('playstation')}
+                color={selectedCategory === 'playstation' ? 'primary' : 'secondary'}
+                variant={selectedCategory === 'playstation' ? 'outlined' : 'text'}
               >
                 Play Station
               </Button>
               <Button
-                onClick={() => handleButtonClick('Cricket Net')}
-                color={selectedCategory === 'Cricket Net' ? 'primary' : 'secondary'}
-                variant={selectedCategory === 'Cricket Net' ? 'outlined' : 'text'}
+                onClick={() => handleButtonClick('cricketNet')}
+                color={selectedCategory === 'cricketNet' ? 'primary' : 'secondary'}
+                variant={selectedCategory === 'cricketNet' ? 'outlined' : 'text'}
               >
                 Cricket Net
               </Button>
               <Button
-                onClick={() => handleButtonClick('Bowling Machine')}
-                color={selectedCategory === 'Bowling Machine' ? 'primary' : 'secondary'}
-                variant={selectedCategory === 'Bowling Machine' ? 'outlined' : 'text'}
+                onClick={() => handleButtonClick('bowlingMachine')}
+                color={selectedCategory === 'bowlingMachine' ? 'primary' : 'secondary'}
+                variant={selectedCategory === 'bowlingMachine' ? 'outlined' : 'text'}
               >
                 Bowling Machine
               </Button>
               <Button
-                onClick={() => handleButtonClick('Badminton')}
-                color={selectedCategory === 'Badminton' ? 'primary' : 'secondary'}
-                variant={selectedCategory === 'Badminton' ? 'outlined' : 'text'}
+                onClick={() => handleButtonClick('badminton')}
+                color={selectedCategory === 'badminton' ? 'primary' : 'secondary'}
+                variant={selectedCategory === 'badminton' ? 'outlined' : 'text'}
               >
                 Badminton
               </Button>
+            </Stack>
+          </Grid>
+          <Grid item xs={12}>
+            <Stack direction="row" alignItems="center" spacing={2} justifyContent="end">
+              <CustomDatePicker
+                error={startDateError}
+                date={startDate}
+                setDate={handleStartDateChange}
+                label={'Start Date'}
+                disableprop={buttonDisable}
+              />
+              <CustomDatePicker
+                date={endDate}
+                setDate={handleEndDateChange}
+                label={'End Date'}
+                disableprop={buttonDisable}
+                shouldDisableDate={shouldDisableEndDate}
+                error={endDateError}
+              />
+              {isApplyMode ? (
+                <Button
+                  variant="outlined"
+                  onClick={ApplyFilter}
+                  sx={{ padding: '7px 15px', width: '150px', fontWeight: 600, fontSize: '15px', marginTop: '35px !important' }}
+                >
+                  Apply
+                </Button>
+              ) : (
+                <Button
+                  variant="outlined"
+                  onClick={handleDisableButtonClick}
+                  sx={{ padding: '7px 15px', width: '150px', fontWeight: 600, fontSize: '15px', marginTop: '35px !important' }}
+                >
+                  Clear
+                </Button>
+              )}
             </Stack>
           </Grid>
         </Grid>
         <MainCard content={false} sx={{ mt: 1.5 }}>
           <Box sx={{ pt: 1, pr: 2 }}>
             <PieChart selectData={chartData} />
+          </Box>
+        </MainCard>
+      </Grid>
+
+      {/* row 3 */}
+      <Grid item xs={12}>
+        <Grid container alignItems="center" justifyContent="space-between">
+          <Grid item>
+            <Typography variant="h3">Payment Chart</Typography>
+          </Grid>
+          <Grid item>
+            <Stack direction="row" alignItems="center" spacing={2}>
+              <Button
+                onClick={() => handlePaymentTypeChange('All Payments')}
+                color={selectPaymentType === 'All Payments' ? 'primary' : 'secondary'}
+                variant={selectPaymentType === 'All Payments' ? 'outlined' : 'text'}
+              >
+                All Payments
+              </Button>
+              <Button
+                onClick={() => handlePaymentTypeChange('Online')}
+                color={selectPaymentType === 'Online' ? 'primary' : 'secondary'}
+                variant={selectPaymentType === 'Online' ? 'outlined' : 'text'}
+              >
+                Online
+              </Button>
+              <Button
+                onClick={() => handlePaymentTypeChange('Cash')}
+                color={selectPaymentType === 'Cash' ? 'primary' : 'secondary'}
+                variant={selectPaymentType === 'Cash' ? 'outlined' : 'text'}
+              >
+                Cash
+              </Button>
+              <Button
+                onClick={() => handlePaymentTypeChange('UPI')}
+                color={selectPaymentType === 'UPI' ? 'primary' : 'secondary'}
+                variant={selectPaymentType === 'UPI' ? 'outlined' : 'text'}
+              >
+                UPI
+              </Button>
+              <Button
+                onClick={() => handlePaymentTypeChange('Refund')}
+                color={selectPaymentType === 'Refund' ? 'primary' : 'secondary'}
+                variant={selectPaymentType === 'Refund' ? 'outlined' : 'text'}
+              >
+                Refund
+              </Button>
+            </Stack>
+          </Grid>
+        </Grid>
+        <MainCard content={false} sx={{ mt: 1.5 }}>
+          <Box sx={{ pt: 1, pr: 2 }}>
+            <PieChart selectData={paymentChartData} />
           </Box>
         </MainCard>
       </Grid>

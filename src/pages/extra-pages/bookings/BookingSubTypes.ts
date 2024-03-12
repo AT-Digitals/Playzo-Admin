@@ -1,8 +1,8 @@
 export const BookingSubTypes = {
   turf: {
-    1: 'Turf 1',
-    2: 'Turf 2',
-    3: 'Turf 1&2'
+    1: 'Turf 2.o',
+    2: 'Turf 3.o',
+    3: 'Turf 2.o&3.o'
   },
   boardGame: {
     1: 'Chess',
@@ -12,7 +12,7 @@ export const BookingSubTypes = {
   playstation: {
     1: 'PS 1',
     2: 'PS 2',
-    3: "PS 1&2"
+    3: 'PS 1&2'
   },
   cricketNet: {
     1: 'Cricket Net'
@@ -24,6 +24,6 @@ export const BookingSubTypes = {
     1: 'Court 1',
     2: 'Court 2',
     3: 'Court 3',
-    4: "Court 4"
+    4: 'Court 4'
   }
 };

@@ -10,6 +10,9 @@ import MinimalLayout from 'layout/MinimalLayout';
 import UserList from 'pages/extra-pages/user/UserList';
 import { lazy } from 'react';
 import { useRoutes } from 'react-router-dom';
+import BulkBookingComponent from 'pages/extra-pages/bookings/bulkBooking/BulkBookingComponent';
+import MemberShipBooking from 'pages/extra-pages/bookings/membershipBookings/MemberShipBooking';
+import CalendarBulkBooking from 'pages/extra-pages/bookings/CalendarBulkBooking';
 
 // project import
 
@@ -98,6 +101,18 @@ export default function ThemeRoutes() {
         {
           path: 'users',
           element: <UserList />
+        },
+        {
+          path: 'bulkBookings',
+          element: <BulkBookingComponent />
+        },
+        {
+          path: 'memberShipBookings',
+          element: <MemberShipBooking />
+        },
+        {
+          path: 'calendar-bulk-Bookings',
+          element: <CalendarBulkBooking />
         }
       ]
     }

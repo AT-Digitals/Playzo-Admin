@@ -6,12 +6,7 @@ import Box from '@mui/material/Box';
 import Button from '@mui/material/Button';
 import CloseIcon from '@mui/icons-material/Close';
 import CustomTextField from './bookingComponents/CustomTextField';
-import FormControl from '@mui/material/FormControl';
-import FormControlLabel from '@mui/material/FormControlLabel';
 import Modal from '@mui/material/Modal';
-import { PaymentType } from '../../../enum/PaymentType';
-import Radio from '@mui/material/Radio';
-import RadioGroup from '@mui/material/RadioGroup';
 
 const style = {
   position: 'absolute',
@@ -38,25 +33,14 @@ export default function BookingModal({ onChange, value, isOpen, onClose, onSubmi
             </IconButton>
           </Stack>
           <Stack direction="column" spacing={3}>
-            <Stack direction="row" spacing={2}>
-              <FormControl>
-                {/* <RadioGroup row value={value} onChange={onChange}>
-
-                  <FormControlLabel value={PaymentType.Cash} control={<Radio />} label="Cash" />
-                  <FormControlLabel value={PaymentType.Online} control={<Radio />} label="Online" />
-                </RadioGroup> */}
-              </FormControl>
-            </Stack>
-            {/* {show && ( */}
             <CustomTextField
               label={label}
-              value={value1}
+              value={value1 ?? ''}
               setValue={setValue}
               error={error}
               type="number"
               errorText="please Enter a valid Amount"
             />
-            {/* )} */}
             <Button variant="outlined" onClick={onSubmit} sx={{ width: '100%' }}>
               Add
             </Button>

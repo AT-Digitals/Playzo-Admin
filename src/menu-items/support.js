@@ -1,36 +1,42 @@
 // assets
-import { ChromeOutlined, QuestionOutlined } from '@ant-design/icons'
+import CalendarMonthIcon from '@mui/icons-material/CalendarMonth';
+import FormatListBulletedIcon from '@mui/icons-material/FormatListBulleted';
 
 // icons
 const icons = {
-  ChromeOutlined,
-  QuestionOutlined,
-}
+  FormatListBulletedIcon,
+  CalendarMonthIcon
+};
 
 // ==============================|| MENU ITEMS - SAMPLE PAGE & DOCUMENTATION ||============================== //
 
-const support = {
-  id: 'support',
-  title: 'Support',
+const Reports = {
+  id: 'reports',
+  title: 'Reports',
   type: 'group',
   children: [
     {
-      id: 'sample-page',
-      title: 'Sample Page',
+      id: 'booking list',
+      title: 'Booking List',
       type: 'item',
-      url: '/sample-page',
-      icon: icons.ChromeOutlined,
+      url: '/bookingList',
+      icon: icons.FormatListBulletedIcon
     },
     {
-      id: 'documentation',
-      title: 'Documentation',
+      id: 'calendar booking',
+      title: 'Calendar Booking',
       type: 'item',
-      url: 'https://codedthemes.gitbook.io/mantis/',
-      icon: icons.QuestionOutlined,
-      external: true,
-      target: true,
+      url: '/calendarBooking',
+      icon: icons.CalendarMonthIcon
     },
-  ],
-}
+    {
+      id: 'Calendar Bulk Bookings',
+      title: 'Calendar Bulk Bookings',
+      type: 'item',
+      url: '/calendar-bulk-Bookings',
+      icon: icons.CalendarMonthIcon
+    }
+  ]
+};
 
-export default support
+export default Reports;

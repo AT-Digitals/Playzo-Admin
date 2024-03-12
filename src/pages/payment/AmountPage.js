@@ -192,7 +192,7 @@ export default function AmountPage() {
             <Grid item md={3}>
               <Button
                 variant="outlined"
-                sx={{ padding: '7px 15px', width: '150px', fontWeight: 600, fontSize: '15px', marginTop: '35px' }}
+                sx={{ padding: '7px 15px', width: '100%', fontWeight: 600, fontSize: '15px', marginTop: '35px' }}
                 onClick={addAmount}
               >
                 Add

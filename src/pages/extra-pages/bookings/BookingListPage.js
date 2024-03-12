@@ -127,6 +127,8 @@ export default function BookingListPage() {
   const [showUpiField, setShowUpiField] = useState(false);
   const [paymentType, setPaymentType] = useState('');
 
+  const [editModal, setEditModal] = useState(false);
+
   const handleRefundChange = (event) => {
     setRefundCheck(event.target.checked);
   };
@@ -220,6 +222,11 @@ export default function BookingListPage() {
     setUpdateModal(true);
     setUpdateToast('');
   };
+  const handleEditModalChange = (index) => {
+    setEditableRowIndex(index);
+    setEditModal(true);
+    setUpdateToast('');
+  };
   const handleClose = () => {
     setUpdateModal(false);
     setPayError(false);
@@ -231,6 +238,18 @@ export default function BookingListPage() {
     setUpiChecked(false);
     setShowCashField(false);
     setShowUpiField(false);
+  };
+
+  const handleEditClose = () => {
+    setEditModal(false);
+    setPayAmount('');
+    setUpiError(false);
+    setUpiAmount('');
+    setCashChecked(false);
+    setUpiChecked(false);
+    setShowCashField(false);
+    setShowUpiField(false);
+    setPayError(false);
   };
 
   const handleChangePage = (_event, newPage) => {
@@ -436,10 +455,13 @@ export default function BookingListPage() {
     { id: 'refund', label: 'Refund' }
   ];
   if (userData.accessType !== AccessType.READ) {
-    columns.push({
-      id: 'action',
-      label: 'Action'
-    });
+    columns.push(
+      {
+        id: 'action',
+        label: 'Action'
+      },
+      { id: 'edit', label: 'Edit' }
+    );
   }
   const UpdateChange = async () => {
     const idToUpdate = editableRowIndex.id;
@@ -584,36 +606,41 @@ export default function BookingListPage() {
               />
             </Grid>
 
-            <Grid item md={5}>
-              <Stack direction="row" spacing={2}>
-                {isApplyMode ? (
-                  <Button
-                    variant="outlined"
-                    onClick={applyFilters}
-                    sx={{ padding: '7px 15px', width: '150px', height: '43px', fontWeight: 600, fontSize: '15px' }}
-                  >
-                    Apply
-                  </Button>
-                ) : (
-                  <Button
-                    variant="outlined"
-                    onClick={handleButtonClick}
-                    sx={{ padding: '7px 15px', width: '150px', height: '43px', fontWeight: 600, fontSize: '15px' }}
-                  >
-                    Clear
-                  </Button>
-                )}
-
+            {/* <Grid item md={3}> */}
+            {/* <Stack direction="row" spacing={2}> */}
+            {isApplyMode ? (
+              <Grid item md={3}>
                 <Button
                   variant="outlined"
-                  onClick={handleDownload}
-                  sx={{ padding: '7px 15px', width: '200px', height: '43px', fontWeight: 600, fontSize: '15px' }}
+                  onClick={applyFilters}
+                  sx={{ padding: '7px 15px', width: '100%', height: '43px', fontWeight: 600, fontSize: '15px' }}
                 >
-                  Download Report
+                  Apply
                 </Button>
-              </Stack>
+              </Grid>
+            ) : (
+              <Grid item md={3}>
+                <Button
+                  variant="outlined"
+                  onClick={handleButtonClick}
+                  sx={{ padding: '7px 15px', width: '100%', height: '43px', fontWeight: 600, fontSize: '15px' }}
+                >
+                  Clear
+                </Button>
+              </Grid>
+            )}
+            <Grid item md={3}>
+              <Button
+                variant="outlined"
+                onClick={handleDownload}
+                sx={{ padding: '7px 15px', width: '100%', height: '43px', fontWeight: 600, fontSize: '15px' }}
+              >
+                Download Report
+              </Button>
             </Grid>
+            {/* </Stack> */}
           </Grid>
+          {/* </Grid> */}
         </Stack>
       </MainCard>
       {errorToast !== '' ? <NotificationToast error={errorToast} /> : <></>}
@@ -646,6 +673,9 @@ export default function BookingListPage() {
           showUpi={showUpiField}
           showCash={showCashField}
           UpiError={UpiError}
+          handleEditModal={handleEditModalChange}
+          editModal={editModal}
+          onCloseEdit={handleEditClose}
         />
       </MainCard>
     </>

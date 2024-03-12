@@ -11,7 +11,7 @@ import MainCard from 'components/MainCard';
 import MenuItem from '@mui/material/MenuItem';
 import Select from '@mui/material/Select';
 
-const CalendarBooking = () => {
+const CalendarBulkBooking = () => {
   const [data, setData] = useState([]);
 
   const [bookingType, setBookingType] = useState('All');
@@ -28,7 +28,7 @@ const CalendarBooking = () => {
     try {
       await BookingApi.getAll().then((dataList) => {
         dataList.map((list) => {
-          if (list.startDate === list.endDate) {
+          if (list.startDate !== list.endDate) {
             const dateObject = new Date(list.startDate);
 
             const day = dateObject.getDate();
@@ -81,7 +81,7 @@ const CalendarBooking = () => {
       await BookingApi.filterBook({ type: bookingType }).then((dataList) => {
         setData(dataList);
         dataList.map((list) => {
-          if (list.startDate === list.endDate) {
+          if (list.startDate !== list.endDate) {
             const dateObject = new Date(list.startDate);
             const day = dateObject.getDate();
             const month = dateObject.getMonth();
@@ -199,4 +199,4 @@ const CalendarBooking = () => {
   );
 };
 
-export default CalendarBooking;
+export default CalendarBulkBooking;

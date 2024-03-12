@@ -41,14 +41,16 @@ export default function BookingModal({
   label1,
   showUpi,
   showCash,
-  UpiError
+  UpiError,
+  showRefund,
+  title
 }) {
   return (
     <div>
       <Modal open={isOpen} onClose={onClose} aria-labelledby="modal-modal-title" aria-describedby="modal-modal-description">
         <Box sx={style}>
           <Stack direction="row" justifyContent="space-between" mb={3}>
-            <Typography variant="h3">Update Amount</Typography>
+            <Typography variant="h3">{title}</Typography>
             <IconButton onClick={onClose}>
               <CloseIcon />
             </IconButton>
@@ -86,9 +88,13 @@ export default function BookingModal({
               </Stack>
             </Stack>
 
-            <FormGroup>
-              <FormControlLabel control={<Checkbox checked={refund} onChange={handleRefundChange} />} label="Refund" />
-            </FormGroup>
+            {showRefund ? (
+              <FormGroup>
+                <FormControlLabel control={<Checkbox checked={refund} onChange={handleRefundChange} />} label="Refund" />
+              </FormGroup>
+            ) : (
+              ''
+            )}
             <Stack direction="row" spacing={2}>
               <Button variant="outlined" onClick={onSubmit} sx={{ width: '100%' }}>
                 Update
