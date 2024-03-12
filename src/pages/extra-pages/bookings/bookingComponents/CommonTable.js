@@ -67,6 +67,9 @@ const CommonTable = ({
     } else if (id === 'cashPayment' && label === 'Cash Payment') {
       const data = rowData['bookingAmount'].cash;
       return data;
+    } else if (id === 'upiPayment' && label === 'UPI Payment') {
+      const data = rowData['bookingAmount'].upi;
+      return data;
     } else if (id === 'onlinePayment' && label === 'Online Payment') {
       const data = rowData['bookingAmount'].online;
       return data;
@@ -100,9 +103,16 @@ const CommonTable = ({
                 {columns.map((column) => (
                   <TableCell key={column.id} sx={{ textTransform: 'capitalize' }}>
                     {column.id === 'action' ? (
-                      <IconButton aria-label="edit" color="primary" onClick={() => handleModalChange(rowData)}>
-                        <EditIcon />
-                      </IconButton>
+                      <>
+                        <IconButton
+                          aria-label="edit"
+                          color="primary"
+                          onClick={() => handleModalChange(rowData)}
+                          disabled={rowData.isRefund}
+                        >
+                          <EditIcon />
+                        </IconButton>
+                      </>
                     ) : column.id === 'No' ? (
                       index + 1
                     ) : (
