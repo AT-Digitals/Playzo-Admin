@@ -44,7 +44,8 @@ const CommonTable = ({
   UpiError,
   handleEditModal,
   editModal,
-  onCloseEdit
+  onCloseEdit,
+  updateEdit
 }) => {
   const renderCellContent = (column, rowData, rowIndex) => {
     const { id, label } = column;
@@ -107,11 +108,11 @@ const CommonTable = ({
                 {columns.map((column) => (
                   <TableCell key={column.id} sx={{ textTransform: 'capitalize' }}>
                     {column.id === 'action' ? (
-                      <IconButton aria-label="edit" color="primary" onClick={() => handleModalChange(rowData)}>
+                      <IconButton aria-label="edit" color="primary" onClick={() => handleModalChange(rowData)} disabled={rowData.isRefund}>
                         <AddCircleIcon />
                       </IconButton>
                     ) : column.id === 'edit' ? (
-                      <IconButton aria-label="edit" color="primary" onClick={() => handleEditModal(rowData)}>
+                      <IconButton aria-label="edit" color="primary" onClick={() => handleEditModal(rowData)} disabled={rowData.isRefund}>
                         <EditIcon />
                       </IconButton>
                     ) : column.id === 'No' ? (
@@ -164,7 +165,7 @@ const CommonTable = ({
         onClose={onCloseEdit}
         label="Enter Cash Amount"
         label1="Enter UPI Amount"
-        onSubmit={UpdateChange}
+        onSubmit={updateEdit}
         error={error}
         Upichecked={Upichecked}
         handleUPIChange={handleUPIChange}

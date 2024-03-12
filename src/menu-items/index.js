@@ -1,6 +1,6 @@
 // project import
 
-import { bookingAll, bookingRead } from './bookingpages';
+import { bookingAll } from './bookingpages';
 import { dashboardAll, dashboardRead, dashboardWrite } from './dashboard';
 import { mainAll, mainRead } from './mainpages';
 import Reports from './support';
@@ -9,8 +9,8 @@ import Reports from './support';
 
 const menuItems = {
   allItems: [dashboardAll, bookingAll, Reports, mainAll],
-  writeItems: [dashboardWrite, bookingAll, mainRead],
-  readItems: [dashboardRead, bookingRead, mainRead]
+  writeItems: [dashboardWrite, bookingAll, Reports, mainRead],
+  readItems: [dashboardRead, Reports, mainRead]
 };
 
 export default menuItems;
