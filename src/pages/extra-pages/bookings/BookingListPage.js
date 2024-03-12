@@ -15,10 +15,10 @@ import FormControl from '@mui/material/FormControl';
 import MainCard from 'components/MainCard';
 import MenuItem from '@mui/material/MenuItem';
 import NotificationSuccessToast from 'pages/components-overview/NotificationSuccessToast';
+import NotificationToast from 'pages/components-overview/NotificationToast';
 import Select from '@mui/material/Select';
 import dayjs from 'dayjs';
 import moment from 'moment';
-import NotificationToast from 'pages/components-overview/NotificationToast';
 
 const Data = [
   {
@@ -449,6 +449,7 @@ export default function BookingListPage() {
     { id: 'endTime', label: 'End Time' },
     { id: 'userBookingType', label: 'Booking Type' },
     { id: 'cashPayment', label: 'Cash Payment' },
+    { id: 'upiPayment', label: 'UPI Payment' },
     { id: 'onlinePayment', label: 'Online Payment' },
     { id: 'total', label: 'Total' },
     { id: 'refund', label: 'Refund' }
@@ -465,10 +466,10 @@ export default function BookingListPage() {
   const UpdateChange = async () => {
     const idToUpdate = editableRowIndex.id;
     const value = {
-      amount: payAmount,
+      amount: payAmount ? parseInt(payAmount) : 0,
       id: idToUpdate,
       refund: refundCheck,
-      upiamount: upiAmount
+      upiamount: upiAmount ? parseInt(upiAmount) : 0
     };
     console.log('valuedetails', value);
 
@@ -489,9 +490,15 @@ export default function BookingListPage() {
         const response = await BookingApi.updateAmount(value.id, {
           bookingAmount: {
             online: 0,
-            cash: value.refund ? 0 : value.amount,
-            total: value.refund ? 0 : value.amount,
-            refund: value.refund ? value.amount : 0
+            cash: cashChecked ? value.amount : 0,
+            upi: upiChecked ? value.upiamount : 0,
+            total: cashChecked ? value.amount : 0 + upiChecked ? value.upiamount : 0,
+            refund:
+              value.refund && cashChecked && value.amount
+                ? value.amount
+                : value.refund && upiChecked && value.upiamount
+                ? value.upiamount
+                : 0
           },
           isRefund: value.refund
         });

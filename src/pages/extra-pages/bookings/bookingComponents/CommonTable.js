@@ -71,6 +71,9 @@ const CommonTable = ({
     } else if (id === 'cashPayment' && label === 'Cash Payment') {
       const data = rowData['bookingAmount'].cash;
       return data;
+    } else if (id === 'upiPayment' && label === 'UPI Payment') {
+      const data = rowData['bookingAmount'].upi;
+      return data;
     } else if (id === 'onlinePayment' && label === 'Online Payment') {
       const data = rowData['bookingAmount'].online;
       return data;
