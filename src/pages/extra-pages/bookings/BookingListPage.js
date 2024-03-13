@@ -238,6 +238,7 @@ export default function BookingListPage() {
     setUpiChecked(false);
     setShowCashField(false);
     setShowUpiField(false);
+    setEditableRowIndex(null);
   };
 
   const handleEditClose = () => {
@@ -334,7 +335,8 @@ export default function BookingListPage() {
       endDateValue !== '' ||
       selectBooking !== '' ||
       monthType !== '' ||
-      selectData !== ''
+      selectData !== '' ||
+      paymentType !== ''
     ) {
       const details = {
         type: bookingType,
@@ -438,7 +440,7 @@ export default function BookingListPage() {
 
   const user = localStorage.getItem('user');
   const userData = JSON.parse(user);
-  const columns = [
+  let columns = [
     { id: 'No', label: 'No' },
     { id: 'user', label: 'User Name' },
     { id: 'type', label: 'Services' },
@@ -447,13 +449,27 @@ export default function BookingListPage() {
     { id: 'endDate', label: 'End Date' },
     { id: 'startTime', label: 'Start Time' },
     { id: 'endTime', label: 'End Time' },
-    { id: 'userBookingType', label: 'Booking Type' },
-    { id: 'cashPayment', label: 'Cash Payment' },
-    { id: 'upiPayment', label: 'UPI Payment' },
-    { id: 'onlinePayment', label: 'Online Payment' },
-    { id: 'total', label: 'Total' },
-    { id: 'refund', label: 'Refund' }
+    { id: 'userBookingType', label: 'Booking Type' }
   ];
+
+  if (paymentType === 'cash' && bool) {
+    columns.push({ id: 'cashPayment', label: 'Cash Payment' });
+  } else if (paymentType === 'online' && bool) {
+    columns.push({ id: 'onlinePayment', label: 'Online Payment' });
+  } else if (paymentType === 'upi' && bool) {
+    columns.push({ id: 'upiPayment', label: 'UPI Payment' });
+  } else if (paymentType === 'refund' && bool) {
+    columns.push({ id: 'refund', label: 'Refund' });
+  } else {
+    columns.push(
+      { id: 'cashPayment', label: 'Cash Payment' },
+      { id: 'upiPayment', label: 'UPI Payment' },
+      { id: 'onlinePayment', label: 'Online Payment' },
+      { id: 'total', label: 'Total' },
+      { id: 'refund', label: 'Refund' }
+    );
+  }
+
   if (userData.accessType !== AccessType.READ) {
     columns.push(
       {
@@ -471,7 +487,6 @@ export default function BookingListPage() {
       refund: refundCheck,
       upiamount: upiAmount ? parseInt(upiAmount) : 0
     };
-    console.log('valuedetails', value);
 
     if (!upiChecked && !cashChecked) {
       setErrorToast('Please select any one payment option');
@@ -479,10 +494,6 @@ export default function BookingListPage() {
       setPayError(true);
     } else if (upiChecked && !upiAmount) {
       setUpiError(true);
-      // if (!payAmount) {
-      //   setPayError(true);
-      // } else if (upiChecked && upiAmount) {
-      //   setUpiError(false);
     } else {
       setPayError(false);
       setUpiError(false);
@@ -506,7 +517,39 @@ export default function BookingListPage() {
         handleClose();
       } catch (error) {
         setErrorToast(error.message);
-        console.log('error', error.message);
+      }
+    }
+    fetchInfo();
+  };
+
+  const UpdateAmountChange = async () => {
+    const idToUpdate = editableRowIndex.id;
+    const value = {
+      cash: payAmount ? parseInt(payAmount) : 0,
+      id: idToUpdate,
+      upi: upiAmount ? parseInt(upiAmount) : 0
+    };
+
+    if (!upiChecked && !cashChecked) {
+      setErrorToast('Please select any one payment option');
+    } else if (cashChecked && !payAmount) {
+      setPayError(true);
+    } else if (upiChecked && !upiAmount) {
+      setUpiError(true);
+    } else {
+      setPayError(false);
+      setUpiError(false);
+      try {
+        const response = await BookingApi.BookingUpdateById(value.id, {
+          bookingAmount: {
+            cash: cashChecked ? value.cash : 0,
+            upi: upiChecked ? value.upi : 0
+          }
+        });
+        setUpdateToast('Your Amount is updated successfully!');
+        handleEditClose();
+      } catch (error) {
+        setErrorToast(error.message);
       }
     }
     fetchInfo();
@@ -515,8 +558,8 @@ export default function BookingListPage() {
   return (
     <>
       <MainCard title="Booking List">
-        <Stack direction="column" spacing={4} width="100%" maxWidth={1120} height={280}>
-          <Grid container spacing={3}>
+        <Stack direction="column" spacing={4} width="100%" maxWidth={1120} height={320}>
+          <Grid container spacing={4}>
             <Grid item md={3}>
               <Stack spacing={2}>
                 <Typography>All Services</Typography>
@@ -605,9 +648,6 @@ export default function BookingListPage() {
                 disabled={buttonDisable}
               />
             </Grid>
-
-            {/* <Grid item md={3}> */}
-            {/* <Stack direction="row" spacing={2}> */}
             {isApplyMode ? (
               <Grid item md={3}>
                 <Button
@@ -638,9 +678,7 @@ export default function BookingListPage() {
                 Download Report
               </Button>
             </Grid>
-            {/* </Stack> */}
           </Grid>
-          {/* </Grid> */}
         </Stack>
       </MainCard>
       {errorToast !== '' ? <NotificationToast error={errorToast} /> : <></>}
@@ -676,6 +714,7 @@ export default function BookingListPage() {
           handleEditModal={handleEditModalChange}
           editModal={editModal}
           onCloseEdit={handleEditClose}
+          updateEdit={UpdateAmountChange}
         />
       </MainCard>
     </>

@@ -74,4 +74,12 @@ export default class BookingApi {
       throw handleApiError(e, 'Failed to get booking');
     }
   }
+  public static async BookingUpdateById(bookingId: string, request: any) {
+    try {
+      const detail = await axiosInstance.put<any>(`/bookings/${bookingId}`, request);
+      return detail.data;
+    } catch (e) {
+      throw handleApiError(e, 'Failed to get booking');
+    }
+  }
 }
