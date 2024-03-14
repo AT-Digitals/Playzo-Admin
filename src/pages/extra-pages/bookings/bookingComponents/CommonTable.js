@@ -58,13 +58,13 @@ const CommonTable = ({
     } else if (id === 'startTime' || id === 'endTime') {
       return DateUtils.formatMillisecondsToTime(rowData[id]);
     } else if (id === 'userType' && label === 'User Type') {
-      const data = rowData['user'] !== 'null' && JSON.parse(rowData['user']).userType;
+      const data = rowData['user'] !== undefined && JSON.parse(rowData['user']).userType;
       return data;
     } else if (id === 'userId' && label === 'Email ID') {
-      const data = rowData['user'] !== 'null' && JSON.parse(rowData['user']).email;
+      const data = rowData['user'] !== undefined && JSON.parse(rowData['user']).email;
       return data;
     } else if (id === 'user' && label === 'User Name') {
-      const data = rowData['user'] !== 'null' && JSON.parse(rowData['user']).name;
+      const data = rowData['user'] !== undefined && JSON.parse(rowData['user']).name;
       return data;
     } else if (id === 'bookingAmount' && label === 'Booking Amount') {
       const data = rowData[id].total;

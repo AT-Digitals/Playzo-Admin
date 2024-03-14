@@ -177,19 +177,27 @@ const DashboardDefault = () => {
 
   const PaymentChartData = {
     'All Payments': {
-      BookingCount: totalPayments
+      BookingCount: totalPayments,
+      onlinePayment: onlinePayment,
+      cashPayment: cashPayment,
+      UpiPayment: UpiPayment,
+      refundPayment: refundPayment
     },
     Online: {
-      BookingCount: onlinePayment
+      BookingCount: onlinePayment,
+      onlinePayment: onlinePayment
     },
     Cash: {
-      BookingCount: cashPayment
+      BookingCount: cashPayment,
+      cashPayment: cashPayment
     },
     UPI: {
-      BookingCount: UpiPayment
+      BookingCount: UpiPayment,
+      UpiPayment: UpiPayment
     },
     Refund: {
-      BookingCount: refundPayment
+      BookingCount: refundPayment,
+      refundPayment: refundPayment
     }
   };
 
@@ -200,8 +208,11 @@ const DashboardDefault = () => {
       return { labels, series };
     } else {
       const data = PaymentChartData[category];
-      const labels = [`${category}`];
-      const series = [data.BookingCount];
+      const labels = selectPaymentType === 'All Payments' ? ['Total Amount', 'Online', 'Cash', 'UPI', 'refund'] : [`${selectPaymentType}`];
+      const series =
+        selectPaymentType === 'All Payments'
+          ? [data.BookingCount, data.onlinePayment, data.cashPayment, data.UpiPayment, data.refundPayment]
+          : [data.BookingCount];
       return { labels, series };
     }
   };
@@ -209,6 +220,32 @@ const DashboardDefault = () => {
   const paymentChartData = updateChartPaymentData(selectPaymentType);
 
   const chartData = updateChartData(selectedCategory);
+
+  const calculateBookingData = (data) => {
+    const manualBooking = data.filter((item) => item.userBookingType === 'manual');
+    const onlineBooking = data.filter((item) => item.userBookingType === 'online');
+    const manual = manualBooking.length;
+    const online = onlineBooking.length;
+    const totalBooking = manual + online;
+    return { manual, online, totalBooking };
+  };
+
+  const BoookingCount = calculateBookingData(data);
+
+  const BookingData = {
+    'Online Bookings': { Booking: BoookingCount.online },
+
+    'Manual Bookings': {
+      Booking: BoookingCount.manual
+    },
+    'Total Bookings': {
+      Booking: BoookingCount.totalBooking
+    }
+  };
+  const BookingDataChart = {
+    label: ['online', 'manual', 'total'],
+    series: [90, 40, 50]
+  };
 
   const ApplyFilter = useCallback(
     async (event) => {
@@ -222,9 +259,8 @@ const DashboardDefault = () => {
         return;
       }
 
-      if (selectedCategory !== 'All Services' || startDate !== '' || endDate !== '') {
+      if (startDate !== '' || endDate !== '') {
         const filter = {
-          type: selectedCategory,
           startDate: startDate,
           endDate: endDate
         };
@@ -233,7 +269,7 @@ const DashboardDefault = () => {
       setButtonDisable(true);
       setIsApplyMode(false);
     },
-    [endDate, startDate, selectedCategory]
+    [endDate, startDate]
   );
 
   const shouldDisableEndDate = (date) => {
@@ -258,12 +294,11 @@ const DashboardDefault = () => {
   const fetchInfo = useCallback(async () => {
     try {
       if (filterData) {
-        if (filterData.type === 'All Services') {
-          filterData.type = '';
-        }
         await BookingApi.filterBook(filterData).then((data) => {
           setCount(data.length);
           setData(data);
+
+          Console.log('filter data', data);
         });
       } else {
         await BookingApi.getAll({}).then((data) => {
@@ -307,6 +342,56 @@ const DashboardDefault = () => {
             <Typography variant="h3">Booking Chart</Typography>
           </Grid>
           <Grid item marginBottom={3}>
+            <Stack direction="row" alignItems="center" spacing={2}>
+              <CustomDatePicker
+                error={startDateError}
+                date={startDate}
+                setDate={handleStartDateChange}
+                label={'Start Date'}
+                disableprop={buttonDisable}
+              />
+              <CustomDatePicker
+                date={endDate}
+                setDate={handleEndDateChange}
+                label={'End Date'}
+                disableprop={buttonDisable}
+                shouldDisableDate={shouldDisableEndDate}
+                error={endDateError}
+              />
+              {isApplyMode ? (
+                <Button
+                  variant="outlined"
+                  onClick={ApplyFilter}
+                  sx={{ padding: '7px 15px', width: '150px', fontWeight: 600, fontSize: '15px', marginTop: '35px !important' }}
+                >
+                  Apply
+                </Button>
+              ) : (
+                <Button
+                  variant="outlined"
+                  onClick={handleDisableButtonClick}
+                  sx={{ padding: '7px 15px', width: '150px', fontWeight: 600, fontSize: '15px', marginTop: '35px !important' }}
+                >
+                  Clear
+                </Button>
+              )}
+            </Stack>
+          </Grid>
+        </Grid>
+        <MainCard content={false} sx={{ mt: 1.5 }}>
+          <Box sx={{ pt: 1, pr: 2 }}>
+            <PieChart selectData={chartData} width="700" palette1="palette1" />
+          </Box>
+        </MainCard>
+      </Grid>
+
+      {/* row 3 */}
+      <Grid item xs={12}>
+        <Grid container alignItems="center" justifyContent="space-between">
+          <Grid item>
+            <Typography variant="h3">Booking Service Chart</Typography>
+          </Grid>
+          <Grid item>
             <Stack direction="row" alignItems="center" spacing={2}>
               <Button
                 onClick={() => handleButtonClick('All Services')}
@@ -359,51 +444,15 @@ const DashboardDefault = () => {
               </Button>
             </Stack>
           </Grid>
-          <Grid item xs={12}>
-            <Stack direction="row" alignItems="center" spacing={2} justifyContent="end">
-              <CustomDatePicker
-                error={startDateError}
-                date={startDate}
-                setDate={handleStartDateChange}
-                label={'Start Date'}
-                disableprop={buttonDisable}
-              />
-              <CustomDatePicker
-                date={endDate}
-                setDate={handleEndDateChange}
-                label={'End Date'}
-                disableprop={buttonDisable}
-                shouldDisableDate={shouldDisableEndDate}
-                error={endDateError}
-              />
-              {isApplyMode ? (
-                <Button
-                  variant="outlined"
-                  onClick={ApplyFilter}
-                  sx={{ padding: '7px 15px', width: '150px', fontWeight: 600, fontSize: '15px', marginTop: '35px !important' }}
-                >
-                  Apply
-                </Button>
-              ) : (
-                <Button
-                  variant="outlined"
-                  onClick={handleDisableButtonClick}
-                  sx={{ padding: '7px 15px', width: '150px', fontWeight: 600, fontSize: '15px', marginTop: '35px !important' }}
-                >
-                  Clear
-                </Button>
-              )}
-            </Stack>
-          </Grid>
         </Grid>
         <MainCard content={false} sx={{ mt: 1.5 }}>
           <Box sx={{ pt: 1, pr: 2 }}>
-            <PieChart selectData={chartData} />
+            <PieChart selectData={chartData} width="700" palette1="palette4" />
           </Box>
         </MainCard>
       </Grid>
 
-      {/* row 3 */}
+      {/* row 4 */}
       <Grid item xs={12}>
         <Grid container alignItems="center" justifyContent="space-between">
           <Grid item>
@@ -451,7 +500,7 @@ const DashboardDefault = () => {
         </Grid>
         <MainCard content={false} sx={{ mt: 1.5 }}>
           <Box sx={{ pt: 1, pr: 2 }}>
-            <PieChart selectData={paymentChartData} />
+            <PieChart selectData={paymentChartData} width="600" palette1="palette5" />
           </Box>
         </MainCard>
       </Grid>
