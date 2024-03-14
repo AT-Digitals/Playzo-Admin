@@ -58,4 +58,16 @@ export default class DateUtils {
   static subtract(date: Date, amount: DurationInputArg1, value: unitOfTime.DurationConstructor, format: string) {
     return moment(date).subtract(amount, value).format(format);
   }
+
+  static betweenWeekDays(startDate: Date, endDate: Date, weekdays: number[]) {
+    const result = [];
+    const currentDate = moment(startDate);
+    while (currentDate.isSameOrBefore(endDate)) {
+      if (weekdays.includes(currentDate.day())) {
+        result.push(currentDate.clone().format('YYYY-MM-DD'));
+      }
+      currentDate.add(1, 'day');
+    }
+    return result;
+  }
 }

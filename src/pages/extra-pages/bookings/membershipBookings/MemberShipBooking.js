@@ -25,6 +25,15 @@ import TypeDropdown from '../bookingComponents/TypeDropdown';
 import dayjs from 'dayjs';
 import moment from 'moment';
 
+const bookingTypes = [
+  { value: 'turf', label: 'Turf' },
+  { value: 'boardGame', label: 'Board Game' },
+  { value: 'playstation', label: 'Play Station' },
+  { value: 'cricketNet', label: 'Cricket Net' },
+  { value: 'bowlingMachine', label: 'Bowling Machine' },
+  { value: 'badminton', label: 'Badminton' }
+];
+
 const daysOfWeek = ['Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday', 'Sunday'];
 
 export default function MemberShipBooking() {
@@ -38,7 +47,7 @@ export default function MemberShipBooking() {
 
   const [endDateError, setEndDateError] = useState(false);
 
-  const [bookingType, setBookingType] = useState('');
+  const [bookingType, setBookingType] = useState('badminton');
   const [toast, setToast] = useState('');
   const [bookingTypeError, setBookingTypeError] = useState(false);
   const [startError, setStartError] = useState(false);
@@ -58,7 +67,6 @@ export default function MemberShipBooking() {
   const bookingDetails = JSON.parse(bookingObject);
 
   const [selectWeekDay, setSelectWeekDay] = useState([]);
-  const [selectWeekError, setSelectWeekError] = useState(false);
 
   const handleWeekChange = (event) => {
     const {
@@ -68,7 +76,6 @@ export default function MemberShipBooking() {
       // On autofill we get a stringified value.
       typeof value === 'string' ? value.split(',') : value
     );
-    setSelectWeekError(false);
   };
 
   const handleModalChange = (event) => {
@@ -171,14 +178,14 @@ export default function MemberShipBooking() {
           setDate('');
           setStartTime('');
           setEndTime('');
-          setBookingType('');
+          setBookingType('badminton');
           setToast('');
           setEndDateValue('');
           setBulkAmount();
           setEndError(false);
           setStartError(false);
           setSelectWeekDay([]);
-          setSelectWeekError(false);
+          setSelectedNumber('');
         } catch (error) {
           if (error.message === 'Please choose another date and slot') {
             LocalStorageSaveHandler(bookingData);
@@ -186,7 +193,7 @@ export default function MemberShipBooking() {
             setDate('');
             setStartTime('');
             setEndTime('');
-            setBookingType('');
+            setBookingType('badminton');
             setIsModalOpen(false);
             setSuccesstoast('');
             setEndDateValue('');
@@ -194,7 +201,7 @@ export default function MemberShipBooking() {
             setEndError(false);
             setStartError(false);
             setSelectWeekDay([]);
-            setSelectWeekError(false);
+            setSelectedNumber('');
           } else {
             setToast(error.message);
           }
@@ -214,7 +221,7 @@ export default function MemberShipBooking() {
       payment: paymentType
     };
     // if (data.payment === PaymentType.Cash) {
-    bookingApiCall({
+    const bookingDetail = {
       type: bookingType,
       bookingtype: PaymentType.Online,
       startTime: parseInt(startTime),
@@ -226,8 +233,42 @@ export default function MemberShipBooking() {
       userBookingType: 'manual',
       bookingAmount: {
         online: bulkAmount ?? 0
-      }
-    });
+      },
+      membership: true
+    };
+    const weekDays = [];
+    if (selectWeekDay.length > 0 && selectWeekDay.length !== 7) {
+      selectWeekDay.map((dataNum) => {
+        weekDays.push(WeekType[dataNum]);
+      });
+      console.log(weekDays);
+    }
+    let weekList = [];
+    if (weekDays && weekDays.length > 0) {
+      weekList = DateUtils.betweenWeekDays(booking.startDate, booking.endDate, booking.selectedDays);
+    }
+    if (weekList.length > 0) {
+      weekList.map((weekData) => {
+        bookingApiCall({
+          type: bookingType,
+          bookingtype: PaymentType.Online,
+          startTime: parseInt(startTime),
+          endTime: parseInt(endTime),
+          user: userData.id,
+          startDate: weekData,
+          endDate: weekData,
+          court: selectedNumber,
+          userBookingType: 'manual',
+          bookingAmount: {
+            online: bulkAmount ?? 0
+          },
+          membership: true
+        });
+      });
+    } else {
+      bookingApiCall(bookingDetail);
+    }
+    console.log('weekdays', weekDays);
     // } else {
     //   await paymentMethod();
     // }
@@ -349,14 +390,10 @@ export default function MemberShipBooking() {
     if (!selectedNumber) {
       setSelectNumberError(true);
     }
-    if (selectWeekDay.length === 0) {
-      setSelectWeekError(true);
-    }
 
-    if (date && endDateValue && bookingType && startTime && endTime && selectedNumber && selectWeekDay.length > 0) {
+    if (date && endDateValue && bookingType && startTime && endTime && selectedNumber) {
       setBookingModalOpen(true);
       isDurationGreaterThanOneMonth(date, endDateValue);
-      countTotalDays();
     }
   };
   const handleCloseModal = () => {
@@ -445,7 +482,7 @@ export default function MemberShipBooking() {
     if (!date) {
       return false;
     }
-    return dayjs(startDateData).isBefore(dayjs(date), 'day');
+    return dayjs(startDateData).isBefore(dayjs(date), 'day') || dayjs(startDateData).isSame(dayjs(date), 'day');
   };
 
   const isDurationGreaterThanOneMonth = (startDate, endDateV) => {
@@ -466,23 +503,20 @@ export default function MemberShipBooking() {
     ApiCall(endDateValue);
   };
 
-  const countTotalDays = () => {
-    const start = new Date(date); // Convert start date to Date object
-    const end = new Date(endDateValue); // Convert end date to Date object
-    const oneDay = 24 * 60 * 60 * 1000; // Number of milliseconds in one day
-    const totalDays = Math.round(Math.abs((end - start) / oneDay)); // Calculate total days
-    setTotalDays(totalDays);
-  };
-
-  console.log('start', date, 'end', endDateValue, totalDays);
-
   return (
     <MainCard title="MemberShip Bookings">
       <form style={{ height: '240px' }}>
         <Stack direction="row" spacing={2}>
           <Grid container spacing={3} alignItems="center">
             <Grid item md={3}>
-              <TypeDropdown label="Select Service" type={bookingType} onChange={handleChange} error={bookingTypeError} />
+              <TypeDropdown
+                label="Select Service"
+                type={bookingType}
+                onChange={handleChange}
+                error={bookingTypeError}
+                Options={bookingTypes}
+                disabled={true}
+              />
             </Grid>
             <Grid item md={3}>
               <DropDownComponent
@@ -543,10 +577,8 @@ export default function MemberShipBooking() {
                   multiple
                   value={selectWeekDay}
                   onChange={handleWeekChange}
-                  input={<OutlinedInput label="Tag" />}
+                  input={<OutlinedInput />}
                   renderValue={(selected) => selected.join(', ')}
-                  //   MenuProps={MenuProps}
-                  error={selectWeekError}
                 >
                   {daysOfWeek.map((name) => (
                     <MenuItem key={name} value={name}>
@@ -555,7 +587,6 @@ export default function MemberShipBooking() {
                     </MenuItem>
                   ))}
                 </Select>
-                {selectWeekError ? <FormHelperText error>Please select a week days</FormHelperText> : <></>}
               </Stack>
             </Grid>
 

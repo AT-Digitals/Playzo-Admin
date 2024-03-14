@@ -7,18 +7,17 @@ import FormHelperText from '@mui/material/FormHelperText';
 import MenuItem from '@mui/material/MenuItem';
 import Select from '@mui/material/Select';
 
-export default function TypeDropdown({ type, onChange, label, error }) {
+export default function TypeDropdown({ type, onChange, label, error, Options, disabled }) {
   return (
     <Stack sx={{ minWidth: 200 }} spacing={2}>
       <Typography>{label}</Typography>
       <FormControl fullWidth>
-        <Select labelId="demo-simple-select-label" id="demo-simple-select" value={type} onChange={onChange}>
-          <MenuItem value="turf">Turf</MenuItem>
-          <MenuItem value="boardGame">Board Game</MenuItem>
-          <MenuItem value="playstation">Play Station</MenuItem>
-          <MenuItem value="cricketNet">Cricket Net</MenuItem>
-          <MenuItem value="bowlingMachine">Bowling Machine</MenuItem>
-          <MenuItem value="badminton">Badminton</MenuItem>
+        <Select labelId="demo-simple-select-label" id="demo-simple-select" value={type} onChange={onChange} disabled={disabled}>
+          {Options.map((item) => (
+            <MenuItem key={item.value} value={item.value}>
+              {item.label}
+            </MenuItem>
+          ))}
         </Select>
         {error ? <FormHelperText error>Please select a service</FormHelperText> : <></>}
       </FormControl>
