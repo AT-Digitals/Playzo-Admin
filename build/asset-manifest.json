@@ -1,0 +1,22 @@
+{
+  "files": {
+    "main.css": "/static/css/main.1ab704dd.css",
+    "main.js": "/static/js/main.37908907.js",
+    "static/js/243.67c90211.chunk.js": "/static/js/243.67c90211.chunk.js",
+    "static/js/544.58354c56.chunk.js": "/static/js/544.58354c56.chunk.js",
+    "static/js/996.8727b531.chunk.js": "/static/js/996.8727b531.chunk.js",
+    "static/js/525.32e6e262.chunk.js": "/static/js/525.32e6e262.chunk.js",
+    "static/js/946.28344063.chunk.js": "/static/js/946.28344063.chunk.js",
+    "static/js/346.6d6d1167.chunk.js": "/static/js/346.6d6d1167.chunk.js",
+    "static/js/819.edddcb1a.chunk.js": "/static/js/819.edddcb1a.chunk.js",
+    "static/js/522.159c19cb.chunk.js": "/static/js/522.159c19cb.chunk.js",
+    "static/js/145.dc5fb0d3.chunk.js": "/static/js/145.dc5fb0d3.chunk.js",
+    "static/js/86.72ddfc51.chunk.js": "/static/js/86.72ddfc51.chunk.js",
+    "static/media/Playzo (1).svg": "/static/media/Playzo (1).2ab00f88dcfd6d2f649082bd215e718e.svg",
+    "index.html": "/index.html"
+  },
+  "entrypoints": [
+    "static/css/main.1ab704dd.css",
+    "static/js/main.37908907.js"
+  ]
+}
