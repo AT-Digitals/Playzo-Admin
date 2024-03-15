@@ -469,6 +469,9 @@ export default function BookingListPage() {
       { id: 'refund', label: 'Refund' }
     );
   }
+  if (bookingType === 'badminton') {
+    columns.push({ id: 'numberOfPerson', label: 'NumberOfPerson' });
+  }
 
   if (userData.accessType !== AccessType.READ) {
     columns.push(
