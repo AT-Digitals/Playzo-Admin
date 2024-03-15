@@ -19,6 +19,15 @@ import TypeDropdown from './bookingComponents/TypeDropdown';
 import dayjs from 'dayjs';
 import moment from 'moment';
 
+const bookingTypes = [
+  { value: 'turf', label: 'Turf' },
+  { value: 'boardGame', label: 'Board Game' },
+  { value: 'playstation', label: 'Play Station' },
+  { value: 'cricketNet', label: 'Cricket Net' },
+  { value: 'bowlingMachine', label: 'Bowling Machine' },
+  { value: 'badminton', label: 'Badminton' }
+];
+
 export default function AddBooking() {
   const [date, setDate] = useState('');
   const [startTime, setStartTime] = useState('');
@@ -26,6 +35,7 @@ export default function AddBooking() {
   const [dateError, setDateError] = useState(false);
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [disableData, setDisableData] = useState([]);
+  const [personsCount, setPersonsCount] = useState(0);
 
   const [bookingType, setBookingType] = useState('');
   const [toast, setToast] = useState('');
@@ -39,6 +49,7 @@ export default function AddBooking() {
   const [bookingModalOpen, setBookingModalOpen] = useState(false);
   const [selectedNumber, setSelectedNumber] = useState('');
   const [selectNumberError, setSelectNumberError] = useState(false);
+  const [personsCountError, setPersonsCountError] = useState(false);
   const [bulkAmount, setBulkAmount] = useState();
   const user = localStorage.getItem('user');
   const userData = JSON.parse(user);
@@ -59,6 +70,18 @@ export default function AddBooking() {
     setSelectNumberError(false);
   };
 
+  const handlePersonsChange = (event) => {
+    const data = event.target.value;
+    if (data >= 0 && data <= 8) {
+      setPersonsCount(data);
+      setPersonsCountError(false);
+    } else {
+      setPersonsCount('');
+      setPersonsCountError(true);
+    }
+  };
+
+  console.log('number', personsCount);
   const handleAmountChange = (event) => {
     setBulkAmount(event.target.value);
   };
@@ -136,6 +159,8 @@ export default function AddBooking() {
           setBulkAmount();
           setEndError(false);
           setStartError(false);
+          setPersonsCount(0);
+          setSelectedNumber('');
         } catch (error) {
           if (error.message === 'Please choose another date and slot') {
             LocalStorageSaveHandler(bookingData);
@@ -149,6 +174,8 @@ export default function AddBooking() {
             setBulkAmount();
             setEndError(false);
             setStartError(false);
+            setPersonsCount(0);
+            setSelectedNumber('');
           } else {
             setBookingModalOpen(true);
             setToast(error.message);
@@ -166,8 +193,7 @@ export default function AddBooking() {
     const data = {
       payment: paymentType
     };
-    // if (data.payment === PaymentType.Cash) {
-    bookingApiCall({
+    const bookingData = {
       type: bookingType,
       bookingtype: PaymentType.Online,
       startTime: parseInt(startTime),
@@ -180,7 +206,12 @@ export default function AddBooking() {
       bookingAmount: {
         online: bulkAmount ?? 0
       }
-    });
+    };
+    // if (data.payment === PaymentType.Cash) {
+    if (personsCount > 0 && bookingType === 'badminton') {
+      bookingData['numberOfPerson'] = parseInt(personsCount);
+    }
+    bookingApiCall(bookingData);
     // } else {
     //   await paymentMethod();
     // }
@@ -301,6 +332,10 @@ export default function AddBooking() {
       setSelectNumberError(true);
     }
 
+    if (bookingType === 'badminton' && !personsCount && personsCount <= 0) {
+      setPersonsCountError(true);
+      return;
+    }
     if (date && bookingType && startTime && endTime && selectedNumber) {
       setBookingModalOpen(true);
     }
@@ -327,7 +362,7 @@ export default function AddBooking() {
       return (hour < startH && hour <= endH) || (hour === endH && minute <= endM);
     }
 
-    if (disableData && Array.isArray(disableData)) {
+    if ((disableData && Array.isArray(disableData)) || startTime) {
       if (disableData.length > 0) {
         return disableData.some((item) => {
           const value1 = DateUtils.formatMillisecondsToTime(item.startTime);
@@ -398,7 +433,13 @@ export default function AddBooking() {
         <Stack direction="row" spacing={2}>
           <Grid container spacing={3} alignItems="center">
             <Grid item md={3}>
-              <TypeDropdown label="Select Service" type={bookingType} onChange={handleChange} error={bookingTypeError} />
+              <TypeDropdown
+                label="Select Service"
+                type={bookingType}
+                onChange={handleChange}
+                error={bookingTypeError}
+                Options={bookingTypes}
+              />
             </Grid>
             <Grid item md={3}>
               <DropDownComponent
@@ -409,6 +450,18 @@ export default function AddBooking() {
                 error={selectNumberError}
               />
             </Grid>
+            {bookingType === 'badminton' && (
+              <Grid item md={3}>
+                <CustomTextField
+                  label="Number of Persons"
+                  value={personsCount}
+                  setValue={handlePersonsChange}
+                  error={personsCountError}
+                  errorText="Please enter a number between 1 and 8"
+                  type="number"
+                />
+              </Grid>
+            )}
             <Grid item md={3}>
               <CustomDatePicker date={date} setDate={dateHandler} error={dateError} label={'Select Date'} disablePast={true} />
             </Grid>
