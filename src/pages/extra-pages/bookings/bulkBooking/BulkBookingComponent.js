@@ -1,27 +1,28 @@
 import { Button, Grid, Stack, Typography } from '@mui/material';
 import { useEffect, useState } from 'react';
-import OutlinedInput from '@mui/material/OutlinedInput';
-import MenuItem from '@mui/material/MenuItem';
-import ListItemText from '@mui/material/ListItemText';
-import Select from '@mui/material/Select';
-import Checkbox from '@mui/material/Checkbox';
-import FormHelperText from '@mui/material/FormHelperText';
 
 import BookingApi from 'api/BookingApi';
 import { BookingLength } from '../BookingLength';
 import BookingModal from '../BookingModal';
 import { BookingSubTypes } from '../BookingSubTypes';
+import Checkbox from '@mui/material/Checkbox';
 import CustomDatePicker from '../bookingComponents/CustomDatePicker';
 import CustomTextField from '../bookingComponents/CustomTextField';
 import DateUtils from 'utils/DateUtils';
 import DropDownComponent from '../../DropDownComponent';
+import FormHelperText from '@mui/material/FormHelperText';
+import ListItemText from '@mui/material/ListItemText';
 import MainCard from 'components/MainCard';
+import MenuItem from '@mui/material/MenuItem';
 import NotificationSuccessToast from 'pages/components-overview/NotificationSuccessToast';
 import NotificationToast from 'pages/components-overview/NotificationToast';
+import OutlinedInput from '@mui/material/OutlinedInput';
 import PaymentApi from 'api/PaymentApi';
 import { PaymentType } from 'enum/PaymentType';
+import Select from '@mui/material/Select';
 import TimeSlotModal from '../bookingComponents/TimeSlotModal';
 import TypeDropdown from '../bookingComponents/TypeDropdown';
+import { WeekType } from './WeekType';
 import dayjs from 'dayjs';
 import moment from 'moment';
 
@@ -236,11 +237,10 @@ export default function BulkBookingComponent() {
       selectWeekDay.map((dataNum) => {
         weekDays.push(WeekType[dataNum]);
       });
-      console.log(weekDays);
     }
     let weekList = [];
     if (weekDays && weekDays.length > 0) {
-      weekList = DateUtils.betweenWeekDays(booking.startDate, booking.endDate, booking.selectedDays);
+      weekList = DateUtils.betweenWeekDays(date, endDateValue, weekDays);
     }
     if (weekList.length > 0) {
       weekList.map((weekData) => {
@@ -411,7 +411,7 @@ export default function BulkBookingComponent() {
       return (hour < startH && hour <= endH) || (hour === endH && minute <= endM);
     }
 
-    if ((disableData && Array.isArray(disableData))) {
+    if (disableData && Array.isArray(disableData)) {
       if (disableData.length > 0) {
         return disableData.some((item) => {
           const value1 = DateUtils.formatMillisecondsToTime(item.startTime);
