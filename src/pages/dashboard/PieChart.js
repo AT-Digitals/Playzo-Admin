@@ -21,38 +21,12 @@ const StyledCharts = styled(Chart)(({ theme }) => ({
   }
 }));
 
-const PieChart = ({ selectData, width, palette1 }) => {
+const PieChart = ({ selectData, palette1 }) => {
   const { labels, series } = selectData;
 
   const chartOptions = {
     chart: {
       type: 'pie'
-    },
-    data: {
-      datasets: [
-        {
-          label: 'Colors',
-          data: [9, 8, 7, 6, 5, 4, 3, 2, 1],
-          backgroundColor: [
-            '#0074D9',
-            '#FF4136',
-            '#2ECC40',
-            '#FF851B',
-            '#7FDBFF',
-            '#B10DC9',
-            '#FFDC00',
-            '#001f3f',
-            '#39CCCC',
-            '#01FF70',
-            '#85144b',
-            '#F012BE',
-            '#3D9970',
-            '#111111',
-            '#AAAAAA'
-          ]
-        }
-      ],
-      labels: ['Total Amount', 'Online', 'Cash', 'UPI', 'Refund']
     },
     theme: {
       mode: 'light',
@@ -65,7 +39,6 @@ const PieChart = ({ selectData, width, palette1 }) => {
       }
     },
     labels: labels,
-    // colors: ['pink', 'green'],
     dataLabels: {
       enabled: true,
       textAnchor: 'middle',
@@ -86,7 +59,7 @@ const PieChart = ({ selectData, width, palette1 }) => {
   return (
     <Box paddingX={3} paddingTop={5} paddingBottom={5}>
       <Box width="100%" maxWidth="1200px" margin="auto">
-        <StyledCharts options={chartOptions} series={series} type="pie" width={width} />
+        <StyledCharts options={chartOptions} series={series} type="pie" width="700" />
       </Box>
     </Box>
   );

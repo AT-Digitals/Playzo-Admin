@@ -14,6 +14,12 @@ import CustomDatePicker from '../extra-pages/bookings/bookingComponents/CustomDa
 
 // ==============================|| DASHBOARD - DEFAULT ||============================== //
 
+const initialBookingInfo = {
+  online: 0,
+  manual: 0,
+  totalBooking: 0
+};
+
 const DashboardDefault = () => {
   const [data, setData] = useState([]);
   const [enquiryData, setEnquiryData] = useState([]);
@@ -22,6 +28,7 @@ const DashboardDefault = () => {
   const [startDate, setStartDate] = useState('');
   const [endDate, setEndDate] = useState('');
   const [count, setCount] = useState(0);
+  const [bookingFilter, setBookingFilter] = useState([]);
 
   const [isApplyMode, setIsApplyMode] = useState(true);
   const [buttonDisable, setButtonDisable] = useState(false);
@@ -29,6 +36,11 @@ const DashboardDefault = () => {
   const [endDateError, setEndDateError] = useState(false);
 
   const [selectPaymentType, setSelectPaymentType] = useState('All Payments');
+  const [bookingDetails, setBookingDetails] = useState(initialBookingInfo);
+
+  const updateBookingInfo = (newBookingInfo) => {
+    setBookingDetails({ ...bookingDetails, ...newBookingInfo });
+  };
 
   const handlePaymentTypeChange = (type) => {
     setSelectPaymentType(type);
@@ -208,7 +220,7 @@ const DashboardDefault = () => {
       return { labels, series };
     } else {
       const data = PaymentChartData[category];
-      const labels = selectPaymentType === 'All Payments' ? ['Total Amount', 'Online', 'Cash', 'UPI', 'refund'] : [`${selectPaymentType}`];
+      const labels = selectPaymentType === 'All Payments' ? ['Total Amount', 'Online', 'Cash', 'UPI', 'Refund'] : [`${selectPaymentType}`];
       const series =
         selectPaymentType === 'All Payments'
           ? [data.BookingCount, data.onlinePayment, data.cashPayment, data.UpiPayment, data.refundPayment]
@@ -221,31 +233,32 @@ const DashboardDefault = () => {
 
   const chartData = updateChartData(selectedCategory);
 
-  const calculateBookingData = (data) => {
-    const manualBooking = data.filter((item) => item.userBookingType === 'manual');
-    const onlineBooking = data.filter((item) => item.userBookingType === 'online');
-    const manual = manualBooking.length;
-    const online = onlineBooking.length;
-    const totalBooking = manual + online;
-    return { manual, online, totalBooking };
-  };
-
-  const BoookingCount = calculateBookingData(data);
+  const dateBookingData = calculateBookings(data);
 
   const BookingData = {
-    'Online Bookings': { Booking: BoookingCount.online },
+    'Online Bookings': { Booking: dateBookingData.online },
 
     'Manual Bookings': {
-      Booking: BoookingCount.manual
+      Booking: dateBookingData.manual
     },
     'Total Bookings': {
-      Booking: BoookingCount.totalBooking
+      Booking: dateBookingData.totalBooking
     }
   };
-  const BookingDataChart = {
-    label: ['online', 'manual', 'total'],
-    series: [90, 40, 50]
+
+  const updateChartfilterData = (filterData) => {
+    if (!filterData || !filterData.startDate || !filterData.endDate) {
+      const labels = Object.keys(BookingData);
+      const series = Object.values(BookingData).map((data) => data.Booking);
+      return { labels, series };
+    } else {
+      const labels = ['Online Bookings', 'Manual Bookings', 'Total Bookings'];
+      const series = [bookingDetails.online, bookingDetails.manual, bookingDetails.totalBooking];
+      return { labels, series };
+    }
   };
+
+  const filtertype = updateChartfilterData(filterData);
 
   const ApplyFilter = useCallback(
     async (event) => {
@@ -296,9 +309,16 @@ const DashboardDefault = () => {
       if (filterData) {
         await BookingApi.filterBook(filterData).then((data) => {
           setCount(data.length);
-          setData(data);
-
-          Console.log('filter data', data);
+          setBookingFilter(data);
+          if (bookingFilter) {
+            const updateData = calculateBookings(data);
+            const newBookingInfo = {
+              online: updateData.online,
+              manual: updateData.manual,
+              totalBooking: updateData.totalBooking
+            };
+            updateBookingInfo(newBookingInfo);
+          }
         });
       } else {
         await BookingApi.getAll({}).then((data) => {
@@ -380,7 +400,7 @@ const DashboardDefault = () => {
         </Grid>
         <MainCard content={false} sx={{ mt: 1.5 }}>
           <Box sx={{ pt: 1, pr: 2 }}>
-            <PieChart selectData={chartData} width="700" palette1="palette1" />
+            <PieChart selectData={filtertype} palette1="palette1" />
           </Box>
         </MainCard>
       </Grid>
@@ -447,7 +467,7 @@ const DashboardDefault = () => {
         </Grid>
         <MainCard content={false} sx={{ mt: 1.5 }}>
           <Box sx={{ pt: 1, pr: 2 }}>
-            <PieChart selectData={chartData} width="700" palette1="palette4" />
+            <PieChart selectData={chartData} palette1="palette2" />
           </Box>
         </MainCard>
       </Grid>
@@ -500,7 +520,15 @@ const DashboardDefault = () => {
         </Grid>
         <MainCard content={false} sx={{ mt: 1.5 }}>
           <Box sx={{ pt: 1, pr: 2 }}>
-            <PieChart selectData={paymentChartData} width="600" palette1="palette5" />
+            {selectPaymentType === 'Online' ? (
+              <PieChart selectData={paymentChartData} palette1="palette5" />
+            ) : selectPaymentType === 'Cash' ? (
+              <PieChart selectData={paymentChartData} palette1="palette7" />
+            ) : selectPaymentType === 'UPI' ? (
+              <PieChart selectData={paymentChartData} palette1="palette6" />
+            ) : (
+              <PieChart selectData={paymentChartData} palette1="palette8" selectPaymentType={selectPaymentType} />
+            )}
           </Box>
         </MainCard>
       </Grid>

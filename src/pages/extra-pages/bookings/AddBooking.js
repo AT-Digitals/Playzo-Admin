@@ -68,6 +68,10 @@ export default function AddBooking() {
   const handleNumberChange = (event) => {
     setSelectedNumber(event.target.value);
     setSelectNumberError(false);
+    setDate('');
+    setStartTime('');
+    setEndTime('');
+    setPersonsCount(0);
   };
 
   const handlePersonsChange = (event) => {
@@ -80,8 +84,6 @@ export default function AddBooking() {
       setPersonsCountError(true);
     }
   };
-
-  console.log('number', personsCount);
   const handleAmountChange = (event) => {
     setBulkAmount(event.target.value);
   };
@@ -90,6 +92,10 @@ export default function AddBooking() {
     setBookingType(event.target.value);
     setBookingTypeError(false);
     setSelectedNumber('');
+    setDate('');
+    setStartTime('');
+    setEndTime('');
+    setPersonsCount(0);
   };
 
   const getNumberOptions1 = (Type) => {
@@ -359,12 +365,14 @@ export default function AddBooking() {
       const endH = parseInt(etime.split(':')[0], 10);
       const endM = parseInt(etime.split(':')[1], 10);
 
-      return (hour < startH && hour <= endH) || (hour === endH && minute <= endM);
+      if ((hour < startH && hour <= endH) || (hour === endH && minute <= endM)) {
+        return true;
+      }
     }
 
-    if ((disableData && Array.isArray(disableData)) || startTime) {
+    if (disableData && Array.isArray(disableData)) {
       if (disableData.length > 0) {
-        return disableData.some((item) => {
+        const disableTime = disableData.some((item) => {
           const value1 = DateUtils.formatMillisecondsToTime(item.startTime);
           const value2 = DateUtils.formatMillisecondsToTime(item.endTime);
           const time = DateUtils.convertTo24HourFormat(value1);
@@ -384,11 +392,61 @@ export default function AddBooking() {
 
           return false;
         });
+
+        if (disableTime) {
+          return true;
+        }
       }
     }
 
     return false;
   };
+
+  // const shouldDisableTime = (value, view) => {
+  //   const hour = value.hour();
+  //   const minute = value.minute();
+
+  //   if (startTime) {
+  //     const startMiltoTime = DateUtils.formatMillisecondsToTime(startTime);
+  //     const time = DateUtils.convertTo24HourFormat(startMiltoTime);
+
+  //     const endMiltoTime = DateUtils.formatMillisecondsToTime(startTime);
+  //     const etime = DateUtils.convertTo24HourFormat(endMiltoTime);
+
+  //     const startH = parseInt(time.split(':')[0], 10);
+  //     const endH = parseInt(etime.split(':')[0], 10);
+  //     const endM = parseInt(etime.split(':')[1], 10);
+
+  //     return (hour < startH && hour <= endH) || (hour === endH && minute <= endM);
+  //   }
+
+  //   if (disableData && Array.isArray(disableData)) {
+  //     if (disableData.length > 0) {
+  //       return disableData.some((item) => {
+  //         const value1 = DateUtils.formatMillisecondsToTime(item.startTime);
+  //         const value2 = DateUtils.formatMillisecondsToTime(item.endTime);
+  //         const time = DateUtils.convertTo24HourFormat(value1);
+  //         const time2 = DateUtils.convertTo24HourFormat(value2);
+  //         const startHour = parseInt(time.split(':')[0], 10);
+  //         const startMinute = parseInt(time.split(':')[1], 10);
+  //         const endHour = parseInt(time2.split(':')[0], 10);
+  //         const endMinute = parseInt(time2.split(':')[1], 10);
+
+  //         if (view === 'hours' || view === 'minutes') {
+  //           return (
+  //             (hour === startHour && minute >= startMinute) ||
+  //             (hour > startHour && hour < endHour) ||
+  //             (hour === endHour && minute < endMinute)
+  //           );
+  //         }
+
+  //         return false;
+  //       });
+  //     }
+  //   }
+
+  //   return false;
+  // };
 
   const shouldDisableStartTime = (value, view) => {
     const hour = value.hour();

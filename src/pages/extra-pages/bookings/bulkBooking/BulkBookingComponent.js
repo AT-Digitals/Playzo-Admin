@@ -87,6 +87,11 @@ export default function BulkBookingComponent() {
   const handleNumberChange = (event) => {
     setSelectedNumber(event.target.value);
     setSelectNumberError(false);
+    setDate('');
+    setEndDateValue('');
+    setStartTime('');
+    setEndTime('');
+    setSelectWeekDay([]);
   };
 
   const handleAmountChange = (event) => {
@@ -97,6 +102,11 @@ export default function BulkBookingComponent() {
     setBookingType(event.target.value);
     setBookingTypeError(false);
     setSelectedNumber('');
+    setDate('');
+    setEndDateValue('');
+    setStartTime('');
+    setEndTime('');
+    setSelectWeekDay([]);
   };
 
   const getNumberOptions1 = (Type) => {
@@ -115,7 +125,6 @@ export default function BulkBookingComponent() {
     setDateError(false);
     setStartTime('');
     setEndTime('');
-
     if (endDateValue && new Date(endDateValue) < new Date(formattedDate)) {
       setIsModalOpen(false);
       setEndDateValue('');
@@ -392,7 +401,6 @@ export default function BulkBookingComponent() {
   const handleCloseModal = () => {
     setIsModalOpen(false);
   };
-
   const shouldDisableTime = (value, view) => {
     const hour = value.hour();
     const minute = value.minute();
@@ -408,12 +416,14 @@ export default function BulkBookingComponent() {
       const endH = parseInt(etime.split(':')[0], 10);
       const endM = parseInt(etime.split(':')[1], 10);
 
-      return (hour < startH && hour <= endH) || (hour === endH && minute <= endM);
+      if ((hour < startH && hour <= endH) || (hour === endH && minute <= endM)) {
+        return true;
+      }
     }
 
     if (disableData && Array.isArray(disableData)) {
       if (disableData.length > 0) {
-        return disableData.some((item) => {
+        const disableTime = disableData.some((item) => {
           const value1 = DateUtils.formatMillisecondsToTime(item.startTime);
           const value2 = DateUtils.formatMillisecondsToTime(item.endTime);
           const time = DateUtils.convertTo24HourFormat(value1);
@@ -433,11 +443,61 @@ export default function BulkBookingComponent() {
 
           return false;
         });
+
+        if (disableTime) {
+          return true;
+        }
       }
     }
 
     return false;
   };
+
+  // const shouldDisableTime = (value, view) => {
+  //   const hour = value.hour();
+  //   const minute = value.minute();
+
+  //   if (startTime) {
+  //     const startMiltoTime = DateUtils.formatMillisecondsToTime(startTime);
+  //     const time = DateUtils.convertTo24HourFormat(startMiltoTime);
+
+  //     const endMiltoTime = DateUtils.formatMillisecondsToTime(startTime);
+  //     const etime = DateUtils.convertTo24HourFormat(endMiltoTime);
+
+  //     const startH = parseInt(time.split(':')[0], 10);
+  //     const endH = parseInt(etime.split(':')[0], 10);
+  //     const endM = parseInt(etime.split(':')[1], 10);
+
+  //     return (hour < startH && hour <= endH) || (hour === endH && minute <= endM);
+  //   }
+
+  //   if (disableData && Array.isArray(disableData)) {
+  //     if (disableData.length > 0) {
+  //       return disableData.some((item) => {
+  //         const value1 = DateUtils.formatMillisecondsToTime(item.startTime);
+  //         const value2 = DateUtils.formatMillisecondsToTime(item.endTime);
+  //         const time = DateUtils.convertTo24HourFormat(value1);
+  //         const time2 = DateUtils.convertTo24HourFormat(value2);
+  //         const startHour = parseInt(time.split(':')[0], 10);
+  //         const startMinute = parseInt(time.split(':')[1], 10);
+  //         const endHour = parseInt(time2.split(':')[0], 10);
+  //         const endMinute = parseInt(time2.split(':')[1], 10);
+
+  //         if (view === 'hours' || view === 'minutes') {
+  //           return (
+  //             (hour === startHour && minute >= startMinute) ||
+  //             (hour > startHour && hour < endHour) ||
+  //             (hour === endHour && minute < endMinute)
+  //           );
+  //         }
+
+  //         return false;
+  //       });
+  //     }
+  //   }
+
+  //   return false;
+  // };
 
   const shouldDisableStartTime = (value, view) => {
     const hour = value.hour();

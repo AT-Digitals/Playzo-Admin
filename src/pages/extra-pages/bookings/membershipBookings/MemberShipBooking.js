@@ -91,6 +91,11 @@ export default function MemberShipBooking() {
   const handleNumberChange = (event) => {
     setSelectedNumber(event.target.value);
     setSelectNumberError(false);
+    setDate('');
+    setEndDateValue('');
+    setStartTime('');
+    setEndTime('');
+    setSelectWeekDay([]);
   };
 
   const handleAmountChange = (event) => {
@@ -101,6 +106,11 @@ export default function MemberShipBooking() {
     setBookingType(event.target.value);
     setBookingTypeError(false);
     setSelectedNumber('');
+    setDate('');
+    setEndDateValue('');
+    setStartTime('');
+    setEndTime('');
+    setSelectWeekDay([]);
   };
 
   const getNumberOptions1 = (Type) => {
