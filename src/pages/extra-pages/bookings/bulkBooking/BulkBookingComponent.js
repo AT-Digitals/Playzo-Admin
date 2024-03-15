@@ -87,6 +87,11 @@ export default function BulkBookingComponent() {
   const handleNumberChange = (event) => {
     setSelectedNumber(event.target.value);
     setSelectNumberError(false);
+    setDate('');
+    setEndDateValue('');
+    setStartTime('');
+    setEndTime('');
+    setSelectWeekDay([]);
   };
 
   const handleAmountChange = (event) => {
@@ -97,6 +102,11 @@ export default function BulkBookingComponent() {
     setBookingType(event.target.value);
     setBookingTypeError(false);
     setSelectedNumber('');
+    setDate('');
+    setEndDateValue('');
+    setStartTime('');
+    setEndTime('');
+    setSelectWeekDay([]);
   };
 
   const getNumberOptions1 = (Type) => {
@@ -115,7 +125,6 @@ export default function BulkBookingComponent() {
     setDateError(false);
     setStartTime('');
     setEndTime('');
-
     if (endDateValue && new Date(endDateValue) < new Date(formattedDate)) {
       setIsModalOpen(false);
       setEndDateValue('');
@@ -392,7 +401,6 @@ export default function BulkBookingComponent() {
   const handleCloseModal = () => {
     setIsModalOpen(false);
   };
-
   const shouldDisableTime = (value, view) => {
     const hour = value.hour();
     const minute = value.minute();
@@ -408,12 +416,14 @@ export default function BulkBookingComponent() {
       const endH = parseInt(etime.split(':')[0], 10);
       const endM = parseInt(etime.split(':')[1], 10);
 
-      return (hour < startH && hour <= endH) || (hour === endH && minute <= endM);
+      if ((hour < startH && hour <= endH) || (hour === endH && minute <= endM)) {
+        return true;
+      }
     }
 
     if (disableData && Array.isArray(disableData)) {
       if (disableData.length > 0) {
-        return disableData.some((item) => {
+        const disableTime = disableData.some((item) => {
           const value1 = DateUtils.formatMillisecondsToTime(item.startTime);
           const value2 = DateUtils.formatMillisecondsToTime(item.endTime);
           const time = DateUtils.convertTo24HourFormat(value1);
@@ -433,6 +443,10 @@ export default function BulkBookingComponent() {
 
           return false;
         });
+
+        if (disableTime) {
+          return true;
+        }
       }
     }
 
