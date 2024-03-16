@@ -153,7 +153,8 @@ export default function MemberShipBooking() {
         startDate: date,
         type: bookingType,
         endDate: endData,
-        court: selectedNumber
+        court: selectedNumber,
+        membership: true
       });
       setDisableData(response);
       setIsModalOpen(true);
