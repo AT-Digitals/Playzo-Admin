@@ -35,7 +35,7 @@ export default function AddBooking() {
   const [dateError, setDateError] = useState(false);
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [disableData, setDisableData] = useState([]);
-  const [personsCount, setPersonsCount] = useState(0);
+  const [personsCount, setPersonsCount] = useState('');
 
   const [bookingType, setBookingType] = useState('');
   const [toast, setToast] = useState('');
@@ -71,12 +71,13 @@ export default function AddBooking() {
     setDate('');
     setStartTime('');
     setEndTime('');
-    setPersonsCount(0);
+    setPersonsCount('');
   };
 
   const handlePersonsChange = (event) => {
-    const data = event.target.value;
-    if (data >= 0 && data <= 8) {
+    const data = event.target.value.trim();
+    console.log('value', data);
+    if (parseInt(data) >= 0 && parseInt(data) <= 8 && parseInt(data) !== 0) {
       setPersonsCount(data);
       setPersonsCountError(false);
     } else {
@@ -95,7 +96,7 @@ export default function AddBooking() {
     setDate('');
     setStartTime('');
     setEndTime('');
-    setPersonsCount(0);
+    setPersonsCount('');
   };
 
   const getNumberOptions1 = (Type) => {
@@ -165,7 +166,7 @@ export default function AddBooking() {
           setBulkAmount();
           setEndError(false);
           setStartError(false);
-          setPersonsCount(0);
+          setPersonsCount('');
           setSelectedNumber('');
         } catch (error) {
           if (error.message === 'Please choose another date and slot') {
@@ -180,7 +181,7 @@ export default function AddBooking() {
             setBulkAmount();
             setEndError(false);
             setStartError(false);
-            setPersonsCount(0);
+            setPersonsCount('');
             setSelectedNumber('');
           } else {
             setBookingModalOpen(true);
@@ -338,7 +339,7 @@ export default function AddBooking() {
       setSelectNumberError(true);
     }
 
-    if (bookingType === 'badminton' && !personsCount && personsCount <= 0) {
+    if (bookingType === 'badminton' && !personsCount) {
       setPersonsCountError(true);
       return;
     }
@@ -470,7 +471,6 @@ export default function AddBooking() {
                   setValue={handlePersonsChange}
                   error={personsCountError}
                   errorText="Please enter a number between 1 and 8"
-                  type="number"
                 />
               </Grid>
             )}
