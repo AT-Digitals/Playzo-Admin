@@ -61,8 +61,14 @@ export default function AmountPage() {
     setTypeError(false);
   };
   const handleAmountChange = (event) => {
-    setAmount(event.target.value);
-    setAmountError(false);
+    const value = event.target.value.trim();
+    if (parseInt(value) >= 0 && parseInt(value) !== 0) {
+      setAmount(value);
+      setAmountError(false);
+    } else {
+      setAmount('');
+      setAmountError(true);
+    }
   };
   const handleCourtChange = (event) => {
     setSelectCourt(event.target.value);

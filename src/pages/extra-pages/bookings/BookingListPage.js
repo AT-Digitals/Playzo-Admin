@@ -1,6 +1,6 @@
 import * as XLSX from 'xlsx';
 
-import { Button, Grid, Stack, Typography } from '@mui/material';
+import { Button, Grid, Stack, Typography, Card } from '@mui/material';
 import { useCallback, useEffect, useState } from 'react';
 
 import { AccessType } from 'pages/authentication/auth-forms/AccessType';
@@ -147,6 +147,7 @@ export default function BookingListPage() {
       setShowUpiField(true);
     } else {
       setShowUpiField(false);
+      setUpiAmount('');
     }
   };
 
@@ -156,6 +157,7 @@ export default function BookingListPage() {
       setShowCashField(true);
     } else {
       setShowCashField(false);
+      setPayAmount('');
     }
   };
 
@@ -470,7 +472,7 @@ export default function BookingListPage() {
     );
   }
   if (bookingType === 'badminton') {
-    columns.push({ id: 'numberOfPerson', label: 'NumberOfPerson' });
+    columns.push({ id: 'numberOfPerson', label: 'Number Of Person' });
   }
 
   if (userData.accessType !== AccessType.READ) {
@@ -686,7 +688,7 @@ export default function BookingListPage() {
       </MainCard>
       {errorToast !== '' ? <NotificationToast error={errorToast} /> : <></>}
       {updateToast !== '' ? <NotificationSuccessToast success={updateToast} /> : <></>}
-      <MainCard sx={{ marginTop: '30px' }}>
+      <Card sx={{ marginTop: '30px', padding: '20px 10px' }}>
         <CommonTable
           columns={columns}
           count={count}
@@ -719,7 +721,7 @@ export default function BookingListPage() {
           onCloseEdit={handleEditClose}
           updateEdit={UpdateAmountChange}
         />
-      </MainCard>
+      </Card>
     </>
   );
 }

@@ -126,7 +126,7 @@ const DashboardDefault = () => {
   };
 
   const getUpiAmountCount = (dataArray) => {
-    let totalCount = 50;
+    let totalCount = 0;
     dataArray.forEach((item) => {
       totalCount += item.bookingAmount.upi;
     });
