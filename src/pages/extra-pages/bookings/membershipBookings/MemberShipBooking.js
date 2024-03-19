@@ -176,11 +176,32 @@ export default function MemberShipBooking() {
   };
 
   const bookingApiCall = (bookingData) => {
-    if (date && startTime && endTime && endDateValue && selectedNumber && selectWeekDay) {
+    if (date && startTime && endTime && endDateValue && selectedNumber) {
       setBookingModalOpen(true);
+      let flag = false;
+      let bookingList = [];
       const booking = async () => {
         try {
-          const response = await BookingApi.createBooking(bookingData);
+          for (const weekData of bookingData) {
+            try {
+              await BookingApi.getBookedList(weekData);
+            } catch (error) {
+              flag = true;
+              setToast(error.message);
+            }
+            if (!flag) {
+              bookingList.push(weekData);
+            } else {
+              return;
+            }
+          }
+          let response;
+          for (const bookData of bookingList) {
+            bookData['connectId'] = `${DateUtils.formatDate(new Date(), 'DD-MM-YYYY')}-${bookData.type}-${userData.email}`;
+            bookData['membership'] = true;
+
+            response = await BookingApi.createBooking(bookData);
+          }
           if (response.message) {
             setToast(response.message);
           }
@@ -245,8 +266,7 @@ export default function MemberShipBooking() {
       userBookingType: 'manual',
       bookingAmount: {
         online: bulkAmount ?? 0
-      },
-      membership: true
+      }
     };
     const weekDays = [];
     if (selectWeekDay.length > 0 && selectWeekDay.length !== 7) {
@@ -259,8 +279,8 @@ export default function MemberShipBooking() {
       weekList = DateUtils.betweenWeekDays(date, endDateValue, weekDays);
     }
     if (weekList.length > 0) {
-      weekList.map((weekData) => {
-        bookingApiCall({
+      for (const weekData of weekList) {
+        bookingList.push({
           type: bookingType,
           bookingtype: PaymentType.Online,
           startTime: DateUtils.joinDate(new Date(weekData), new Date(startTime)).valueOf(),
@@ -272,18 +292,13 @@ export default function MemberShipBooking() {
           userBookingType: 'manual',
           bookingAmount: {
             online: bulkAmount ?? 0
-          },
-          membership: true
+          }
         });
-      });
+      }
+      bookingApiCall(bookingList);
     } else {
-      bookingApiCall(bookingDetail);
+      bookingApiCall([bookingDetail]);
     }
-    console.log('weekdays', weekDays);
-    // } else {
-    //   await paymentMethod();
-    // }
-    // console.log(data);
   };
 
   const paymentMethod = async () => {

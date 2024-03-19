@@ -82,4 +82,13 @@ export default class BookingApi {
       throw handleApiError(e, 'Failed to get booking');
     }
   }
+
+  public static async getBookedList(booking?: any) {
+    try {
+      const details = await axiosInstance.post<any[]>(`/bookingFilter/booked`, booking);
+      return details.data;
+    } catch (e) {
+      throw handleApiError(e, 'Failed to get all details');
+    }
+  }
 }

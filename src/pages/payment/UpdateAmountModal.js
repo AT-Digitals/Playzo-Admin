@@ -57,7 +57,7 @@ export default function UpdateAmountModal({ onSubmit, onClose, isOpen, editedDat
                   </FormControl>
                 </Stack>
               </Grid>
-              <Grid item md={12} mb={2}>
+              {/* <Grid item md={12} mb={2}>
                 <DropDownComponent
                   label="Select Service Type"
                   value={editedData.court || ''}
@@ -65,7 +65,7 @@ export default function UpdateAmountModal({ onSubmit, onClose, isOpen, editedDat
                   options={data}
                   disabled={true}
                 />
-              </Grid>
+              </Grid> */}
               <Grid item md={12} mb={2}>
                 <CustomTextField
                   label="Enter Amount"

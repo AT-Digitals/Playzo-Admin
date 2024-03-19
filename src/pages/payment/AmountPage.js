@@ -31,12 +31,12 @@ const getNumberOptions1 = (Type) => {
 export default function AmountPage() {
   const [bookingType, setBookingType] = useState('');
   const [amount, setAmount] = useState('');
-  const [selectCourt, setSelectCourt] = useState('');
+  // const [selectCourt, setSelectCourt] = useState('');
   const [amountData, setAmountData] = useState([]);
   const [updateModal, setUpdateModal] = useState(false);
   const [typeError, setTypeError] = useState(false);
   const [amountError, setAmountError] = useState(false);
-  const [courtError, setCourtError] = useState(false);
+  // const [courtError, setCourtError] = useState(false);
   const [successtoast, setSuccesstoast] = useState('');
   const [updateSuccesstoast, setUpdateSuccesstoast] = useState('');
   const [page, setPage] = useState(0);
@@ -70,10 +70,10 @@ export default function AmountPage() {
       setAmountError(true);
     }
   };
-  const handleCourtChange = (event) => {
-    setSelectCourt(event.target.value);
-    setCourtError(false);
-  };
+  // const handleCourtChange = (event) => {
+  //   setSelectCourt(event.target.value);
+  //   setCourtError(false);
+  // };
 
   const handleClose = () => {
     setUpdateModal(false);
@@ -88,15 +88,14 @@ export default function AmountPage() {
     if (!amount) {
       setAmountError(true);
     }
-    if (!selectCourt) {
-      setCourtError(true);
-    }
+    // if (!selectCourt) {
+    //   setCourtError(true);
+    // }
 
     if (bookingType && amount && selectCourt) {
       const details = {
         bookingtype: bookingType,
-        bookingAmount: amount,
-        court: selectCourt
+        bookingAmount: amount
       };
 
       const booking = async () => {
@@ -158,7 +157,7 @@ export default function AmountPage() {
   const columns = [
     { id: 'No', label: 'No' },
     { id: 'bookingType', label: 'Services' },
-    { id: 'court', label: 'Service Type' },
+    // { id: 'court', label: 'Service Type' },
     { id: 'bookingAmount', label: 'Amount' },
     { id: 'action', label: 'Action' }
   ];
@@ -175,7 +174,7 @@ export default function AmountPage() {
 
   useEffect(() => {
     fetchInfo();
-  }, []);
+  }, [fetchInfo]);
 
   return (
     <Stack direction="column" spacing={3}>
@@ -191,7 +190,7 @@ export default function AmountPage() {
                 Options={bookingTypes}
               />
             </Grid>
-            <Grid item md={3}>
+            {/* <Grid item md={3}>
               <DropDownComponent
                 label="Select Service Type"
                 value={selectCourt || ''}
@@ -199,7 +198,7 @@ export default function AmountPage() {
                 options={getNumberOptions1(bookingType)}
                 error={courtError}
               />
-            </Grid>
+            </Grid> */}
             <Grid item md={3}>
               <CustomTextField
                 label="Enter Amount"
