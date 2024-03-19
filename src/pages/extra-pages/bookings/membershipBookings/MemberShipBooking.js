@@ -263,8 +263,8 @@ export default function MemberShipBooking() {
         bookingApiCall({
           type: bookingType,
           bookingtype: PaymentType.Online,
-          startTime: parseInt(startTime),
-          endTime: parseInt(endTime),
+          startTime: DateUtils.joinDate(new Date(weekData), new Date(startTime)).valueOf(),
+          endTime: DateUtils.joinDate(new Date(weekData), new Date(endTime)).valueOf(),
           user: userData.id,
           startDate: weekData,
           endDate: weekData,
