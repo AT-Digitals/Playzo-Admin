@@ -184,16 +184,14 @@ export default function BulkBookingComponent() {
               setToast(error.message);
             }
             if (!flag) {
+              weekData['connectId'] = `${DateUtils.formatDate(new Date(), 'DD/MM/YYYY')}-${weekData.type}-${userData.email}`;
+
               bookingList.push(weekData);
             } else {
               return;
             }
           }
-          let response;
-          for (const bookData of bookingList) {
-            bookData['connectId'] = `${DateUtils.formatDate(new Date(), 'DD-MM-YYYY')}-${bookData.type}-${userData.email}`;
-            response = await BookingApi.createBooking(bookData);
-          }
+          let response = await BookingApi.createBulkBooking({ bookings: bookingList });
           if (response.message) {
             setToast(response.message);
           }
