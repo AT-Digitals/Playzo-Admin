@@ -184,6 +184,7 @@ export default function MemberShipBooking() {
         try {
           for (const weekData of bookingData) {
             try {
+              weekData['membership'] = true;
               await BookingApi.getBookedList(weekData);
             } catch (error) {
               flag = true;

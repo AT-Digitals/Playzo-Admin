@@ -148,7 +148,8 @@ export default function BulkBookingComponent() {
         startDate: date,
         type: bookingType,
         endDate: endData,
-        court: selectedNumber
+        court: selectedNumber,
+        membership: false
       });
       setDisableData(response);
       setIsModalOpen(true);
@@ -173,14 +174,22 @@ export default function BulkBookingComponent() {
     if (date && startTime && endTime && endDateValue && selectedNumber) {
       setBookingModalOpen(true);
       let flag = false;
+      let errorFlag = false;
+      let flagMessage = '';
       let bookingList = [];
       const booking = async () => {
         try {
           for (const weekData of bookingData) {
             try {
+              weekData['membership'] = false;
               await BookingApi.getBookedList(weekData);
             } catch (error) {
               flag = true;
+              if (error.message === 'Please choose another date and slot') {
+                errorFlag = true;
+              } else {
+                flagMessage = error.message;
+              }
               setToast(error.message);
             }
             if (!flag) {
@@ -190,6 +199,30 @@ export default function BulkBookingComponent() {
             } else {
               return;
             }
+          }
+          if (errorFlag) {
+            // if (error.message === ) {
+            LocalStorageSaveHandler(bookingData);
+            setToast('Please choose another date and slot');
+            setDate('');
+            setStartTime('');
+            setEndTime('');
+            setBookingType('');
+            setIsModalOpen(false);
+            setSuccesstoast('');
+            setEndDateValue('');
+            setBulkAmount();
+            setEndError(false);
+            setStartError(false);
+            setSelectWeekDay([]);
+            setSelectedNumber('');
+            // } else {
+            //   setToast(error.message);
+            // }
+
+            setBookingModalOpen(false);
+          } else {
+            setToast(flagMessage);
           }
           let response = await BookingApi.createBulkBooking({ bookings: bookingList });
           if (response.message) {
@@ -210,27 +243,7 @@ export default function BulkBookingComponent() {
           setSelectWeekDay([]);
           setSelectedNumber('');
         } catch (error) {
-          if (error.message === 'Please choose another date and slot') {
-            LocalStorageSaveHandler(bookingData);
-            setToast(error.message);
-            setDate('');
-            setStartTime('');
-            setEndTime('');
-            setBookingType('');
-            setIsModalOpen(false);
-            setSuccesstoast('');
-            setEndDateValue('');
-            setBulkAmount();
-            setEndError(false);
-            setStartError(false);
-            setSelectWeekDay([]);
-            setSelectedNumber('');
-          } else {
-            setToast(error.message);
-          }
-
-          setIsModalOpen(false);
-          setBookingModalOpen(false);
+          console.log(error);
         }
       };
       booking();
