@@ -272,6 +272,7 @@ export default function MemberShipBooking() {
       });
     }
     let weekList = [];
+    let bookingList = [];
     if (weekDays && weekDays.length > 0) {
       weekList = DateUtils.betweenWeekDays(date, endDateValue, weekDays);
     }

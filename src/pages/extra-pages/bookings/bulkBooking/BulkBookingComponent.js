@@ -197,6 +197,7 @@ export default function BulkBookingComponent() {
 
               bookingList.push(weekData);
             } else {
+              setToast(flagMessage);
               return;
             }
           }
