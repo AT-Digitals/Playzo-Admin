@@ -148,7 +148,8 @@ export default function BulkBookingComponent() {
         startDate: date,
         type: bookingType,
         endDate: endData,
-        court: selectedNumber
+        court: selectedNumber,
+        membership: false
       });
       setDisableData(response);
       setIsModalOpen(true);
@@ -170,11 +171,61 @@ export default function BulkBookingComponent() {
   };
 
   const bookingApiCall = (bookingData) => {
-    if (date && startTime && endTime && endDateValue && selectedNumber && selectWeekDay) {
+    if (date && startTime && endTime && endDateValue && selectedNumber) {
       setBookingModalOpen(true);
+      let flag = false;
+      let errorFlag = false;
+      let flagMessage = '';
+      let bookingList = [];
       const booking = async () => {
         try {
-          const response = await BookingApi.createBooking(bookingData);
+          for (const weekData of bookingData) {
+            try {
+              weekData['membership'] = false;
+              await BookingApi.getBookedList(weekData);
+            } catch (error) {
+              flag = true;
+              if (error.message === 'Please choose another date and slot') {
+                errorFlag = true;
+              } else {
+                flagMessage = error.message;
+              }
+              setToast(error.message);
+            }
+            if (!flag) {
+              weekData['connectId'] = `${DateUtils.formatDate(new Date(), 'DD/MM/YYYY')}-${weekData.type}-${userData.email}`;
+
+              bookingList.push(weekData);
+            } else {
+              setToast(flagMessage);
+              return;
+            }
+          }
+          if (errorFlag) {
+            // if (error.message === ) {
+            LocalStorageSaveHandler(bookingData);
+            setToast('Please choose another date and slot');
+            setDate('');
+            setStartTime('');
+            setEndTime('');
+            setBookingType('');
+            setIsModalOpen(false);
+            setSuccesstoast('');
+            setEndDateValue('');
+            setBulkAmount();
+            setEndError(false);
+            setStartError(false);
+            setSelectWeekDay([]);
+            setSelectedNumber('');
+            // } else {
+            //   setToast(error.message);
+            // }
+
+            setBookingModalOpen(false);
+          } else {
+            setToast(flagMessage);
+          }
+          let response = await BookingApi.createBulkBooking({ bookings: bookingList });
           if (response.message) {
             setToast(response.message);
           }
@@ -193,27 +244,7 @@ export default function BulkBookingComponent() {
           setSelectWeekDay([]);
           setSelectedNumber('');
         } catch (error) {
-          if (error.message === 'Please choose another date and slot') {
-            LocalStorageSaveHandler(bookingData);
-            setToast(error.message);
-            setDate('');
-            setStartTime('');
-            setEndTime('');
-            setBookingType('');
-            setIsModalOpen(false);
-            setSuccesstoast('');
-            setEndDateValue('');
-            setBulkAmount();
-            setEndError(false);
-            setStartError(false);
-            setSelectWeekDay([]);
-            setSelectedNumber('');
-          } else {
-            setToast(error.message);
-          }
-
-          setIsModalOpen(false);
-          setBookingModalOpen(false);
+          console.log(error);
         }
       };
       booking();
@@ -226,7 +257,6 @@ export default function BulkBookingComponent() {
     const data = {
       payment: paymentType
     };
-    // if (data.payment === PaymentType.Cash) {
     const bookingDetail = {
       type: bookingType,
       bookingtype: PaymentType.Online,
@@ -248,12 +278,13 @@ export default function BulkBookingComponent() {
       });
     }
     let weekList = [];
+    let bookingList = [];
     if (weekDays && weekDays.length > 0) {
       weekList = DateUtils.betweenWeekDays(date, endDateValue, weekDays);
     }
     if (weekList.length > 0) {
-      weekList.map((weekData) => {
-        bookingApiCall({
+      for (const weekData of weekList) {
+        bookingList.push({
           type: bookingType,
           bookingtype: PaymentType.Online,
           startTime: DateUtils.joinDate(new Date(weekData), new Date(startTime)).valueOf(),
@@ -267,15 +298,11 @@ export default function BulkBookingComponent() {
             online: bulkAmount ?? 0
           }
         });
-      });
+      }
+      bookingApiCall(bookingList);
     } else {
-      bookingApiCall(bookingDetail);
+      bookingApiCall([bookingDetail]);
     }
-    console.log('weekdays', weekDays);
-    // } else {
-    //   await paymentMethod();
-    // }
-    // console.log(data);
   };
 
   const paymentMethod = async () => {

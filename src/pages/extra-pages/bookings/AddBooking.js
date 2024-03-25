@@ -124,7 +124,8 @@ export default function AddBooking() {
         startDate: endData,
         type: bookingType,
         endDate: endData,
-        court: selectedNumber
+        court: selectedNumber,
+        membership: false
       });
       setDisableData(response);
       setIsModalOpen(true);
