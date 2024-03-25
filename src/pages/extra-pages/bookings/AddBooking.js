@@ -183,6 +183,7 @@ export default function AddBooking() {
             setStartError(false);
             setPersonsCount('');
             setSelectedNumber('');
+            setBookingModalOpen(false);
           } else {
             setBookingModalOpen(true);
             setToast(error.message);
