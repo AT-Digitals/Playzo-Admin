@@ -27,13 +27,32 @@ const DashboardDefault = () => {
   const [filterData, setFilterData] = useState();
   const [startDate, setStartDate] = useState('');
   const [endDate, setEndDate] = useState('');
+  const [serviceData, setServiceData] = useState();
+  const [paymentData, setPaymentData] = useState();
+  const [paymentValue, setPaymentValue] = useState([]);
+  const [serviceValue, setServiceValue] = useState([]);
+
+  const [startDateValue, setStartDateValue] = useState('');
+  const [endDateValue, setEndDateValue] = useState('');
+  const [startDateData, setStartDateData] = useState('');
+  const [endDateData, setEndDateData] = useState('');
   const [count, setCount] = useState(0);
   const [bookingFilter, setBookingFilter] = useState([]);
 
   const [isApplyMode, setIsApplyMode] = useState(true);
   const [buttonDisable, setButtonDisable] = useState(false);
-  const [startDateError, setStartDateError] = useState('');
+  const [startDateError, setStartDateError] = useState(false);
   const [endDateError, setEndDateError] = useState(false);
+
+  const [startDateValueError, setStartDateValueError] = useState(false);
+  const [endDateValueError, setEndDateValueError] = useState(false);
+  const [isApply, setIsApply] = useState(true);
+  const [isDisable, setIsDisable] = useState(false);
+
+  const [startDateDataError, setStartDateDataError] = useState(false);
+  const [endDateDataError, setEndDateDataError] = useState(false);
+  const [clickApply, setClickApply] = useState(true);
+  const [clickDisable, setClickDisable] = useState(false);
 
   const [selectPaymentType, setSelectPaymentType] = useState('All Payments');
   const [bookingDetails, setBookingDetails] = useState(initialBookingInfo);
@@ -69,6 +88,44 @@ const DashboardDefault = () => {
     setEndDateError(false);
   };
 
+  const handleStartDateValueChange = (newValue) => {
+    let datedata = newValue.$d;
+    const parsedDate = moment(datedata);
+    const formattedDate = parsedDate.format('YYYY-MM-DD');
+    setStartDateValue(formattedDate);
+    setStartDateError(false);
+    if (endDate && new Date(endDate) < new Date(formattedDate)) {
+      setEndDate('');
+    }
+  };
+
+  const handleEndDateValueChange = (newValue) => {
+    let enddatedata = newValue.$d;
+    const parsedDate = moment(enddatedata);
+    const formattedDate = parsedDate.format('YYYY-MM-DD');
+    setEndDateValue(formattedDate);
+    setEndDateError(false);
+  };
+
+  const handleStartDateDataChange = (newValue) => {
+    let datedata = newValue.$d;
+    const parsedDate = moment(datedata);
+    const formattedDate = parsedDate.format('YYYY-MM-DD');
+    setStartDateData(formattedDate);
+    setStartDateDataError(false);
+    if (endDate && new Date(endDate) < new Date(formattedDate)) {
+      setEndDate('');
+    }
+  };
+
+  const handleEndDateDataChange = (newValue) => {
+    let enddatedata = newValue.$d;
+    const parsedDate = moment(enddatedata);
+    const formattedDate = parsedDate.format('YYYY-MM-DD');
+    setEndDateData(formattedDate);
+    setEndDateDataError(false);
+  };
+
   const fetchEnquiry = useCallback(async () => {
     try {
       const res = await EnquiryApi.getAll({}).then((data) => {
@@ -98,14 +155,14 @@ const DashboardDefault = () => {
     return { manual, online, totalBooking };
   };
 
-  const bookingTypeInfo = calculateBookingTypes(data, 'turf');
-  const bookingType2Info = calculateBookingTypes(data, 'boardGame');
-  const bookingType3Info = calculateBookingTypes(data, 'playstation');
-  const bookingType4Info = calculateBookingTypes(data, 'cricketNet');
-  const bookingType5Info = calculateBookingTypes(data, 'bowlingMachine');
-  const bookingType6Info = calculateBookingTypes(data, 'badminton');
+  const bookingTypeInfo = calculateBookingTypes(serviceValue, 'turf');
+  const bookingType2Info = calculateBookingTypes(serviceValue, 'boardGame');
+  const bookingType3Info = calculateBookingTypes(serviceValue, 'playstation');
+  const bookingType4Info = calculateBookingTypes(serviceValue, 'cricketNet');
+  const bookingType5Info = calculateBookingTypes(serviceValue, 'bowlingMachine');
+  const bookingType6Info = calculateBookingTypes(serviceValue, 'badminton');
 
-  const bookingInfo = calculateBookings(data);
+  const bookingInfo = calculateBookings(serviceValue);
 
   const getOnlineAmountCount = (dataArray) => {
     let totalCount = 0;
@@ -141,10 +198,10 @@ const DashboardDefault = () => {
     return totalCount;
   };
 
-  const onlinePayment = getOnlineAmountCount(data);
-  const cashPayment = getCashAmountCount(data);
-  const UpiPayment = getUpiAmountCount(data);
-  const refundPayment = getRefundAmountCount(data);
+  const onlinePayment = getOnlineAmountCount(paymentValue);
+  const cashPayment = getCashAmountCount(paymentValue);
+  const UpiPayment = getUpiAmountCount(paymentValue);
+  const refundPayment = getRefundAmountCount(paymentValue);
 
   const totalPayments = onlinePayment + cashPayment + UpiPayment + refundPayment;
 
@@ -285,11 +342,77 @@ const DashboardDefault = () => {
     [endDate, startDate]
   );
 
+  const ApplyFilterButton = useCallback(
+    async (event) => {
+      event.preventDefault();
+      if (!startDateValue) {
+        setStartDateValueError(true);
+        return;
+      }
+      if (!endDateValue) {
+        setEndDateValueError(true);
+        return;
+      }
+
+      if (selectedCategory !== 'All Services' || startDateValue !== '' || endDateValue !== '') {
+        const filter = {
+          type: selectedCategory,
+          startDate: startDateValue,
+          endDate: endDateValue
+        };
+        console.log('data filter', filter);
+        setServiceData(filter);
+      }
+      setIsDisable(true);
+      setIsApply(false);
+    },
+    [endDateValue, startDateValue, selectedCategory]
+  );
+
+  const ApplyFilterData = useCallback(
+    async (event) => {
+      event.preventDefault();
+      if (!startDateData) {
+        setStartDateDataError(true);
+        return;
+      }
+      if (!endDateData) {
+        setEndDateDataError(true);
+        return;
+      }
+
+      if (startDateData !== '' || endDateData !== '') {
+        const filter = {
+          startDate: startDateData,
+          endDate: endDateData
+        };
+        setPaymentData(filter);
+      }
+      setClickDisable(true);
+      setClickApply(false);
+    },
+    [endDateData, startDateData]
+  );
+
   const shouldDisableEndDate = (date) => {
     if (!startDate) {
       return false;
     }
     return dayjs(date).isBefore(dayjs(startDate), 'day');
+  };
+
+  const shouldDisableEndDateValue = (date) => {
+    if (!startDateValue) {
+      return false;
+    }
+    return dayjs(date).isBefore(dayjs(startDateValue), 'day');
+  };
+
+  const shouldDisableEndDateData = (date) => {
+    if (!startDateData) {
+      return false;
+    }
+    return dayjs(date).isBefore(dayjs(startDateData), 'day');
   };
 
   const handleDisableButtonClick = async () => {
@@ -301,6 +424,33 @@ const DashboardDefault = () => {
     await BookingApi.getAll({}).then((data) => {
       setCount(data.length);
       setData(data);
+    });
+  };
+
+  const handleDisableButton = async () => {
+    //setServiceData(data);
+    setIsApply(true);
+    setStartDateValue('');
+    setEndDateValue('');
+    setIsDisable(false);
+    setStartDateValueError(false);
+    setEndDateValueError(false);
+    await BookingApi.getAll({}).then((data) => {
+      setCount(data.length);
+      setServiceValue(data);
+    });
+  };
+
+  const handleDisable = async () => {
+    setClickApply(true);
+    setStartDateData('');
+    setEndDateData('');
+    setClickDisable(false);
+    setStartDateDataError(false);
+    setEndDateDataError(false);
+    await BookingApi.getAll({}).then((data) => {
+      setCount(data.length);
+      setPaymentValue(data);
     });
   };
 
@@ -331,10 +481,52 @@ const DashboardDefault = () => {
     }
   }, [filterData]);
 
+  const fetchInfo2 = useCallback(async () => {
+    try {
+      if (serviceData) {
+        await BookingApi.filterBook(serviceData).then((data) => {
+          console.log('count', data.length);
+          setCount(data.length);
+          setServiceValue(data);
+        });
+      } else {
+        await BookingApi.getAll({}).then((data) => {
+          setCount(data.length);
+          setServiceValue(data);
+          console.log('data', data);
+        });
+      }
+    } catch {
+      console.log('Error fetching data');
+    }
+  }, [serviceData]);
+
+  const fetchData = useCallback(async () => {
+    try {
+      if (paymentData !== '') {
+        await BookingApi.filterBook(paymentData).then((data) => {
+          console.log('payment', data);
+          setCount(data.length);
+          setPaymentValue(data);
+        });
+      } else {
+        await BookingApi.getAll({}).then((data) => {
+          setCount(data.length);
+          setPaymentValue(data);
+          console.log('data', data);
+        });
+      }
+    } catch {
+      console.log('Error fetching data');
+    }
+  }, [paymentData]);
+
   useEffect(() => {
     fetchEnquiry();
     fetchInfo();
-  }, [fetchInfo]);
+    fetchInfo2();
+    fetchData();
+  }, [fetchInfo, fetchInfo2, fetchData]);
 
   return (
     <Grid container rowSpacing={4.5} columnSpacing={2.75}>
@@ -464,6 +656,42 @@ const DashboardDefault = () => {
               </Button>
             </Stack>
           </Grid>
+          <Grid item xs={12} marginY={4}>
+            <Stack direction="row" alignItems="center" justifyContent="flex-end" spacing={2}>
+              <CustomDatePicker
+                error={startDateValueError}
+                date={startDateValue}
+                setDate={handleStartDateValueChange}
+                label={'Start Date'}
+                disableprop={isDisable}
+              />
+              <CustomDatePicker
+                date={endDateValue}
+                setDate={handleEndDateValueChange}
+                label={'End Date'}
+                disableprop={isDisable}
+                shouldDisableDate={shouldDisableEndDateValue}
+                error={endDateValueError}
+              />
+              {isApply ? (
+                <Button
+                  variant="outlined"
+                  onClick={ApplyFilterButton}
+                  sx={{ padding: '7px 15px', width: '150px', fontWeight: 600, fontSize: '15px', marginTop: '35px !important' }}
+                >
+                  Apply
+                </Button>
+              ) : (
+                <Button
+                  variant="outlined"
+                  onClick={handleDisableButton}
+                  sx={{ padding: '7px 15px', width: '150px', fontWeight: 600, fontSize: '15px', marginTop: '35px !important' }}
+                >
+                  Clear
+                </Button>
+              )}
+            </Stack>
+          </Grid>
         </Grid>
         <MainCard content={false} sx={{ mt: 1.5 }}>
           <Box sx={{ pt: 1, pr: 2 }}>
@@ -474,48 +702,86 @@ const DashboardDefault = () => {
 
       {/* row 4 */}
       <Grid item xs={12}>
-        <Grid container alignItems="center" justifyContent="space-between">
-          <Grid item>
+        <Grid container>
+          <Grid item xs={12}>
             <Typography variant="h3">Payment Chart</Typography>
           </Grid>
-          <Grid item>
-            <Stack direction="row" alignItems="center" spacing={2}>
-              <Button
-                onClick={() => handlePaymentTypeChange('All Payments')}
-                color={selectPaymentType === 'All Payments' ? 'primary' : 'secondary'}
-                variant={selectPaymentType === 'All Payments' ? 'outlined' : 'text'}
-              >
-                All Payments
-              </Button>
-              <Button
-                onClick={() => handlePaymentTypeChange('Online')}
-                color={selectPaymentType === 'Online' ? 'primary' : 'secondary'}
-                variant={selectPaymentType === 'Online' ? 'outlined' : 'text'}
-              >
-                Online
-              </Button>
-              <Button
-                onClick={() => handlePaymentTypeChange('Cash')}
-                color={selectPaymentType === 'Cash' ? 'primary' : 'secondary'}
-                variant={selectPaymentType === 'Cash' ? 'outlined' : 'text'}
-              >
-                Cash
-              </Button>
-              <Button
-                onClick={() => handlePaymentTypeChange('UPI')}
-                color={selectPaymentType === 'UPI' ? 'primary' : 'secondary'}
-                variant={selectPaymentType === 'UPI' ? 'outlined' : 'text'}
-              >
-                UPI
-              </Button>
-              <Button
-                onClick={() => handlePaymentTypeChange('Refund')}
-                color={selectPaymentType === 'Refund' ? 'primary' : 'secondary'}
-                variant={selectPaymentType === 'Refund' ? 'outlined' : 'text'}
-              >
-                Refund
-              </Button>
-            </Stack>
+          <Grid container alignItems="flex-end">
+            <Grid item xs={6}>
+              <Stack direction="row" alignItems="center" spacing={2}>
+                <Button
+                  onClick={() => handlePaymentTypeChange('All Payments')}
+                  color={selectPaymentType === 'All Payments' ? 'primary' : 'secondary'}
+                  variant={selectPaymentType === 'All Payments' ? 'outlined' : 'text'}
+                >
+                  All Payments
+                </Button>
+                <Button
+                  onClick={() => handlePaymentTypeChange('Online')}
+                  color={selectPaymentType === 'Online' ? 'primary' : 'secondary'}
+                  variant={selectPaymentType === 'Online' ? 'outlined' : 'text'}
+                >
+                  Online
+                </Button>
+                <Button
+                  onClick={() => handlePaymentTypeChange('Cash')}
+                  color={selectPaymentType === 'Cash' ? 'primary' : 'secondary'}
+                  variant={selectPaymentType === 'Cash' ? 'outlined' : 'text'}
+                >
+                  Cash
+                </Button>
+                <Button
+                  onClick={() => handlePaymentTypeChange('UPI')}
+                  color={selectPaymentType === 'UPI' ? 'primary' : 'secondary'}
+                  variant={selectPaymentType === 'UPI' ? 'outlined' : 'text'}
+                >
+                  UPI
+                </Button>
+                <Button
+                  onClick={() => handlePaymentTypeChange('Refund')}
+                  color={selectPaymentType === 'Refund' ? 'primary' : 'secondary'}
+                  variant={selectPaymentType === 'Refund' ? 'outlined' : 'text'}
+                >
+                  Refund
+                </Button>
+              </Stack>
+            </Grid>
+            <Grid item xs={6}>
+              <Stack direction="row" alignItems="center" spacing={2} justifyContent="flex-end">
+                <CustomDatePicker
+                  error={startDateDataError}
+                  date={startDateData}
+                  setDate={handleStartDateDataChange}
+                  label={'Start Date'}
+                  disableprop={clickDisable}
+                />
+                <CustomDatePicker
+                  date={endDateData}
+                  setDate={handleEndDateDataChange}
+                  label={'End Date'}
+                  disableprop={clickDisable}
+                  shouldDisableDate={shouldDisableEndDateData}
+                  error={endDateDataError}
+                />
+                {clickApply ? (
+                  <Button
+                    variant="outlined"
+                    onClick={ApplyFilterData}
+                    sx={{ padding: '7px 15px', width: '150px', fontWeight: 600, fontSize: '15px', marginTop: '35px !important' }}
+                  >
+                    Apply
+                  </Button>
+                ) : (
+                  <Button
+                    variant="outlined"
+                    onClick={handleDisable}
+                    sx={{ padding: '7px 15px', width: '150px', fontWeight: 600, fontSize: '15px', marginTop: '35px !important' }}
+                  >
+                    Clear
+                  </Button>
+                )}
+              </Stack>
+            </Grid>
           </Grid>
         </Grid>
         <MainCard content={false} sx={{ mt: 1.5 }}>
