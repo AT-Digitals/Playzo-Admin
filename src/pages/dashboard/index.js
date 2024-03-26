@@ -1,4 +1,4 @@
-import { Box, Button, Grid, Stack, Typography } from '@mui/material';
+import { Box, Button, Grid, Stack, Typography, Select } from '@mui/material';
 import { useCallback, useEffect, useState } from 'react';
 import moment from 'moment';
 import dayjs from 'dayjs';
@@ -9,6 +9,8 @@ import EnquiryApi from 'api/EnquiryApi';
 import MainCard from 'components/MainCard';
 import PieChart from './PieChart';
 import CustomDatePicker from '../extra-pages/bookings/bookingComponents/CustomDatePicker';
+import FormControl from '@mui/material/FormControl';
+import MenuItem from '@mui/material/MenuItem';
 
 // material-ui
 
@@ -59,6 +61,10 @@ const DashboardDefault = () => {
 
   const updateBookingInfo = (newBookingInfo) => {
     setBookingDetails({ ...bookingDetails, ...newBookingInfo });
+  };
+
+  const handleChange = (event) => {
+    setSelectedCategory(event.target.value);
   };
 
   const handlePaymentTypeChange = (type) => {
@@ -360,7 +366,6 @@ const DashboardDefault = () => {
           startDate: startDateValue,
           endDate: endDateValue
         };
-        console.log('data filter', filter);
         setServiceData(filter);
       }
       setIsDisable(true);
@@ -484,8 +489,10 @@ const DashboardDefault = () => {
   const fetchInfo2 = useCallback(async () => {
     try {
       if (serviceData) {
+        if (serviceData.type === 'All Services') {
+          serviceData.type === '';
+        }
         await BookingApi.filterBook(serviceData).then((data) => {
-          console.log('count', data.length);
           setCount(data.length);
           setServiceValue(data);
         });
@@ -493,7 +500,6 @@ const DashboardDefault = () => {
         await BookingApi.getAll({}).then((data) => {
           setCount(data.length);
           setServiceValue(data);
-          console.log('data', data);
         });
       }
     } catch {
@@ -505,7 +511,6 @@ const DashboardDefault = () => {
     try {
       if (paymentData !== '') {
         await BookingApi.filterBook(paymentData).then((data) => {
-          console.log('payment', data);
           setCount(data.length);
           setPaymentValue(data);
         });
@@ -513,7 +518,6 @@ const DashboardDefault = () => {
         await BookingApi.getAll({}).then((data) => {
           setCount(data.length);
           setPaymentValue(data);
-          console.log('data', data);
         });
       }
     } catch {
@@ -600,97 +604,68 @@ const DashboardDefault = () => {
       {/* row 3 */}
       <Grid item xs={12}>
         <Grid container alignItems="center" justifyContent="space-between">
-          <Grid item>
+          <Grid item xs={12}>
             <Typography variant="h3">Booking Service Chart</Typography>
           </Grid>
-          <Grid item>
-            <Stack direction="row" alignItems="center" spacing={2}>
-              <Button
-                onClick={() => handleButtonClick('All Services')}
-                color={selectedCategory === 'All Services' ? 'primary' : 'secondary'}
-                variant={selectedCategory === 'All Services' ? 'outlined' : 'text'}
-              >
-                All Services
-              </Button>
-              <Button
-                onClick={() => handleButtonClick('turf')}
-                color={selectedCategory === 'turf' ? 'primary' : 'secondary'}
-                variant={selectedCategory === 'turf' ? 'outlined' : 'text'}
-              >
-                Turf
-              </Button>
-              <Button
-                onClick={() => handleButtonClick('boardGame')}
-                color={selectedCategory === 'boardGame' ? 'primary' : 'secondary'}
-                variant={selectedCategory === 'boardGame' ? 'outlined' : 'text'}
-              >
-                Board Game
-              </Button>
-              <Button
-                onClick={() => handleButtonClick('playstation')}
-                color={selectedCategory === 'playstation' ? 'primary' : 'secondary'}
-                variant={selectedCategory === 'playstation' ? 'outlined' : 'text'}
-              >
-                Play Station
-              </Button>
-              <Button
-                onClick={() => handleButtonClick('cricketNet')}
-                color={selectedCategory === 'cricketNet' ? 'primary' : 'secondary'}
-                variant={selectedCategory === 'cricketNet' ? 'outlined' : 'text'}
-              >
-                Cricket Net
-              </Button>
-              <Button
-                onClick={() => handleButtonClick('bowlingMachine')}
-                color={selectedCategory === 'bowlingMachine' ? 'primary' : 'secondary'}
-                variant={selectedCategory === 'bowlingMachine' ? 'outlined' : 'text'}
-              >
-                Bowling Machine
-              </Button>
-              <Button
-                onClick={() => handleButtonClick('badminton')}
-                color={selectedCategory === 'badminton' ? 'primary' : 'secondary'}
-                variant={selectedCategory === 'badminton' ? 'outlined' : 'text'}
-              >
-                Badminton
-              </Button>
-            </Stack>
-          </Grid>
-          <Grid item xs={12} marginY={4}>
-            <Stack direction="row" alignItems="center" justifyContent="flex-end" spacing={2}>
-              <CustomDatePicker
-                error={startDateValueError}
-                date={startDateValue}
-                setDate={handleStartDateValueChange}
-                label={'Start Date'}
-                disableprop={isDisable}
-              />
-              <CustomDatePicker
-                date={endDateValue}
-                setDate={handleEndDateValueChange}
-                label={'End Date'}
-                disableprop={isDisable}
-                shouldDisableDate={shouldDisableEndDateValue}
-                error={endDateValueError}
-              />
-              {isApply ? (
-                <Button
-                  variant="outlined"
-                  onClick={ApplyFilterButton}
-                  sx={{ padding: '7px 15px', width: '150px', fontWeight: 600, fontSize: '15px', marginTop: '35px !important' }}
-                >
-                  Apply
-                </Button>
-              ) : (
-                <Button
-                  variant="outlined"
-                  onClick={handleDisableButton}
-                  sx={{ padding: '7px 15px', width: '150px', fontWeight: 600, fontSize: '15px', marginTop: '35px !important' }}
-                >
-                  Clear
-                </Button>
-              )}
-            </Stack>
+          <Grid container alignItems="center" justifyContent="space-between">
+            <Grid item xs={3}>
+              <Stack spacing={2}>
+                <Typography>Service Types</Typography>
+                <FormControl fullWidth>
+                  <Select
+                    labelId="demo-simple-select-label"
+                    id="demo-simple-select"
+                    disabled={isDisable}
+                    value={selectedCategory}
+                    onChange={handleChange}
+                  >
+                    <MenuItem value="All Services">All Services</MenuItem>
+                    <MenuItem value="turf">Turf</MenuItem>
+                    <MenuItem value="boardGame">Board Game</MenuItem>
+                    <MenuItem value="playstation">Play Station</MenuItem>
+                    <MenuItem value="cricketNet">Cricket Net</MenuItem>
+                    <MenuItem value="bowlingMachine">Bowling Machine</MenuItem>
+                    <MenuItem value="badminton">Badminton</MenuItem>
+                  </Select>
+                </FormControl>
+              </Stack>
+            </Grid>
+            <Grid item xs={9} marginY={2}>
+              <Stack direction="row" alignItems="center" justifyContent="flex-end" spacing={2}>
+                <CustomDatePicker
+                  error={startDateValueError}
+                  date={startDateValue}
+                  setDate={handleStartDateValueChange}
+                  label={'Start Date'}
+                  disableprop={isDisable}
+                />
+                <CustomDatePicker
+                  date={endDateValue}
+                  setDate={handleEndDateValueChange}
+                  label={'End Date'}
+                  disableprop={isDisable}
+                  shouldDisableDate={shouldDisableEndDateValue}
+                  error={endDateValueError}
+                />
+                {isApply ? (
+                  <Button
+                    variant="outlined"
+                    onClick={ApplyFilterButton}
+                    sx={{ padding: '7px 15px', width: '150px', fontWeight: 600, fontSize: '15px', marginTop: '35px !important' }}
+                  >
+                    Apply
+                  </Button>
+                ) : (
+                  <Button
+                    variant="outlined"
+                    onClick={handleDisableButton}
+                    sx={{ padding: '7px 15px', width: '150px', fontWeight: 600, fontSize: '15px', marginTop: '35px !important' }}
+                  >
+                    Clear
+                  </Button>
+                )}
+              </Stack>
+            </Grid>
           </Grid>
         </Grid>
         <MainCard content={false} sx={{ mt: 1.5 }}>
