@@ -262,7 +262,8 @@ export default function MemberShipBooking() {
       court: selectedNumber,
       userBookingType: 'manual',
       bookingAmount: {
-        online: bulkAmount ?? 0
+        cash: bulkAmount ?? 0,
+        total: bulkAmount ?? 0
       }
     };
     const weekDays = [];
@@ -289,7 +290,8 @@ export default function MemberShipBooking() {
           court: selectedNumber,
           userBookingType: 'manual',
           bookingAmount: {
-            online: bulkAmount ?? 0
+            cash: bulkAmount ?? 0,
+            total: bulkAmount ?? 0
           }
         });
       }
@@ -331,7 +333,8 @@ export default function MemberShipBooking() {
             court: selectedNumber,
             userBookingType: 'manual',
             bookingAmount: {
-              online: bulkAmount ?? 0
+              cash: bulkAmount ?? 0,
+              total: bulkAmount ?? 0
             }
           });
         },
