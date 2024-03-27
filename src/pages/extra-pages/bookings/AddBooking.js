@@ -213,7 +213,7 @@ export default function AddBooking() {
       court: selectedNumber,
       userBookingType: 'manual',
       bookingAmount: {
-        online: bulkAmount ?? 0
+        cash: bulkAmount ?? 0
       }
     };
     // if (data.payment === PaymentType.Cash) {
