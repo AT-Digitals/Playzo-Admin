@@ -99,7 +99,7 @@ const DashboardDefault = () => {
     const parsedDate = moment(datedata);
     const formattedDate = parsedDate.format('YYYY-MM-DD');
     setStartDateValue(formattedDate);
-    setStartDateError(false);
+    setStartDateValueError(false);
     if (endDate && new Date(endDate) < new Date(formattedDate)) {
       setEndDate('');
     }
@@ -110,7 +110,7 @@ const DashboardDefault = () => {
     const parsedDate = moment(enddatedata);
     const formattedDate = parsedDate.format('YYYY-MM-DD');
     setEndDateValue(formattedDate);
-    setEndDateError(false);
+    setEndDateValueError(false);
   };
 
   const handleStartDateDataChange = (newValue) => {
@@ -433,7 +433,7 @@ const DashboardDefault = () => {
   };
 
   const handleDisableButton = async () => {
-    //setServiceData(data);
+    setServiceData(serviceValue);
     setIsApply(true);
     setStartDateValue('');
     setEndDateValue('');
@@ -447,6 +447,7 @@ const DashboardDefault = () => {
   };
 
   const handleDisable = async () => {
+    setPaymentData(paymentValue);
     setClickApply(true);
     setStartDateData('');
     setEndDateData('');
@@ -490,7 +491,7 @@ const DashboardDefault = () => {
     try {
       if (serviceData) {
         if (serviceData.type === 'All Services') {
-          serviceData.type === '';
+          serviceData.type = '';
         }
         await BookingApi.filterBook(serviceData).then((data) => {
           setCount(data.length);
